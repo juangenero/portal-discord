@@ -1,0 +1,27 @@
+{
+  "name": "portal-discord-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --env-file=.env src/index.ts",
+    "build": "tsc"
+  },
+  "keywords": [
+    "discord",
+    "api",
+    "portal"
+  ],
+  "author": "Juan Genero",
+  "license": "ISC",
+  "description": "API para la web de un servidor de Discord",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.15.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}
