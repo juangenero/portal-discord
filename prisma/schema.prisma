@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../prisma/client"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Usuario {
+  idDiscord           String    @id @map("id_discord")
+  nombre              String
+  avatarUrl           String    @map("avatar_url")
+  accessTokenDiscord  String?   @map("access_token_discord")
+  refreshTokenDiscord String?   @map("refresh_token_discord")
+  accessTokenExpire   DateTime? @map("access_token_expire")
+  fecha_creacion      DateTime  @default(now())
+  fecha_actualizacion DateTime  @updatedAt
+}
