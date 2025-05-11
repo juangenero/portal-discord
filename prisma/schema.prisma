@@ -15,13 +15,27 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Usuario {
-  idDiscord           String    @id @map("id_discord")
-  nombre              String
-  avatarUrl           String    @map("avatar_url")
-  accessTokenDiscord  String?   @map("access_token_discord")
-  refreshTokenDiscord String?   @map("refresh_token_discord")
-  accessTokenExpire   DateTime? @map("access_token_expire")
-  fecha_creacion      DateTime  @default(now())
-  fecha_actualizacion DateTime  @updatedAt
+model User {
+  id                       String    @id @map("id_discord")
+  username                 String    @map("username")
+  avatarHash               String    @map("avatar_hash")
+  accessTokenDiscord       String?   @map("access_token_discord")
+  refreshTokenDiscord      String?   @map("refresh_token_discord")
+  accessTokenDiscordExpire DateTime? @map("access_token_discord_expire")
+  fechaCreacion            DateTime  @default(now()) @map("fecha_creacion")
+  fechaActualizacion       DateTime  @updatedAt @map("fecha_actualizacion")
+
+  sessions Session[]
+}
+
+model Session {
+  id                 Int      @id @default(autoincrement())
+  idUser             String   @map("id_user")
+  refreshTokenHash   String   @unique @map("refresh_token_hash")
+  fechaExpiracion    DateTime @map("fecha_expiracion")
+  deviceInfo         String?  @map("device_info")
+  fechaCreacion      DateTime @default(now()) @map("fecha_creacion")
+  fechaActualizacion DateTime @updatedAt @map("fecha_actualizacion")
+
+  user User @relation(fields: [idUser], references: [id])
 }

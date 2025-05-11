@@ -1,19 +1,19 @@
-import { Usuario } from '../../../prisma/client';
-import { UsuarioDto } from './user.dto';
-import { upsertUserByDiscordId } from './user.model';
+import { User } from '../../../prisma/client';
+import { UserDto } from './user.dto';
+import { upsertUserBD } from './user.model';
 
-export async function createUpdateUsuario(input: UsuarioDto): Promise<UsuarioDto> {
-  const usuario: Usuario = await upsertUserByDiscordId(input);
+export async function upsertUser(userDto: UserDto): Promise<UserDto> {
+  const usuario: User = await upsertUserBD(userDto);
 
   // Convertir la entidad a DTO
-  const usuarioDto: UsuarioDto = {
-    idDiscord: usuario.idDiscord,
-    nombre: usuario.nombre,
-    avatarUrl: usuario.avatarUrl,
+  const result: UserDto = {
+    id: usuario.id,
+    username: usuario.username,
+    avatarHash: usuario.avatarHash,
     accessTokenDiscord: usuario.accessTokenDiscord,
     refreshTokenDiscord: usuario.refreshTokenDiscord,
-    accessTokenExpire: usuario.accessTokenExpire,
+    accessTokenDiscordExpire: usuario.accessTokenDiscordExpire,
   };
 
-  return usuarioDto;
+  return result;
 }

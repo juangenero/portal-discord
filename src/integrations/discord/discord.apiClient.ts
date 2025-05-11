@@ -1,7 +1,7 @@
 import axios, { AxiosHeaders } from 'axios';
-import CONFIG from '../config/env.config';
-import { TokenDiscordResponse, UsuarioDiscord } from '../modules/auth/auth.dto';
-import { DiscordAPIError } from '../shared/errors';
+import CONFIG from '../../config/env.config';
+import { DiscordAPIError } from '../../shared/errors';
+import { TokenDiscordResponse, UserDiscordResponse } from './discord.dto';
 
 const {
   // URL API Discord
@@ -19,7 +19,7 @@ const {
   DISCORD_URL_AVATAR: avatarUrl,
 } = CONFIG;
 
-// Obtener la URL (parcial) de autorización de Discord
+// Obtener la URL básica de autorización de Discord
 export function getUrlAuthDiscord(): string {
   const result =
     `${urlAuth}` +
@@ -58,7 +58,7 @@ export async function getTokenDiscord(
 }
 
 // Obtener el usuario de Discord
-export async function getUsuarioDiscord(accessToken: string): Promise<UsuarioDiscord> {
+export async function getUsuarioDiscord(accessToken: string): Promise<UserDiscordResponse> {
   const headers = new AxiosHeaders({
     Authorization: `Bearer ${accessToken}`,
   });

@@ -1,17 +1,21 @@
-import Config from './config.types';
+import Config from './config.dto';
 
 /**
  * Mapeo de variables de entorno a constantes de configuración para autocompletado
  */
 const CONFIG: Config = Object.freeze({
   // Aplicación
-  PORT: process.env.PORT || '3000',
-  LEVEL_LOG: process.env.LEVEL_LOG || 'info',
+  PORT: process.env.PORT || '3000', // Puerto del servidor
+  LEVEL_LOG: process.env.LEVEL_LOG || 'info', // Nivel del log
 
   // JWT
-  SIGN_JWT: process.env.PORT || 'my_secret_key',
+  SIGN_TOKEN_JWT: process.env.SIGN_TOKEN_JWT || 'my_secret_key1', // Firma del token JWT
+  SIGN_REFRESH_TOKEN: process.env.SIGN_REFRESH_TOKEN || 'my_secret_key2', // Firma del refresh token
+  EXPIRE_TIME_ACCESS_TOKEN: Number(process.env.EXPIRE_TIME_ACCESS_TOKEN) || 900, // Segundos de expiración access token (15 minutos por defecto)
+  EXPIRE_TIME_REFRESH_TOKEN: Number(process.env.EXPIRE_TIME_REFRESH_TOKEN) || 604800, // Segundos de expiración refresh token (7 días por defecto)
 
   // Discord OAuth2
+  SIGN_TOKENS_DISCORD: process.env.SIGN_TOKENS_DISCORD || 'my_secret_key2', // Firma para los tokens de discord
   DISCORD_OAUTH2_CLIENT_ID: getEnvVar('DISCORD_OAUTH2_CLIENT_ID'),
   DISCORD_OAUTH2_CLIENT_SECRET: getEnvVar('DISCORD_OAUTH2_CLIENT_SECRET'),
   DISCORD_OAUTH2_REDIRECT_URI: getEnvVar('DISCORD_OAUTH2_REDIRECT_URI'),

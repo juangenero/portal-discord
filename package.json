@@ -22,7 +22,8 @@
     "axios": "^1.9.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "ts-node-dev": "^2.0.0"
+    "ts-node-dev": "^2.0.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",

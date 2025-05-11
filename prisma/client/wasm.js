@@ -89,15 +89,25 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UsuarioScalarFieldEnum = {
-  idDiscord: 'idDiscord',
-  nombre: 'nombre',
-  avatarUrl: 'avatarUrl',
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  avatarHash: 'avatarHash',
   accessTokenDiscord: 'accessTokenDiscord',
   refreshTokenDiscord: 'refreshTokenDiscord',
-  accessTokenExpire: 'accessTokenExpire',
-  fecha_creacion: 'fecha_creacion',
-  fecha_actualizacion: 'fecha_actualizacion'
+  accessTokenDiscordExpire: 'accessTokenDiscordExpire',
+  fechaCreacion: 'fechaCreacion',
+  fechaActualizacion: 'fechaActualizacion'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  idUser: 'idUser',
+  refreshTokenHash: 'refreshTokenHash',
+  fechaExpiracion: 'fechaExpiracion',
+  deviceInfo: 'deviceInfo',
+  fechaCreacion: 'fechaCreacion',
+  fechaActualizacion: 'fechaActualizacion'
 };
 
 exports.Prisma.SortOrder = {
@@ -112,7 +122,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  Usuario: 'Usuario'
+  User: 'User',
+  Session: 'Session'
 };
 /**
  * Create the Client
@@ -145,7 +156,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../.env",
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "..",
@@ -164,13 +175,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  output          = \"../prisma/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel Usuario {\n  idDiscord           String    @id @map(\"id_discord\")\n  nombre              String\n  avatarUrl           String    @map(\"avatar_url\")\n  accessTokenDiscord  String?   @map(\"access_token_discord\")\n  refreshTokenDiscord String?   @map(\"refresh_token_discord\")\n  accessTokenExpire   DateTime? @map(\"access_token_expire\")\n  fecha_creacion      DateTime  @default(now())\n  fecha_actualizacion DateTime  @updatedAt\n}\n",
-  "inlineSchemaHash": "9348a964031ad1beb94203dbb1a0960cfce5f46cd26a0ffc8434b560f2d56a25",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  output          = \"../prisma/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel User {\n  id                       String    @id @map(\"id_discord\")\n  username                 String    @map(\"username\")\n  avatarHash               String    @map(\"avatar_hash\")\n  accessTokenDiscord       String?   @map(\"access_token_discord\")\n  refreshTokenDiscord      String?   @map(\"refresh_token_discord\")\n  accessTokenDiscordExpire DateTime? @map(\"access_token_discord_expire\")\n  fechaCreacion            DateTime  @default(now()) @map(\"fecha_creacion\")\n  fechaActualizacion       DateTime  @updatedAt @map(\"fecha_actualizacion\")\n\n  sessions Session[]\n}\n\nmodel Session {\n  id                 Int      @id @default(autoincrement())\n  idUser             String   @map(\"id_user\")\n  refreshTokenHash   String   @unique @map(\"refresh_token_hash\")\n  fechaExpiracion    DateTime @map(\"fecha_expiracion\")\n  deviceInfo         String?  @map(\"device_info\")\n  fechaCreacion      DateTime @default(now()) @map(\"fecha_creacion\")\n  fechaActualizacion DateTime @updatedAt @map(\"fecha_actualizacion\")\n\n  user User @relation(fields: [idUser], references: [id])\n}\n",
+  "inlineSchemaHash": "5c8aa5c71cb8617af8f464b8f448aa7104498eb9660a418f48783e89730d0e42",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Usuario\":{\"fields\":[{\"name\":\"idDiscord\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"id_discord\"},{\"name\":\"nombre\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"avatar_url\"},{\"name\":\"accessTokenDiscord\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"access_token_discord\"},{\"name\":\"refreshTokenDiscord\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"refresh_token_discord\"},{\"name\":\"accessTokenExpire\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"access_token_expire\"},{\"name\":\"fecha_creacion\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"fecha_actualizacion\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"id_discord\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"username\"},{\"name\":\"avatarHash\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"avatar_hash\"},{\"name\":\"accessTokenDiscord\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"access_token_discord\"},{\"name\":\"refreshTokenDiscord\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"refresh_token_discord\"},{\"name\":\"accessTokenDiscordExpire\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"access_token_discord_expire\"},{\"name\":\"fechaCreacion\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"fecha_creacion\"},{\"name\":\"fechaActualizacion\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"fecha_actualizacion\"},{\"name\":\"sessions\",\"kind\":\"object\",\"type\":\"Session\",\"relationName\":\"SessionToUser\"}],\"dbName\":null},\"Session\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"idUser\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"id_user\"},{\"name\":\"refreshTokenHash\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"refresh_token_hash\"},{\"name\":\"fechaExpiracion\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"fecha_expiracion\"},{\"name\":\"deviceInfo\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"device_info\"},{\"name\":\"fechaCreacion\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"fecha_creacion\"},{\"name\":\"fechaActualizacion\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"fecha_actualizacion\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SessionToUser\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

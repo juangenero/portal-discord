@@ -1,40 +1,54 @@
-import { Prisma, Usuario } from '../../../prisma/client';
+import { Prisma, User } from '../../../prisma/client';
 import prisma from '../../config/db.config';
 import { DatabaseError } from '../../shared/errors/DatabaseError';
-import { UsuarioDto } from './user.dto';
+import { UserDto } from './user.dto';
 
 /**
  * Crea o actualiza un usuario en la base de datos utilizando su ID de Discord.
  * @param {UsuarioDto} input - Objeto que contiene los datos del usuario.
  * @returns {Promise<Usuario>} - El usuario creado o actualizado.
  */
-export async function upsertUserByDiscordId(input: UsuarioDto): Promise<Usuario> {
+export async function upsertUserBD(input: UserDto): Promise<User> {
   try {
-    const updateData: Prisma.UsuarioUpdateInput = {};
+    const updateData: Prisma.UserUpdateInput = {};
 
     // updateData solo incluye los campos existentes en el input, excluyendo el idDiscord.
     Object.keys(input).forEach((key) => {
-      const value = input[key as keyof UsuarioDto];
+      const value = input[key as keyof UserDto];
       if (value !== undefined && key !== 'idDiscord') {
         (updateData as any)[key] = value;
       }
     });
 
-    const output: Usuario = await prisma.usuario.upsert({
-      where: { idDiscord: input.idDiscord },
+    const output: User = await prisma.user.upsert({
+      where: { id: input.id },
       update: updateData,
       create: {
-        idDiscord: input.idDiscord,
-        nombre: input.nombre,
-        avatarUrl: input.avatarUrl,
+        id: input.id,
+        username: input.username,
+        avatarHash: input.avatarHash,
         accessTokenDiscord: input.accessTokenDiscord ?? null,
         refreshTokenDiscord: input.refreshTokenDiscord ?? null,
-        accessTokenExpire: input.accessTokenExpire ?? null,
+        accessTokenDiscordExpire: input.accessTokenDiscordExpire ?? null,
       },
     });
 
     return output;
   } catch (error) {
     throw new DatabaseError('Error al crear o actualizar el usuario');
+  }
+}
+
+export async function getUserById(idUser: string): Promise<User | null> {
+  try {
+    const output = await prisma.user.findUnique({
+      where: {
+        id: idUser,
+      },
+    });
+
+    return output;
+  } catch (error) {
+    throw new DatabaseError('Error al obtener el usuario');
   }
 }

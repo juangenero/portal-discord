@@ -4,7 +4,13 @@ interface Config {
   LEVEL_LOG: string;
 
   // JWT
-  SIGN_JWT: string;
+  SIGN_TOKEN_JWT: string;
+  SIGN_REFRESH_TOKEN: string;
+  EXPIRE_TIME_REFRESH_TOKEN: number;
+  EXPIRE_TIME_ACCESS_TOKEN: number;
+
+  // SECURITY
+  SIGN_TOKENS_DISCORD: string;
 
   // OAuth2 Discord
   DISCORD_OAUTH2_CLIENT_ID: string;

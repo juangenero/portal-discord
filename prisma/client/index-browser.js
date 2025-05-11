@@ -117,15 +117,25 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UsuarioScalarFieldEnum = {
-  idDiscord: 'idDiscord',
-  nombre: 'nombre',
-  avatarUrl: 'avatarUrl',
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  avatarHash: 'avatarHash',
   accessTokenDiscord: 'accessTokenDiscord',
   refreshTokenDiscord: 'refreshTokenDiscord',
-  accessTokenExpire: 'accessTokenExpire',
-  fecha_creacion: 'fecha_creacion',
-  fecha_actualizacion: 'fecha_actualizacion'
+  accessTokenDiscordExpire: 'accessTokenDiscordExpire',
+  fechaCreacion: 'fechaCreacion',
+  fechaActualizacion: 'fechaActualizacion'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  idUser: 'idUser',
+  refreshTokenHash: 'refreshTokenHash',
+  fechaExpiracion: 'fechaExpiracion',
+  deviceInfo: 'deviceInfo',
+  fechaCreacion: 'fechaCreacion',
+  fechaActualizacion: 'fechaActualizacion'
 };
 
 exports.Prisma.SortOrder = {
@@ -140,7 +150,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  Usuario: 'Usuario'
+  User: 'User',
+  Session: 'Session'
 };
 
 /**
