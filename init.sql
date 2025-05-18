@@ -4,7 +4,9 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "avatar_hash" TEXT NOT NULL,
     "access_token_discord" TEXT,
+    "iv_access_token_discord" TEXT,
     "refresh_token_discord" TEXT,
+    "iv_refresh_token_discord" TEXT,
     "access_token_discord_expire" DATETIME,
     "fecha_creacion" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "fecha_actualizacion" DATETIME NOT NULL
@@ -12,7 +14,7 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Session" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "id_user" TEXT NOT NULL,
     "refresh_token_hash" TEXT NOT NULL,
     "fecha_expiracion" DATETIME NOT NULL,

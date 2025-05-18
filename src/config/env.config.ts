@@ -1,3 +1,4 @@
+import { AppError } from '../shared/errors';
 import Config from './config.dto';
 
 /**
@@ -6,6 +7,7 @@ import Config from './config.dto';
 const CONFIG: Config = Object.freeze({
   // Aplicación
   PORT: process.env.PORT || '3000', // Puerto del servidor
+  NODE_ENV: checkNodeEnv(), // Entorno de la aplicación
   LEVEL_LOG: process.env.LEVEL_LOG || 'info', // Nivel del log
 
   // JWT
@@ -15,7 +17,7 @@ const CONFIG: Config = Object.freeze({
   EXPIRE_TIME_REFRESH_TOKEN: Number(process.env.EXPIRE_TIME_REFRESH_TOKEN) || 604800, // Segundos de expiración refresh token (7 días por defecto)
 
   // Discord OAuth2
-  SIGN_TOKENS_DISCORD: process.env.SIGN_TOKENS_DISCORD || 'my_secret_key2', // Firma para los tokens de discord
+  SIGN_TOKENS_DISCORD: process.env.SIGN_TOKENS_DISCORD || 'my_secret_key3', // Firma para los tokens de discord
   DISCORD_OAUTH2_CLIENT_ID: getEnvVar('DISCORD_OAUTH2_CLIENT_ID'),
   DISCORD_OAUTH2_CLIENT_SECRET: getEnvVar('DISCORD_OAUTH2_CLIENT_SECRET'),
   DISCORD_OAUTH2_REDIRECT_URI: getEnvVar('DISCORD_OAUTH2_REDIRECT_URI'),
@@ -40,11 +42,22 @@ const CONFIG: Config = Object.freeze({
 // Checkear si las variables de entorno críticas están definidas
 function getEnvVar(key: string): string {
   const value = process.env[key];
-  if (!value) {
-    throw new Error(`La variable de entorno "${key}" no está definida.`);
-  }
+  if (!value) throw new AppError(`La variable de entorno "${key}" no está definida.`);
 
   return value;
+}
+
+// Checkear el valor de NODE_ENV
+function checkNodeEnv(): 'dev' | 'pro' {
+  const nodeEnvValue = getEnvVar('NODE_ENV');
+
+  if (nodeEnvValue !== 'dev' && nodeEnvValue !== 'pro') {
+    throw new AppError(
+      `El valor "${nodeEnvValue}" para NODE_ENV no es válido, solo se permite 'dev' o 'pro'`
+    );
+  }
+
+  return nodeEnvValue;
 }
 
 export default CONFIG;

@@ -11,11 +11,12 @@ authRouter.post('/callback', (req: Request, res: Response, next: NextFunction) =
   callbackCtrl(req, res);
 });
 
-authRouter.get(
-  '/refresh-token/:idUser/:refreshToken',
-  (req: Request, res: Response, next: NextFunction) => {
-    refreshTokenCtrl(req, res);
-  }
-);
+authRouter.post('/refresh-token/:idUser', (req: Request, res: Response, next: NextFunction) => {
+  refreshTokenCtrl(req, res);
+});
+
+authRouter.delete('/logout', (req: Request, res: Response, next: NextFunction) => {
+  // Método logout()
+});
 
 export default authRouter;

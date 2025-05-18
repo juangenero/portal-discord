@@ -1,14 +1,20 @@
 import jwt from 'jsonwebtoken';
-import { Session } from '../../../prisma/client';
+import { IBrowser, IDevice, IOS, UAParser } from 'ua-parser-js';
+import { Session } from '../../../prisma/generated/client';
 import CONFIG from '../../config/env.config';
 import { getAvatarUrl } from '../../integrations/discord/discord.apiClient';
-import { generateHMAC, generateRandomToken } from '../../shared/utils/secutiryUtils';
+import { geolocalizateIp } from '../../integrations/ip/ip.apiClient';
+import { DatabaseError } from '../../shared/errors/DatabaseError';
+import { generateHMAC, generateRandomString } from '../../shared/utils/security/secutiryUtils';
 import { UserDto } from '../user/user.dto';
 import type {
   CreateRefreshTokenDto,
   CreateSessionDto,
+  DeviceInfo,
+  PayloadJwt,
   RotateRefreshTokenDto,
   SessionDto,
+  UserAgentInfo,
 } from './session.dto';
 import {
   createSessionBD,
@@ -24,7 +30,11 @@ const { SIGN_TOKEN_JWT, SIGN_REFRESH_TOKEN, EXPIRE_TIME_ACCESS_TOKEN, EXPIRE_TIM
  * @param idUser ID del usuario
  * @returns
  */
-export async function createSession(idUser: string): Promise<SessionDto> {
+export async function createSession(
+  idUser: string,
+  clientIp: string,
+  clientUserAgent: string
+): Promise<SessionDto> {
   // Generar refresh token
   const refreshTokenCreated: CreateRefreshTokenDto = createRefreshToken();
 
@@ -33,6 +43,7 @@ export async function createSession(idUser: string): Promise<SessionDto> {
     idUser: idUser,
     refreshTokenHash: refreshTokenCreated.refreshTokenHash,
     fechaExpiracion: refreshTokenCreated.fechaExpiracion,
+    deviceInfo: JSON.stringify(await getDeviceInfo(clientIp, clientUserAgent)),
   };
 
   // Crear sesión
@@ -42,7 +53,7 @@ export async function createSession(idUser: string): Promise<SessionDto> {
   const sessionDto: SessionDto = {
     id: sessionBD.id,
     idUser: sessionBD.idUser,
-    refreshTokenHash: refreshTokenCreated.refreshToken, // Se devuelve el token sin hashear
+    refreshToken: refreshTokenCreated.refreshToken,
     fechaExpiracion: sessionBD.fechaExpiracion,
     fechaCreacion: sessionBD.fechaCreacion,
     fechaActualizacion: sessionBD.fechaActualizacion,
@@ -57,7 +68,7 @@ export async function createSession(idUser: string): Promise<SessionDto> {
  */
 function createRefreshToken(): CreateRefreshTokenDto {
   // Crear token
-  const token = generateRandomToken();
+  const token = generateRandomString();
 
   // Crear expiración
   const expireTime: Date = new Date();
@@ -66,13 +77,13 @@ function createRefreshToken(): CreateRefreshTokenDto {
   // Hashear token
   const tokenHashed = generateHMAC(token, SIGN_REFRESH_TOKEN);
 
-  const result: CreateRefreshTokenDto = {
+  const createRefreshTokenDto: CreateRefreshTokenDto = {
     refreshToken: token,
     refreshTokenHash: tokenHashed,
     fechaExpiracion: expireTime,
   };
 
-  return result;
+  return createRefreshTokenDto;
 }
 
 /**
@@ -80,15 +91,16 @@ function createRefreshToken(): CreateRefreshTokenDto {
  * @param usuario UserDto
  * @returns Access token JWT
  */
-export function createTokenJwt(usuario: UserDto): string {
+export function createTokenJwt(usuario: UserDto, idSesion: string): string {
   // Obtener datos del usuario
   const { id, username, avatarHash } = usuario;
 
   // Crea un payload con el id, nombre y URL avatar
-  const payload = {
-    id: id,
+  const payload: PayloadJwt = {
+    idUsuario: id,
     username: username,
     avatarUrl: getAvatarUrl(id, avatarHash),
+    idSesion: idSesion,
   };
 
   const options = {
@@ -109,9 +121,9 @@ export function createTokenJwt(usuario: UserDto): string {
 export async function verifyRefreshToken(refreshToken: string, idUser: string): Promise<boolean> {
   const refreshTokenHash = generateHMAC(refreshToken, SIGN_REFRESH_TOKEN);
 
-  const sessionBD = await getSessionByIdUserAndTokenBD(refreshTokenHash, idUser);
+  const sessionBD = await getSessionByIdUserAndTokenBD(idUser, refreshTokenHash);
 
-  if (!sessionBD) {
+  if (sessionBD === null) {
     console.error(`No existe la sesión ${refreshTokenHash} para el usuario con ID ${idUser}`);
     return false;
   }
@@ -130,21 +142,110 @@ export async function verifyRefreshToken(refreshToken: string, idUser: string): 
  * @param idUser ID del usuario
  * @return El nuevo refresh token (sin hashear)
  */
-export async function rotateRefreshToken(idUser: string, refreshToken: string): Promise<string> {
+export async function rotateRefreshToken(
+  idUser: string,
+  refreshToken: string,
+  clientIp: string,
+  clientUserAgent: string
+): Promise<RotateRefreshTokenDto> {
   // Genera un nuevo refresh token
   const createRefreshTokenDto: CreateRefreshTokenDto = createRefreshToken();
 
-  // Montar DTO para rotar los tokens
-  const rotateRefreshTokenDto: RotateRefreshTokenDto = {
-    idUser: idUser,
-    refreshTokenHashOld: generateHMAC(refreshToken, SIGN_REFRESH_TOKEN),
-    refreshTokenHashNew: createRefreshTokenDto.refreshTokenHash,
-    fechaExpiracion: createRefreshTokenDto.fechaExpiracion,
-  };
+  // Extraer información de la sesión
+  const deviceInfo: string = JSON.stringify(await getDeviceInfo(clientIp, clientUserAgent));
+
+  // Hashear token
+  const refreshTokenUserHashed = generateHMAC(refreshToken, SIGN_REFRESH_TOKEN);
 
   // Guardar en BD
-  const sessionBD: Session | null = await rotateRefreshTokensBD(rotateRefreshTokenDto);
-  if (!sessionBD) console.log('Error al actualizar el refresh token del usuario');
+  const sessionBD: Session | null = await rotateRefreshTokensBD(
+    idUser,
+    refreshTokenUserHashed,
+    createRefreshTokenDto.refreshTokenHash,
+    createRefreshTokenDto.fechaExpiracion,
+    deviceInfo
+  );
+  if (!sessionBD) {
+    throw new DatabaseError(`Error al guardar al actualizar la sesión del usuario ${idUser}`);
+  }
 
-  return createRefreshTokenDto.refreshToken;
+  // Montar respuesta
+  const rotateRefreshTokenDto: RotateRefreshTokenDto = {
+    ...createRefreshTokenDto,
+    idSesion: sessionBD.id,
+  };
+
+  return rotateRefreshTokenDto;
+}
+
+/**
+ * Devuelve información del dispositivo y ubicación del usuario
+ * @param ip String con la IP del usuario
+ * @param userAgent String del User-Agent del usuario
+ * @returns DTO DeviceInfo con la información obtenida
+ */
+export async function getDeviceInfo(ip: string, userAgent: string): Promise<DeviceInfo> {
+  let baseDeviceInfo: DeviceInfo = {
+    ip: ip,
+  };
+
+  if (ip) {
+    let ipInfo = await geolocalizateIp(ip);
+    baseDeviceInfo = {
+      ...baseDeviceInfo,
+      ...ipInfo,
+    };
+  }
+
+  if (userAgent) {
+    let userAgentInfo = parseUserAgent(userAgent);
+    baseDeviceInfo = {
+      ...baseDeviceInfo,
+      ...userAgentInfo,
+    };
+  }
+
+  return baseDeviceInfo;
+}
+
+// - - - - - MÉTODOS AUXILIARES - - - - -
+
+/**
+ * Extrae información de la cadena User-Agent del cliente
+ * @param userAgent User-Agent del cliente
+ * @returns DTO UserAgentInfo con información del dispositivo
+ */
+export function parseUserAgent(userAgent: string): UserAgentInfo {
+  let baseUserAgentInfo: UserAgentInfo = {};
+
+  if (!userAgent) {
+    return baseUserAgentInfo;
+  }
+
+  try {
+    const parser = new UAParser(userAgent);
+
+    // Extraer Sistema Operativo usando el tipo importado
+    const os: IOS = parser.getOS();
+    if (os && os.name) {
+      baseUserAgentInfo.sistemaOperativo = os.name;
+    }
+
+    // Extraer Navegador usando el tipo importado
+    const browser: IBrowser = parser.getBrowser();
+    if (browser && browser.name) {
+      baseUserAgentInfo.navegador = browser.name;
+    }
+
+    // Extraer Tipo de Dispositivo usando el tipo importado
+    const device: IDevice = parser.getDevice();
+    if (device && device.type) {
+      baseUserAgentInfo.tipoDispositivo = device.type;
+    }
+
+    return baseUserAgentInfo;
+  } catch (error) {
+    console.error(`Error al leer la cadena de User-Agent: ${userAgent}`, error);
+    return baseUserAgentInfo;
+  }
 }

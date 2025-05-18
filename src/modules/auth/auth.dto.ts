@@ -1,4 +1,10 @@
+import { CookieOptions } from 'express';
+
 export interface ResponseTokens {
   accessToken: string;
-  refreshToken: string;
+  refreshTokenCookie: {
+    name: string;
+    value: string;
+    options: CookieOptions;
+  };
 }

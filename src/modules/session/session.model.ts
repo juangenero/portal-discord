@@ -1,7 +1,7 @@
-import { Session } from '../../../prisma/client';
+import { Session } from '../../../prisma/generated/client';
 import prisma from '../../config/db.config';
 import { DatabaseError } from '../../shared/errors/DatabaseError';
-import { CreateSessionDto, RotateRefreshTokenDto } from './session.dto';
+import { CreateSessionDto } from './session.dto';
 
 /**
  * Crea una sesión para un usuario
@@ -27,13 +27,13 @@ export async function createSessionBD(input: CreateSessionDto): Promise<Session>
 
 /**
  * Recupera una sesión si existe
- * @param token refresh token
  * @param idUser ID de usuario
+ * @param token refresh token
  * @returns Sesión recuperada o null si no existe
  */
 export async function getSessionByIdUserAndTokenBD(
-  token: string,
-  idUser: string
+  idUser: string,
+  token: string
 ): Promise<Session | null> {
   try {
     const session = await prisma.session.findFirst({
@@ -55,23 +55,27 @@ export async function getSessionByIdUserAndTokenBD(
  * @param idUser ID del usuario
  */
 export async function rotateRefreshTokensBD(
-  rotateRefreshTokenDto: RotateRefreshTokenDto
+  idUser: string,
+  refreshTokenHashOld: string,
+  refreshTokenHashNew: string,
+  fechaExpiracion: Date,
+  deviceInfo: string
 ): Promise<Session | null> {
   try {
     const output: Session = await prisma.session.update({
       where: {
-        idUser: rotateRefreshTokenDto.idUser,
-        refreshTokenHash: rotateRefreshTokenDto.refreshTokenHashOld,
+        idUser: idUser,
+        refreshTokenHash: refreshTokenHashOld,
       },
       data: {
-        refreshTokenHash: rotateRefreshTokenDto.refreshTokenHashNew,
-        fechaExpiracion: rotateRefreshTokenDto.fechaExpiracion,
-        deviceInfo: rotateRefreshTokenDto.deviceInfo ?? null,
+        refreshTokenHash: refreshTokenHashNew,
+        fechaExpiracion: fechaExpiracion,
+        deviceInfo: deviceInfo ?? null,
       },
     });
 
     return output;
   } catch (error) {
-    throw new DatabaseError('rotateRefreshTokensBD -> Error al actualizar el refresh token');
+    throw new DatabaseError(`Error al rotar el refresh token del usuario ${idUser}`);
   }
 }

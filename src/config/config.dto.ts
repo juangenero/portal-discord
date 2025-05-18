@@ -1,9 +1,10 @@
 interface Config {
   // Aplicación
   PORT: string;
+  NODE_ENV: 'dev' | 'pro';
   LEVEL_LOG: string;
 
-  // JWT
+  // JWT & REFRESH TOKEN
   SIGN_TOKEN_JWT: string;
   SIGN_REFRESH_TOKEN: string;
   EXPIRE_TIME_REFRESH_TOKEN: number;

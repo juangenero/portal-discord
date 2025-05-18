@@ -1,4 +1,4 @@
-import { Prisma, User } from '../../../prisma/client';
+import { Prisma, User } from '../../../prisma/generated/client';
 import prisma from '../../config/db.config';
 import { DatabaseError } from '../../shared/errors/DatabaseError';
 import { UserDto } from './user.dto';
@@ -28,7 +28,9 @@ export async function upsertUserBD(input: UserDto): Promise<User> {
         username: input.username,
         avatarHash: input.avatarHash,
         accessTokenDiscord: input.accessTokenDiscord ?? null,
+        ivAccessTokenDiscord: input.ivAccessTokenDiscord ?? null,
         refreshTokenDiscord: input.refreshTokenDiscord ?? null,
+        ivRefreshTokenDiscord: input.ivRefreshTokenDiscord ?? null,
         accessTokenDiscordExpire: input.accessTokenDiscordExpire ?? null,
       },
     });

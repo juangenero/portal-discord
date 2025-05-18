@@ -122,7 +122,9 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   avatarHash: 'avatarHash',
   accessTokenDiscord: 'accessTokenDiscord',
+  ivAccessTokenDiscord: 'ivAccessTokenDiscord',
   refreshTokenDiscord: 'refreshTokenDiscord',
+  ivRefreshTokenDiscord: 'ivRefreshTokenDiscord',
   accessTokenDiscordExpire: 'accessTokenDiscordExpire',
   fechaCreacion: 'fechaCreacion',
   fechaActualizacion: 'fechaActualizacion'

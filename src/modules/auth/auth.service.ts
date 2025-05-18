@@ -1,4 +1,5 @@
-import { User } from '../../../prisma/client';
+import { User } from '../../../prisma/generated/client';
+import CONFIG from '../../config/env.config';
 import {
   getTokenDiscord,
   getUrlAuthDiscord,
@@ -17,13 +18,20 @@ import { getUserById } from '../user/user.model';
 import { upsertUser } from '../user/user.service';
 import { ResponseTokens } from './auth.dto';
 
+const { NODE_ENV } = CONFIG;
+
 // Paso 1 Devuelve la URL para iniciar el flujo de login en Discord
 export function initialize(): string {
   return getUrlAuthDiscord();
 }
 
 // API callback para el proceso de login
-export async function login(code: string, codeVerifier: string): Promise<ResponseTokens> {
+export async function login(
+  code: string,
+  codeVerifier: string,
+  clientIp: string,
+  clientUserAgent: string
+): Promise<ResponseTokens> {
   // Paso 5 - Intercambia el código de autorización por un token de acceso
   const resToken: TokenDiscordResponse = await getTokenDiscord(code, codeVerifier);
   const expireToken = new Date(Date.now() + resToken.expires_in * 1000);
@@ -41,24 +49,45 @@ export async function login(code: string, codeVerifier: string): Promise<Respons
     accessTokenDiscordExpire: expireToken,
   });
 
-  // Paso 7.1 - Generar y enviar tokens al cliente
+  // Paso 7.1 - Generar token JWT y cookie con el refresh token
+  const sesionCreated = await createSession(usuario.id, clientIp, clientUserAgent);
   const responseTokens: ResponseTokens = {
-    accessToken: createTokenJwt(usuario),
-    refreshToken: (await createSession(usuario.id)).refreshTokenHash,
+    accessToken: createTokenJwt(usuario, sesionCreated.id),
+    refreshTokenCookie: {
+      name: 'refreshToken',
+      value: sesionCreated.refreshToken,
+      options: {
+        httpOnly: true,
+        secure: NODE_ENV === 'pro' ? true : false, // Solo se envía a través de HTTPS en producción
+        expires: sesionCreated.fechaExpiracion,
+        sameSite: 'none',
+        path: '/auth',
+      },
+    },
   };
 
   return responseTokens;
 }
 
 // Renovar access token
-export async function renewTokenJwt(idUser: string, refreshToken: string): Promise<ResponseTokens> {
+export async function renewTokenJwt(
+  idUser: string,
+  refreshToken: string,
+  clientIp: string,
+  clientUserAgent: string
+): Promise<ResponseTokens> {
   // Validar refresh token
   const tokenValido = verifyRefreshToken(refreshToken, idUser);
 
   if (!tokenValido) console.error('El token no es válido');
 
   // Actualizar refresh token del usuario
-  const newRefreshToken: string = await rotateRefreshToken(idUser, refreshToken);
+  const rotateRefreshTokenDto = await rotateRefreshToken(
+    idUser,
+    refreshToken,
+    clientIp,
+    clientUserAgent
+  );
 
   // Obtener usuario de la BD
   const userBD: User | null = await getUserById(idUser);
@@ -73,8 +102,18 @@ export async function renewTokenJwt(idUser: string, refreshToken: string): Promi
 
   // Montar respuesta
   const responseTokens: ResponseTokens = {
-    accessToken: createTokenJwt(userDto),
-    refreshToken: newRefreshToken,
+    accessToken: createTokenJwt(userDto, rotateRefreshTokenDto.idSesion),
+    refreshTokenCookie: {
+      name: 'refreshToken',
+      value: rotateRefreshTokenDto.refreshToken,
+      options: {
+        httpOnly: true,
+        secure: NODE_ENV === 'pro' ? true : false, // Solo se envía a través de HTTPS en producción
+        expires: rotateRefreshTokenDto.fechaExpiracion,
+        sameSite: 'none',
+        path: '/auth',
+      },
+    },
   };
 
   return responseTokens;

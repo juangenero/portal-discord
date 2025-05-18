@@ -7,13 +7,48 @@ export function loginCtrl(req: Request, res: Response) {
   });
 }
 
-export async function callbackCtrl(req: Request, res: Response) {
+export async function callbackCtrl(req: Request, res: Response): Promise<void> {
+  // IP
+  const { ip } = req;
+  const clientIp = typeof ip === 'string' && ip ? ip : '';
+
+  // User-Agent
+  const userAgent = req.get('User-Agent');
+  const clientUserAgent = userAgent ? userAgent : '';
+
+  // Body
   const { code, code_verifier } = req.body;
-  res.status(200).send(await login(code, code_verifier));
+
+  // Procesar solicitud
+  const responseTokens = await login(code, code_verifier, clientIp, clientUserAgent);
+
+  // Respuesta
+  const { name, value, options } = responseTokens.refreshTokenCookie;
+  res.cookie(name, value, options);
+  res.status(200).json({ accessToken: responseTokens.accessToken });
 }
 
-export async function refreshTokenCtrl(req: Request, res: Response) {
-  // TODO - Cambiar parametros solicitud por los del JWT recibido
-  const { idUser, refreshToken } = req.params;
-  res.status(200).send(await renewTokenJwt(idUser, refreshToken));
+export async function refreshTokenCtrl(req: Request, res: Response): Promise<void> {
+  // IP
+  const { ip } = req;
+  const clientIp = typeof ip === 'string' && ip ? ip : '';
+
+  // User-Agent
+  const userAgent = req.get('User-Agent');
+  const clientUserAgent = userAgent ? userAgent : '';
+
+  // JWT
+  // TODO - reemplazar por id del JWT
+  const { idUser } = req.params;
+
+  // Refresh Token
+  const refreshToken = req.cookies.refreshToken;
+
+  // Procesar solicitud
+  const responseTokens = await renewTokenJwt(idUser, refreshToken, clientIp, clientUserAgent);
+
+  // Montar respuesta
+  const { name, value, options } = responseTokens.refreshTokenCookie;
+  res.cookie(name, value, options);
+  res.status(200).json({ accessToken: responseTokens.accessToken });
 }

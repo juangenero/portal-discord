@@ -1009,7 +1009,9 @@ export namespace Prisma {
     username: string | null
     avatarHash: string | null
     accessTokenDiscord: string | null
+    ivAccessTokenDiscord: string | null
     refreshTokenDiscord: string | null
+    ivRefreshTokenDiscord: string | null
     accessTokenDiscordExpire: Date | null
     fechaCreacion: Date | null
     fechaActualizacion: Date | null
@@ -1020,7 +1022,9 @@ export namespace Prisma {
     username: string | null
     avatarHash: string | null
     accessTokenDiscord: string | null
+    ivAccessTokenDiscord: string | null
     refreshTokenDiscord: string | null
+    ivRefreshTokenDiscord: string | null
     accessTokenDiscordExpire: Date | null
     fechaCreacion: Date | null
     fechaActualizacion: Date | null
@@ -1031,7 +1035,9 @@ export namespace Prisma {
     username: number
     avatarHash: number
     accessTokenDiscord: number
+    ivAccessTokenDiscord: number
     refreshTokenDiscord: number
+    ivRefreshTokenDiscord: number
     accessTokenDiscordExpire: number
     fechaCreacion: number
     fechaActualizacion: number
@@ -1044,7 +1050,9 @@ export namespace Prisma {
     username?: true
     avatarHash?: true
     accessTokenDiscord?: true
+    ivAccessTokenDiscord?: true
     refreshTokenDiscord?: true
+    ivRefreshTokenDiscord?: true
     accessTokenDiscordExpire?: true
     fechaCreacion?: true
     fechaActualizacion?: true
@@ -1055,7 +1063,9 @@ export namespace Prisma {
     username?: true
     avatarHash?: true
     accessTokenDiscord?: true
+    ivAccessTokenDiscord?: true
     refreshTokenDiscord?: true
+    ivRefreshTokenDiscord?: true
     accessTokenDiscordExpire?: true
     fechaCreacion?: true
     fechaActualizacion?: true
@@ -1066,7 +1076,9 @@ export namespace Prisma {
     username?: true
     avatarHash?: true
     accessTokenDiscord?: true
+    ivAccessTokenDiscord?: true
     refreshTokenDiscord?: true
+    ivRefreshTokenDiscord?: true
     accessTokenDiscordExpire?: true
     fechaCreacion?: true
     fechaActualizacion?: true
@@ -1150,7 +1162,9 @@ export namespace Prisma {
     username: string
     avatarHash: string
     accessTokenDiscord: string | null
+    ivAccessTokenDiscord: string | null
     refreshTokenDiscord: string | null
+    ivRefreshTokenDiscord: string | null
     accessTokenDiscordExpire: Date | null
     fechaCreacion: Date
     fechaActualizacion: Date
@@ -1178,7 +1192,9 @@ export namespace Prisma {
     username?: boolean
     avatarHash?: boolean
     accessTokenDiscord?: boolean
+    ivAccessTokenDiscord?: boolean
     refreshTokenDiscord?: boolean
+    ivRefreshTokenDiscord?: boolean
     accessTokenDiscordExpire?: boolean
     fechaCreacion?: boolean
     fechaActualizacion?: boolean
@@ -1191,7 +1207,9 @@ export namespace Prisma {
     username?: boolean
     avatarHash?: boolean
     accessTokenDiscord?: boolean
+    ivAccessTokenDiscord?: boolean
     refreshTokenDiscord?: boolean
+    ivRefreshTokenDiscord?: boolean
     accessTokenDiscordExpire?: boolean
     fechaCreacion?: boolean
     fechaActualizacion?: boolean
@@ -1202,7 +1220,9 @@ export namespace Prisma {
     username?: boolean
     avatarHash?: boolean
     accessTokenDiscord?: boolean
+    ivAccessTokenDiscord?: boolean
     refreshTokenDiscord?: boolean
+    ivRefreshTokenDiscord?: boolean
     accessTokenDiscordExpire?: boolean
     fechaCreacion?: boolean
     fechaActualizacion?: boolean
@@ -1213,13 +1233,15 @@ export namespace Prisma {
     username?: boolean
     avatarHash?: boolean
     accessTokenDiscord?: boolean
+    ivAccessTokenDiscord?: boolean
     refreshTokenDiscord?: boolean
+    ivRefreshTokenDiscord?: boolean
     accessTokenDiscordExpire?: boolean
     fechaCreacion?: boolean
     fechaActualizacion?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "avatarHash" | "accessTokenDiscord" | "refreshTokenDiscord" | "accessTokenDiscordExpire" | "fechaCreacion" | "fechaActualizacion", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "avatarHash" | "accessTokenDiscord" | "ivAccessTokenDiscord" | "refreshTokenDiscord" | "ivRefreshTokenDiscord" | "accessTokenDiscordExpire" | "fechaCreacion" | "fechaActualizacion", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -1237,7 +1259,9 @@ export namespace Prisma {
       username: string
       avatarHash: string
       accessTokenDiscord: string | null
+      ivAccessTokenDiscord: string | null
       refreshTokenDiscord: string | null
+      ivRefreshTokenDiscord: string | null
       accessTokenDiscordExpire: Date | null
       fechaCreacion: Date
       fechaActualizacion: Date
@@ -1669,7 +1693,9 @@ export namespace Prisma {
     readonly username: FieldRef<"User", 'String'>
     readonly avatarHash: FieldRef<"User", 'String'>
     readonly accessTokenDiscord: FieldRef<"User", 'String'>
+    readonly ivAccessTokenDiscord: FieldRef<"User", 'String'>
     readonly refreshTokenDiscord: FieldRef<"User", 'String'>
+    readonly ivRefreshTokenDiscord: FieldRef<"User", 'String'>
     readonly accessTokenDiscordExpire: FieldRef<"User", 'DateTime'>
     readonly fechaCreacion: FieldRef<"User", 'DateTime'>
     readonly fechaActualizacion: FieldRef<"User", 'DateTime'>
@@ -2107,22 +2133,12 @@ export namespace Prisma {
 
   export type AggregateSession = {
     _count: SessionCountAggregateOutputType | null
-    _avg: SessionAvgAggregateOutputType | null
-    _sum: SessionSumAggregateOutputType | null
     _min: SessionMinAggregateOutputType | null
     _max: SessionMaxAggregateOutputType | null
   }
 
-  export type SessionAvgAggregateOutputType = {
-    id: number | null
-  }
-
-  export type SessionSumAggregateOutputType = {
-    id: number | null
-  }
-
   export type SessionMinAggregateOutputType = {
-    id: number | null
+    id: string | null
     idUser: string | null
     refreshTokenHash: string | null
     fechaExpiracion: Date | null
@@ -2132,7 +2148,7 @@ export namespace Prisma {
   }
 
   export type SessionMaxAggregateOutputType = {
-    id: number | null
+    id: string | null
     idUser: string | null
     refreshTokenHash: string | null
     fechaExpiracion: Date | null
@@ -2152,14 +2168,6 @@ export namespace Prisma {
     _all: number
   }
 
-
-  export type SessionAvgAggregateInputType = {
-    id?: true
-  }
-
-  export type SessionSumAggregateInputType = {
-    id?: true
-  }
 
   export type SessionMinAggregateInputType = {
     id?: true
@@ -2230,18 +2238,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: SessionAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: SessionSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: SessionMinAggregateInputType
@@ -2272,14 +2268,12 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: SessionCountAggregateInputType | true
-    _avg?: SessionAvgAggregateInputType
-    _sum?: SessionSumAggregateInputType
     _min?: SessionMinAggregateInputType
     _max?: SessionMaxAggregateInputType
   }
 
   export type SessionGroupByOutputType = {
-    id: number
+    id: string
     idUser: string
     refreshTokenHash: string
     fechaExpiracion: Date
@@ -2287,8 +2281,6 @@ export namespace Prisma {
     fechaCreacion: Date
     fechaActualizacion: Date
     _count: SessionCountAggregateOutputType | null
-    _avg: SessionAvgAggregateOutputType | null
-    _sum: SessionSumAggregateOutputType | null
     _min: SessionMinAggregateOutputType | null
     _max: SessionMaxAggregateOutputType | null
   }
@@ -2367,7 +2359,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: number
+      id: string
       idUser: string
       refreshTokenHash: string
       fechaExpiracion: Date
@@ -2798,7 +2790,7 @@ export namespace Prisma {
    * Fields of the Session model
    */
   interface SessionFieldRefs {
-    readonly id: FieldRef<"Session", 'Int'>
+    readonly id: FieldRef<"Session", 'String'>
     readonly idUser: FieldRef<"Session", 'String'>
     readonly refreshTokenHash: FieldRef<"Session", 'String'>
     readonly fechaExpiracion: FieldRef<"Session", 'DateTime'>
@@ -3233,7 +3225,9 @@ export namespace Prisma {
     username: 'username',
     avatarHash: 'avatarHash',
     accessTokenDiscord: 'accessTokenDiscord',
+    ivAccessTokenDiscord: 'ivAccessTokenDiscord',
     refreshTokenDiscord: 'refreshTokenDiscord',
+    ivRefreshTokenDiscord: 'ivRefreshTokenDiscord',
     accessTokenDiscordExpire: 'accessTokenDiscordExpire',
     fechaCreacion: 'fechaCreacion',
     fechaActualizacion: 'fechaActualizacion'
@@ -3295,13 +3289,6 @@ export namespace Prisma {
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
-
-
-  /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
   /**
    * Deep Input Types
    */
@@ -3315,7 +3302,9 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     avatarHash?: StringFilter<"User"> | string
     accessTokenDiscord?: StringNullableFilter<"User"> | string | null
+    ivAccessTokenDiscord?: StringNullableFilter<"User"> | string | null
     refreshTokenDiscord?: StringNullableFilter<"User"> | string | null
+    ivRefreshTokenDiscord?: StringNullableFilter<"User"> | string | null
     accessTokenDiscordExpire?: DateTimeNullableFilter<"User"> | Date | string | null
     fechaCreacion?: DateTimeFilter<"User"> | Date | string
     fechaActualizacion?: DateTimeFilter<"User"> | Date | string
@@ -3327,7 +3316,9 @@ export namespace Prisma {
     username?: SortOrder
     avatarHash?: SortOrder
     accessTokenDiscord?: SortOrderInput | SortOrder
+    ivAccessTokenDiscord?: SortOrderInput | SortOrder
     refreshTokenDiscord?: SortOrderInput | SortOrder
+    ivRefreshTokenDiscord?: SortOrderInput | SortOrder
     accessTokenDiscordExpire?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
@@ -3342,7 +3333,9 @@ export namespace Prisma {
     username?: StringFilter<"User"> | string
     avatarHash?: StringFilter<"User"> | string
     accessTokenDiscord?: StringNullableFilter<"User"> | string | null
+    ivAccessTokenDiscord?: StringNullableFilter<"User"> | string | null
     refreshTokenDiscord?: StringNullableFilter<"User"> | string | null
+    ivRefreshTokenDiscord?: StringNullableFilter<"User"> | string | null
     accessTokenDiscordExpire?: DateTimeNullableFilter<"User"> | Date | string | null
     fechaCreacion?: DateTimeFilter<"User"> | Date | string
     fechaActualizacion?: DateTimeFilter<"User"> | Date | string
@@ -3354,7 +3347,9 @@ export namespace Prisma {
     username?: SortOrder
     avatarHash?: SortOrder
     accessTokenDiscord?: SortOrderInput | SortOrder
+    ivAccessTokenDiscord?: SortOrderInput | SortOrder
     refreshTokenDiscord?: SortOrderInput | SortOrder
+    ivRefreshTokenDiscord?: SortOrderInput | SortOrder
     accessTokenDiscordExpire?: SortOrderInput | SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
@@ -3371,7 +3366,9 @@ export namespace Prisma {
     username?: StringWithAggregatesFilter<"User"> | string
     avatarHash?: StringWithAggregatesFilter<"User"> | string
     accessTokenDiscord?: StringNullableWithAggregatesFilter<"User"> | string | null
+    ivAccessTokenDiscord?: StringNullableWithAggregatesFilter<"User"> | string | null
     refreshTokenDiscord?: StringNullableWithAggregatesFilter<"User"> | string | null
+    ivRefreshTokenDiscord?: StringNullableWithAggregatesFilter<"User"> | string | null
     accessTokenDiscordExpire?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     fechaCreacion?: DateTimeWithAggregatesFilter<"User"> | Date | string
     fechaActualizacion?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -3381,7 +3378,7 @@ export namespace Prisma {
     AND?: SessionWhereInput | SessionWhereInput[]
     OR?: SessionWhereInput[]
     NOT?: SessionWhereInput | SessionWhereInput[]
-    id?: IntFilter<"Session"> | number
+    id?: StringFilter<"Session"> | string
     idUser?: StringFilter<"Session"> | string
     refreshTokenHash?: StringFilter<"Session"> | string
     fechaExpiracion?: DateTimeFilter<"Session"> | Date | string
@@ -3403,7 +3400,7 @@ export namespace Prisma {
   }
 
   export type SessionWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
+    id?: string
     refreshTokenHash?: string
     AND?: SessionWhereInput | SessionWhereInput[]
     OR?: SessionWhereInput[]
@@ -3425,17 +3422,15 @@ export namespace Prisma {
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
     _count?: SessionCountOrderByAggregateInput
-    _avg?: SessionAvgOrderByAggregateInput
     _max?: SessionMaxOrderByAggregateInput
     _min?: SessionMinOrderByAggregateInput
-    _sum?: SessionSumOrderByAggregateInput
   }
 
   export type SessionScalarWhereWithAggregatesInput = {
     AND?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
     OR?: SessionScalarWhereWithAggregatesInput[]
     NOT?: SessionScalarWhereWithAggregatesInput | SessionScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Session"> | number
+    id?: StringWithAggregatesFilter<"Session"> | string
     idUser?: StringWithAggregatesFilter<"Session"> | string
     refreshTokenHash?: StringWithAggregatesFilter<"Session"> | string
     fechaExpiracion?: DateTimeWithAggregatesFilter<"Session"> | Date | string
@@ -3449,7 +3444,9 @@ export namespace Prisma {
     username: string
     avatarHash: string
     accessTokenDiscord?: string | null
+    ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
+    ivRefreshTokenDiscord?: string | null
     accessTokenDiscordExpire?: Date | string | null
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
@@ -3461,7 +3458,9 @@ export namespace Prisma {
     username: string
     avatarHash: string
     accessTokenDiscord?: string | null
+    ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
+    ivRefreshTokenDiscord?: string | null
     accessTokenDiscordExpire?: Date | string | null
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
@@ -3473,7 +3472,9 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     avatarHash?: StringFieldUpdateOperationsInput | string
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivRefreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3485,7 +3486,9 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     avatarHash?: StringFieldUpdateOperationsInput | string
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivRefreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3497,7 +3500,9 @@ export namespace Prisma {
     username: string
     avatarHash: string
     accessTokenDiscord?: string | null
+    ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
+    ivRefreshTokenDiscord?: string | null
     accessTokenDiscordExpire?: Date | string | null
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
@@ -3508,7 +3513,9 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     avatarHash?: StringFieldUpdateOperationsInput | string
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivRefreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3519,13 +3526,16 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     avatarHash?: StringFieldUpdateOperationsInput | string
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivRefreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateInput = {
+    id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
     deviceInfo?: string | null
@@ -3535,7 +3545,7 @@ export namespace Prisma {
   }
 
   export type SessionUncheckedCreateInput = {
-    id?: number
+    id?: string
     idUser: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
@@ -3545,6 +3555,7 @@ export namespace Prisma {
   }
 
   export type SessionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3554,7 +3565,7 @@ export namespace Prisma {
   }
 
   export type SessionUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     idUser?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3564,7 +3575,7 @@ export namespace Prisma {
   }
 
   export type SessionCreateManyInput = {
-    id?: number
+    id?: string
     idUser: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
@@ -3574,6 +3585,7 @@ export namespace Prisma {
   }
 
   export type SessionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3582,7 +3594,7 @@ export namespace Prisma {
   }
 
   export type SessionUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     idUser?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -3661,7 +3673,9 @@ export namespace Prisma {
     username?: SortOrder
     avatarHash?: SortOrder
     accessTokenDiscord?: SortOrder
+    ivAccessTokenDiscord?: SortOrder
     refreshTokenDiscord?: SortOrder
+    ivRefreshTokenDiscord?: SortOrder
     accessTokenDiscordExpire?: SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
@@ -3672,7 +3686,9 @@ export namespace Prisma {
     username?: SortOrder
     avatarHash?: SortOrder
     accessTokenDiscord?: SortOrder
+    ivAccessTokenDiscord?: SortOrder
     refreshTokenDiscord?: SortOrder
+    ivRefreshTokenDiscord?: SortOrder
     accessTokenDiscordExpire?: SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
@@ -3683,7 +3699,9 @@ export namespace Prisma {
     username?: SortOrder
     avatarHash?: SortOrder
     accessTokenDiscord?: SortOrder
+    ivAccessTokenDiscord?: SortOrder
     refreshTokenDiscord?: SortOrder
+    ivRefreshTokenDiscord?: SortOrder
     accessTokenDiscordExpire?: SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
@@ -3751,17 +3769,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -3775,10 +3782,6 @@ export namespace Prisma {
     deviceInfo?: SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
-  }
-
-  export type SessionAvgOrderByAggregateInput = {
-    id?: SortOrder
   }
 
   export type SessionMaxOrderByAggregateInput = {
@@ -3799,26 +3802,6 @@ export namespace Prisma {
     deviceInfo?: SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
-  }
-
-  export type SessionSumOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type SessionCreateNestedManyWithoutUserInput = {
@@ -3891,14 +3874,6 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSessionsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -4035,34 +4010,8 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type SessionCreateWithoutUserInput = {
+    id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
     deviceInfo?: string | null
@@ -4071,7 +4020,7 @@ export namespace Prisma {
   }
 
   export type SessionUncheckedCreateWithoutUserInput = {
-    id?: number
+    id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
     deviceInfo?: string | null
@@ -4108,7 +4057,7 @@ export namespace Prisma {
     AND?: SessionScalarWhereInput | SessionScalarWhereInput[]
     OR?: SessionScalarWhereInput[]
     NOT?: SessionScalarWhereInput | SessionScalarWhereInput[]
-    id?: IntFilter<"Session"> | number
+    id?: StringFilter<"Session"> | string
     idUser?: StringFilter<"Session"> | string
     refreshTokenHash?: StringFilter<"Session"> | string
     fechaExpiracion?: DateTimeFilter<"Session"> | Date | string
@@ -4122,7 +4071,9 @@ export namespace Prisma {
     username: string
     avatarHash: string
     accessTokenDiscord?: string | null
+    ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
+    ivRefreshTokenDiscord?: string | null
     accessTokenDiscordExpire?: Date | string | null
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
@@ -4133,7 +4084,9 @@ export namespace Prisma {
     username: string
     avatarHash: string
     accessTokenDiscord?: string | null
+    ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
+    ivRefreshTokenDiscord?: string | null
     accessTokenDiscordExpire?: Date | string | null
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
@@ -4160,7 +4113,9 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     avatarHash?: StringFieldUpdateOperationsInput | string
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivRefreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4171,14 +4126,16 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     avatarHash?: StringFieldUpdateOperationsInput | string
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
+    ivRefreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscordExpire?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateManyUserInput = {
-    id?: number
+    id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
     deviceInfo?: string | null
@@ -4187,6 +4144,7 @@ export namespace Prisma {
   }
 
   export type SessionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4195,7 +4153,7 @@ export namespace Prisma {
   }
 
   export type SessionUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4204,7 +4162,7 @@ export namespace Prisma {
   }
 
   export type SessionUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
+    id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
     deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null

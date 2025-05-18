@@ -6,7 +6,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  output          = "../prisma/client"
+  output          = "./generated/client"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -20,7 +20,9 @@ model User {
   username                 String    @map("username")
   avatarHash               String    @map("avatar_hash")
   accessTokenDiscord       String?   @map("access_token_discord")
+  ivAccessTokenDiscord     String?   @map("iv_access_token_discord")
   refreshTokenDiscord      String?   @map("refresh_token_discord")
+  ivRefreshTokenDiscord    String?   @map("iv_refresh_token_discord")
   accessTokenDiscordExpire DateTime? @map("access_token_discord_expire")
   fechaCreacion            DateTime  @default(now()) @map("fecha_creacion")
   fechaActualizacion       DateTime  @updatedAt @map("fecha_actualizacion")
@@ -29,7 +31,7 @@ model User {
 }
 
 model Session {
-  id                 Int      @id @default(autoincrement())
+  id                 String   @id @default(uuid())
   idUser             String   @map("id_user")
   refreshTokenHash   String   @unique @map("refresh_token_hash")
   fechaExpiracion    DateTime @map("fecha_expiracion")
