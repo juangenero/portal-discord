@@ -71,27 +71,22 @@ export async function login(
 
 // Renovar access token
 export async function renewTokenJwt(
-  idUser: string,
   refreshToken: string,
   clientIp: string,
   clientUserAgent: string
 ): Promise<ResponseTokens> {
   // Validar refresh token
-  const tokenValido = verifyRefreshToken(refreshToken, idUser);
+  const tokenValido = verifyRefreshToken(refreshToken);
 
   if (!tokenValido) console.error('El token no es válido');
 
   // Actualizar refresh token del usuario
-  const rotateRefreshTokenDto = await rotateRefreshToken(
-    idUser,
-    refreshToken,
-    clientIp,
-    clientUserAgent
-  );
+  const rotateRefreshTokenDto = await rotateRefreshToken(refreshToken, clientIp, clientUserAgent);
+  const { idUsuario } = rotateRefreshTokenDto;
 
   // Obtener usuario de la BD
-  const userBD: User | null = await getUserById(idUser);
-  if (!userBD) throw new DatabaseError(`El usuario con id ${idUser} no existe`);
+  const userBD: User | null = await getUserById(idUsuario);
+  if (!userBD) throw new DatabaseError(`El usuario con id ${idUsuario} no existe`);
 
   // Convertir User a UserDto
   const userDto: UserDto = {

@@ -37,15 +37,11 @@ export async function refreshTokenCtrl(req: Request, res: Response): Promise<voi
   const userAgent = req.get('User-Agent');
   const clientUserAgent = userAgent ? userAgent : '';
 
-  // JWT
-  // TODO - reemplazar por id del JWT
-  const { idUser } = req.params;
-
   // Refresh Token
   const refreshToken = req.cookies.refreshToken;
 
   // Procesar solicitud
-  const responseTokens = await renewTokenJwt(idUser, refreshToken, clientIp, clientUserAgent);
+  const responseTokens = await renewTokenJwt(refreshToken, clientIp, clientUserAgent);
 
   // Montar respuesta
   const { name, value, options } = responseTokens.refreshTokenCookie;

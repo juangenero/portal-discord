@@ -7,12 +7,18 @@
  * @property {string} message - Mensaje de error.
  */
 export class AppError extends Error {
-  public statusCode: number;
+  public status: number;
+  public details?: string;
 
-  constructor(message: string = 'Error interno del servidor', statusCode: number = 500) {
+  constructor(
+    message: string = 'Error interno del servidor',
+    status: number = 500,
+    details?: string
+  ) {
     super(message);
     this.name = this.constructor.name;
-    this.statusCode = statusCode;
+    this.status = status;
+    this.details = details;
     Error.captureStackTrace(this, this.constructor);
   }
 }

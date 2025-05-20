@@ -28,18 +28,14 @@ export async function createSessionBD(input: CreateSessionDto): Promise<Session>
 /**
  * Recupera una sesión si existe
  * @param idUser ID de usuario
- * @param token refresh token
+ * @param tokenHash refresh token hasheado
  * @returns Sesión recuperada o null si no existe
  */
-export async function getSessionByIdUserAndTokenBD(
-  idUser: string,
-  token: string
-): Promise<Session | null> {
+export async function getSessionByTokenBD(tokenHash: string): Promise<Session | null> {
   try {
-    const session = await prisma.session.findFirst({
+    const session = await prisma.session.findUnique({
       where: {
-        idUser: idUser,
-        refreshTokenHash: token,
+        refreshTokenHash: tokenHash,
       },
     });
 
@@ -55,7 +51,6 @@ export async function getSessionByIdUserAndTokenBD(
  * @param idUser ID del usuario
  */
 export async function rotateRefreshTokensBD(
-  idUser: string,
   refreshTokenHashOld: string,
   refreshTokenHashNew: string,
   fechaExpiracion: Date,
@@ -64,7 +59,6 @@ export async function rotateRefreshTokensBD(
   try {
     const output: Session = await prisma.session.update({
       where: {
-        idUser: idUser,
         refreshTokenHash: refreshTokenHashOld,
       },
       data: {
@@ -76,6 +70,6 @@ export async function rotateRefreshTokensBD(
 
     return output;
   } catch (error) {
-    throw new DatabaseError(`Error al rotar el refresh token del usuario ${idUser}`);
+    throw new DatabaseError(`Error al rotar el refresh token`);
   }
 }

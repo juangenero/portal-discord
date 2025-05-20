@@ -5,8 +5,10 @@ import { AppError } from './AppError';
  * Extiende la clase AppError.
  * @extends AppError
  */
-export class DiscordAPIError extends AppError {
-  constructor(message: string = 'Discord API error') {
+export class DiscordError extends AppError {
+  constructor(message: string = 'Error en discord') {
     super(message);
+    this.name = 'DiscordError';
+    Error.captureStackTrace(this, DiscordError);
   }
 }

@@ -6,7 +6,9 @@ import { AppError } from './AppError';
  * @extends AppError
  */
 export class DatabaseError extends AppError {
-  constructor(message: string = 'Database error') {
+  constructor(message: string = 'Error en la base de datos') {
     super(message);
+    this.name = 'DatabaseError';
+    Error.captureStackTrace(this, DatabaseError);
   }
 }

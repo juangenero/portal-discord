@@ -6,7 +6,9 @@ import { AppError } from './AppError';
  * @extends AppError
  */
 export class NotFoundError extends AppError {
-  constructor(message: string = 'Ruta no encontrada') {
+  constructor(message: string = 'Recurso no encontrado') {
     super(message, 404);
+    this.name = 'NotFoundError';
+    Error.captureStackTrace(this, NotFoundError);
   }
 }

@@ -20,6 +20,12 @@ export async function upsertUser(userDto: UserDto): Promise<UserDto> {
       accessTokenDiscord: accessTokenDiscordEncrypted.encrypted,
       ivAccessTokenDiscord: accessTokenDiscordEncrypted.iv,
     };
+  } else {
+    userDto = {
+      ...userDto,
+      accessTokenDiscord: null,
+      ivAccessTokenDiscord: null,
+    };
   }
 
   // Encriptar refresh token de discord
@@ -34,8 +40,15 @@ export async function upsertUser(userDto: UserDto): Promise<UserDto> {
       refreshTokenDiscord: refreshTokenDiscordEncrypted.encrypted,
       ivRefreshTokenDiscord: refreshTokenDiscordEncrypted.iv,
     };
+  } else {
+    userDto = {
+      ...userDto,
+      refreshTokenDiscord: null,
+      ivRefreshTokenDiscord: null,
+    };
   }
 
+  // Actualizar / Crear usuario
   const usuario: User = await upsertUserBD(userDto);
 
   // Convertir la entidad a DTO

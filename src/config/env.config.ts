@@ -1,4 +1,4 @@
-import { AppError } from '../shared/errors';
+import { AppError } from '../shared/errors/error.index';
 import Config from './config.dto';
 
 /**

@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders } from 'axios';
 import CONFIG from '../../config/env.config';
-import { DiscordAPIError } from '../../shared/errors';
+import { DiscordError } from '../../shared/errors/DiscordError';
 import { TokenDiscordResponse, UserDiscordResponse } from './discord.dto';
 
 const {
@@ -21,14 +21,13 @@ const {
 
 // Obtener la URL básica de autorización de Discord
 export function getUrlAuthDiscord(): string {
-  const result =
+  return (
     `${urlAuth}` +
     `?client_id=${clientId}` +
     `&response_type=code` +
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-    `&scope=identify`;
-
-  return result;
+    `&scope=identify`
+  );
 }
 
 // Obtener el token de acceso de Discord
@@ -36,44 +35,42 @@ export async function getTokenDiscord(
   code: string,
   codeVerifier: string
 ): Promise<TokenDiscordResponse> {
-  const params = new URLSearchParams({
-    code: code,
-    code_verifier: codeVerifier,
-    client_id: clientId,
-    client_secret: clientSecret,
-    redirect_uri: redirectUri,
-    grant_type: 'authorization_code',
-  });
-
-  const headers = new AxiosHeaders({
-    'Content-Type': 'application/x-www-form-urlencoded',
-  });
-
   try {
+    const params = new URLSearchParams({
+      code: code,
+      code_verifier: codeVerifier,
+      client_id: clientId,
+      client_secret: clientSecret,
+      redirect_uri: redirectUri,
+      grant_type: 'authorization_code',
+    });
+
+    const headers = new AxiosHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded',
+    });
+
     const response = await axios.post<TokenDiscordResponse>(urlToken, params, { headers });
     return response.data;
   } catch (error) {
-    throw new DiscordAPIError();
+    throw new DiscordError('Error al obtener el token de acceso');
   }
 }
 
 // Obtener el usuario de Discord
 export async function getUsuarioDiscord(accessToken: string): Promise<UserDiscordResponse> {
-  const headers = new AxiosHeaders({
-    Authorization: `Bearer ${accessToken}`,
-  });
-
   try {
+    const headers = new AxiosHeaders({
+      Authorization: `Bearer ${accessToken}`,
+    });
+
     const response = await axios.get(urlUser, { headers });
     return response.data;
   } catch (error) {
-    throw new DiscordAPIError();
+    throw new DiscordError('Error al obtener el usuario de Discord');
   }
 }
 
 // Obtener URL del avatar del usuario
 export function getAvatarUrl(usuarioId: string, avatarHash: string): string {
-  const result: string = `${avatarUrl}${usuarioId}/${avatarHash}.png`;
-
-  return result;
+  return `${avatarUrl}${usuarioId}/${avatarHash}.png`;
 }

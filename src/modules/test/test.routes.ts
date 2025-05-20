@@ -36,7 +36,7 @@ testRouter.get('/info', (req: Request, res: Response, next: NextFunction) => {
 
 // Ejemplo de ruta protegida
 testRouter.get('/ruta-protegida', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Acceso concedido a ruta protegida', payload: req.payloadJwt });
+  res.status(200).json({ message: 'Acceso concedido a ruta protegida', payload: req.payload });
 });
 
 export default testRouter;

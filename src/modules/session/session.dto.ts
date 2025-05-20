@@ -26,6 +26,7 @@ export interface RotateRefreshTokenDto {
   refreshTokenHash: string;
   fechaExpiracion: Date;
   idSesion: string;
+  idUsuario: string;
 }
 
 // JWT

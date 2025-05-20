@@ -16,11 +16,7 @@ import type {
   SessionDto,
   UserAgentInfo,
 } from './session.dto';
-import {
-  createSessionBD,
-  getSessionByIdUserAndTokenBD,
-  rotateRefreshTokensBD,
-} from './session.model';
+import { createSessionBD, getSessionByTokenBD, rotateRefreshTokensBD } from './session.model';
 
 const { SIGN_TOKEN_JWT, SIGN_REFRESH_TOKEN, EXPIRE_TIME_ACCESS_TOKEN, EXPIRE_TIME_REFRESH_TOKEN } =
   CONFIG;
@@ -118,18 +114,18 @@ export function createTokenJwt(usuario: UserDto, idSesion: string): string {
  * @param idUser ID del usuario
  * @returns boolean que indica si se pasó la validación
  */
-export async function verifyRefreshToken(refreshToken: string, idUser: string): Promise<boolean> {
+export async function verifyRefreshToken(refreshToken: string): Promise<boolean> {
   const refreshTokenHash = generateHMAC(refreshToken, SIGN_REFRESH_TOKEN);
 
-  const sessionBD = await getSessionByIdUserAndTokenBD(idUser, refreshTokenHash);
+  const sessionBD = await getSessionByTokenBD(refreshTokenHash);
 
   if (sessionBD === null) {
-    console.error(`No existe la sesión ${refreshTokenHash} para el usuario con ID ${idUser}`);
+    console.error(`No existe la sesión ${refreshTokenHash}`);
     return false;
   }
 
   if (new Date() > sessionBD.fechaExpiracion) {
-    console.error(`El token ${refreshTokenHash} ha expirado`);
+    console.error(`Refresh token ${refreshTokenHash} expirado`);
     return false;
   }
 
@@ -143,7 +139,6 @@ export async function verifyRefreshToken(refreshToken: string, idUser: string): 
  * @return El nuevo refresh token (sin hashear)
  */
 export async function rotateRefreshToken(
-  idUser: string,
   refreshToken: string,
   clientIp: string,
   clientUserAgent: string
@@ -159,20 +154,20 @@ export async function rotateRefreshToken(
 
   // Guardar en BD
   const sessionBD: Session | null = await rotateRefreshTokensBD(
-    idUser,
     refreshTokenUserHashed,
     createRefreshTokenDto.refreshTokenHash,
     createRefreshTokenDto.fechaExpiracion,
     deviceInfo
   );
   if (!sessionBD) {
-    throw new DatabaseError(`Error al guardar al actualizar la sesión del usuario ${idUser}`);
+    throw new DatabaseError(`Error al actualizar la sesión`);
   }
 
   // Montar respuesta
   const rotateRefreshTokenDto: RotateRefreshTokenDto = {
     ...createRefreshTokenDto,
     idSesion: sessionBD.id,
+    idUsuario: sessionBD.idUser,
   };
 
   return rotateRefreshTokenDto;
