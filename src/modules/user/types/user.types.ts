@@ -1,3 +1,5 @@
+import { UserDto } from './user.dto';
+
 export interface UpsertUserData {
   id: string;
   username: string;
@@ -6,3 +8,6 @@ export interface UpsertUserData {
   refreshTokenDiscord?: string;
   accessTokenDiscordExpire?: Date;
 }
+
+// usar Omit para crear un type y evitar campos opcionales
+export type UserNominalData = Pick<UserDto, 'id' | 'username' | 'avatarHash'>;

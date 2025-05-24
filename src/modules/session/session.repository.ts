@@ -1,6 +1,7 @@
 import { Session } from '../../../prisma/generated/client';
 import prisma from '../../config/turso.config';
 import { DatabaseError } from '../../shared/errors/error-factory';
+import { SessionWithUserData } from './types/session.domain';
 import { CreateSessionData } from './types/session.types';
 
 /**
@@ -57,7 +58,7 @@ export async function rotateRefreshTokensDB(
   refreshTokenHashNew: string,
   fechaExpiracion: Date,
   deviceInfo: string
-): Promise<(Session & { user: { id: string; username: string; avatarHash: string } }) | null> {
+): Promise<SessionWithUserData | null> {
   try {
     const output = await prisma.session.update({
       where: {

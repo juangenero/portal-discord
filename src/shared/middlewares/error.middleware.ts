@@ -3,7 +3,6 @@ import { AppError, AuthorizationError, PathNotFound } from '../errors/error-fact
 import { ResponseErrorClientDto } from '../errors/types/error.dto';
 import log from '../utils/log/logger';
 import { generateNanoId } from '../utils/other/stringUtils';
-import { JwtPayloadData } from '../utils/token/types/token.types';
 
 /**
  * Middleware para manejar rutas no encontradas (404).
@@ -24,7 +23,7 @@ export const notFoundHandler = (req: Request, res: Response, next: NextFunction)
  */
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
   const id = generateNanoId(20); // Generar un ID único para el error
-  const { idUsuario, idSesion } = req.payload as JwtPayloadData;
+  const { idUsuario, idSesion } = req.payload || {};
   const sesionInfo = idUsuario && idSesion ? `${idUsuario} / ${idSesion}` : 'No autenticado';
 
   // ---------- Registro del error ----------
@@ -55,6 +54,11 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   // AuthorizationError
   if (err instanceof AuthorizationError) {
     clientResponse.message = 'No autorizado';
+  }
+
+  // PathNotFound
+  else if (err instanceof PathNotFound) {
+    clientResponse.message = 'Ruta no encontrada';
   }
 
   // ValidationError
