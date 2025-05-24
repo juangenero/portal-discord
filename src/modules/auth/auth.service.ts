@@ -1,64 +1,76 @@
-import { User } from '../../../prisma/generated/client';
 import CONFIG from '../../config/env.config';
-import {
-  getTokenDiscord,
-  getUrlAuthDiscord,
-  getUsuarioDiscord,
-} from '../../integrations/discord/discord.apiClient';
-import { TokenDiscordResponse, UserDiscordResponse } from '../../integrations/discord/discord.dto';
-import { DatabaseError } from '../../shared/errors/DatabaseError';
+import { getTokenDiscord, getUsuarioDiscord } from '../../integrations/discord/discord-client.api';
+import { createTokenJwt } from '../../shared/utils/token/token.utils';
+import { JwtPayloadData } from '../../shared/utils/token/types/token.types';
 import {
   createSession,
-  createTokenJwt,
+  deleteSession,
   rotateRefreshToken,
   verifyRefreshToken,
 } from '../session/session.service';
-import { UserDto } from '../user/user.dto';
-import { getUserById } from '../user/user.model';
+import { UpsertUserData } from '../user/types/user.types';
 import { upsertUser } from '../user/user.service';
-import { ResponseTokens } from './auth.dto';
+import { ResponseTokensDto } from './types/auth.dto';
+import { RefreshTokenCookieData } from './types/auth.types';
 
-const { NODE_ENV } = CONFIG;
+const { NODE_ENV, DISCORD_URL_AUTH, DISCORD_OAUTH2_CLIENT_ID, DISCORD_OAUTH2_REDIRECT_URI } =
+  CONFIG;
 
-// Paso 1 Devuelve la URL para iniciar el flujo de login en Discord
-export function initialize(): string {
-  return getUrlAuthDiscord();
+// Paso 1 - Devuelve la URL para iniciar el flujo de login en Discord
+export function getUrlAuthDiscord(): string {
+  return (
+    `${DISCORD_URL_AUTH}` +
+    `?client_id=${DISCORD_OAUTH2_CLIENT_ID}` +
+    `&response_type=code` +
+    `&redirect_uri=${encodeURIComponent(DISCORD_OAUTH2_REDIRECT_URI)}` +
+    `&scope=identify`
+  );
 }
 
 // API callback para el proceso de login
-export async function login(
+export async function callback(
   code: string,
   codeVerifier: string,
   clientIp: string,
   clientUserAgent: string
-): Promise<ResponseTokens> {
+): Promise<ResponseTokensDto> {
   // Paso 5 - Intercambia el código de autorización por un token de acceso
-  const resToken: TokenDiscordResponse = await getTokenDiscord(code, codeVerifier);
-  const expireToken = new Date(Date.now() + resToken.expires_in * 1000);
+  const tokenDiscordResponse = await getTokenDiscord(code, codeVerifier);
+  const expireToken = new Date(Date.now() + tokenDiscordResponse.expires_in * 1000);
 
   // Paso 6 - Obtiene la información del usuario de Discord usando el token de acceso
-  const usuarioDiscord: UserDiscordResponse = await getUsuarioDiscord(resToken.access_token);
+  const userDiscordResponse = await getUsuarioDiscord(tokenDiscordResponse.access_token);
 
   // Paso 7 - Actualiza/crea el usuario en la base de datos
-  const usuario: UserDto = await upsertUser({
-    id: usuarioDiscord.id,
-    username: usuarioDiscord.username,
-    avatarHash: usuarioDiscord.avatar,
-    accessTokenDiscord: resToken.access_token,
-    refreshTokenDiscord: resToken.refresh_token,
+  const upsertUserData: UpsertUserData = {
+    id: userDiscordResponse.id,
+    username: userDiscordResponse.username,
+    avatarHash: userDiscordResponse.avatar,
+    accessTokenDiscord: tokenDiscordResponse.access_token,
+    refreshTokenDiscord: tokenDiscordResponse.refresh_token,
     accessTokenDiscordExpire: expireToken,
-  });
+  };
+
+  const userDto = await upsertUser(upsertUserData);
 
   // Paso 7.1 - Generar token JWT y cookie con el refresh token
-  const sesionCreated = await createSession(usuario.id, clientIp, clientUserAgent);
-  const responseTokens: ResponseTokens = {
-    accessToken: createTokenJwt(usuario, sesionCreated.id),
+  const sesionCreated = await createSession(userDto.id, clientIp, clientUserAgent);
+
+  const jwtPayloadData: JwtPayloadData = {
+    idUsuario: userDto.id,
+    username: userDto.username,
+    avatar: userDto.avatarHash,
+    idSesion: sesionCreated.id,
+  };
+
+  const responseTokensDto: ResponseTokensDto = {
+    accessToken: createTokenJwt(jwtPayloadData),
     refreshTokenCookie: {
       name: 'refreshToken',
       value: sesionCreated.refreshToken,
       options: {
         httpOnly: true,
-        secure: NODE_ENV === 'pro' ? true : false, // Solo se envía a través de HTTPS en producción
+        secure: NODE_ENV === 'pro', // Solo HTTPS en producción
         expires: sesionCreated.fechaExpiracion,
         sameSite: 'none',
         path: '/auth',
@@ -66,44 +78,38 @@ export async function login(
     },
   };
 
-  return responseTokens;
+  return responseTokensDto;
 }
 
 // Renovar access token
-export async function renewTokenJwt(
+export async function getRefreshToken(
   refreshToken: string,
   clientIp: string,
   clientUserAgent: string
-): Promise<ResponseTokens> {
+): Promise<ResponseTokensDto> {
   // Validar refresh token
-  const tokenValido = verifyRefreshToken(refreshToken);
-
-  if (!tokenValido) console.error('El token no es válido');
+  await verifyRefreshToken(refreshToken);
 
   // Actualizar refresh token del usuario
   const rotateRefreshTokenDto = await rotateRefreshToken(refreshToken, clientIp, clientUserAgent);
-  const { idUsuario } = rotateRefreshTokenDto;
-
-  // Obtener usuario de la BD
-  const userBD: User | null = await getUserById(idUsuario);
-  if (!userBD) throw new DatabaseError(`El usuario con id ${idUsuario} no existe`);
-
-  // Convertir User a UserDto
-  const userDto: UserDto = {
-    id: userBD.id,
-    username: userBD.username,
-    avatarHash: userBD.avatarHash,
-  };
+  const { userDto } = rotateRefreshTokenDto;
 
   // Montar respuesta
-  const responseTokens: ResponseTokens = {
-    accessToken: createTokenJwt(userDto, rotateRefreshTokenDto.idSesion),
+  const jwtPayloadData: JwtPayloadData = {
+    idUsuario: userDto.id,
+    username: userDto.username,
+    avatar: userDto.avatarHash,
+    idSesion: rotateRefreshTokenDto.idSesion,
+  };
+
+  const responseTokens: ResponseTokensDto = {
+    accessToken: createTokenJwt(jwtPayloadData),
     refreshTokenCookie: {
       name: 'refreshToken',
       value: rotateRefreshTokenDto.refreshToken,
       options: {
         httpOnly: true,
-        secure: NODE_ENV === 'pro' ? true : false, // Solo se envía a través de HTTPS en producción
+        secure: NODE_ENV === 'pro', // Solo se envía a través de HTTPS en producción
         expires: rotateRefreshTokenDto.fechaExpiracion,
         sameSite: 'none',
         path: '/auth',
@@ -112,4 +118,28 @@ export async function renewTokenJwt(
   };
 
   return responseTokens;
+}
+
+// Logout del usuario
+export async function logout(refreshToken: string): Promise<RefreshTokenCookieData> {
+  // Verificar el refresh token
+  await verifyRefreshToken(refreshToken);
+
+  // Eliminar el registro del refresh token de la base de datos
+  await deleteSession(refreshToken);
+
+  // Expirar la cookie del refresh token
+  const refreshTokenCookieData: RefreshTokenCookieData = {
+    name: 'refreshToken',
+    value: '',
+    options: {
+      httpOnly: true,
+      secure: NODE_ENV === 'pro',
+      expires: new Date(Date.now()),
+      sameSite: 'none',
+      path: '/auth',
+    },
+  };
+
+  return refreshTokenCookieData;
 }

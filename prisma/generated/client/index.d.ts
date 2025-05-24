@@ -226,8 +226,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.7.0
-   * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+   * Prisma Client JS version: 6.8.2
+   * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
    */
   export type PrismaVersion = {
     client: string
@@ -2277,7 +2277,7 @@ export namespace Prisma {
     idUser: string
     refreshTokenHash: string
     fechaExpiracion: Date
-    deviceInfo: string | null
+    deviceInfo: string
     fechaCreacion: Date
     fechaActualizacion: Date
     _count: SessionCountAggregateOutputType | null
@@ -2363,7 +2363,7 @@ export namespace Prisma {
       idUser: string
       refreshTokenHash: string
       fechaExpiracion: Date
-      deviceInfo: string | null
+      deviceInfo: string
       fechaCreacion: Date
       fechaActualizacion: Date
     }, ExtArgs["result"]["session"]>
@@ -3382,7 +3382,7 @@ export namespace Prisma {
     idUser?: StringFilter<"Session"> | string
     refreshTokenHash?: StringFilter<"Session"> | string
     fechaExpiracion?: DateTimeFilter<"Session"> | Date | string
-    deviceInfo?: StringNullableFilter<"Session"> | string | null
+    deviceInfo?: StringFilter<"Session"> | string
     fechaCreacion?: DateTimeFilter<"Session"> | Date | string
     fechaActualizacion?: DateTimeFilter<"Session"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -3393,7 +3393,7 @@ export namespace Prisma {
     idUser?: SortOrder
     refreshTokenHash?: SortOrder
     fechaExpiracion?: SortOrder
-    deviceInfo?: SortOrderInput | SortOrder
+    deviceInfo?: SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -3407,7 +3407,7 @@ export namespace Prisma {
     NOT?: SessionWhereInput | SessionWhereInput[]
     idUser?: StringFilter<"Session"> | string
     fechaExpiracion?: DateTimeFilter<"Session"> | Date | string
-    deviceInfo?: StringNullableFilter<"Session"> | string | null
+    deviceInfo?: StringFilter<"Session"> | string
     fechaCreacion?: DateTimeFilter<"Session"> | Date | string
     fechaActualizacion?: DateTimeFilter<"Session"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -3418,7 +3418,7 @@ export namespace Prisma {
     idUser?: SortOrder
     refreshTokenHash?: SortOrder
     fechaExpiracion?: SortOrder
-    deviceInfo?: SortOrderInput | SortOrder
+    deviceInfo?: SortOrder
     fechaCreacion?: SortOrder
     fechaActualizacion?: SortOrder
     _count?: SessionCountOrderByAggregateInput
@@ -3434,7 +3434,7 @@ export namespace Prisma {
     idUser?: StringWithAggregatesFilter<"Session"> | string
     refreshTokenHash?: StringWithAggregatesFilter<"Session"> | string
     fechaExpiracion?: DateTimeWithAggregatesFilter<"Session"> | Date | string
-    deviceInfo?: StringNullableWithAggregatesFilter<"Session"> | string | null
+    deviceInfo?: StringWithAggregatesFilter<"Session"> | string
     fechaCreacion?: DateTimeWithAggregatesFilter<"Session"> | Date | string
     fechaActualizacion?: DateTimeWithAggregatesFilter<"Session"> | Date | string
   }
@@ -3538,7 +3538,7 @@ export namespace Prisma {
     id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
-    deviceInfo?: string | null
+    deviceInfo: string
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
     user: UserCreateNestedOneWithoutSessionsInput
@@ -3549,7 +3549,7 @@ export namespace Prisma {
     idUser: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
-    deviceInfo?: string | null
+    deviceInfo: string
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
   }
@@ -3558,7 +3558,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
-    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutSessionsNestedInput
@@ -3569,7 +3569,7 @@ export namespace Prisma {
     idUser?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
-    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3579,7 +3579,7 @@ export namespace Prisma {
     idUser: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
-    deviceInfo?: string | null
+    deviceInfo: string
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
   }
@@ -3588,7 +3588,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
-    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3598,7 +3598,7 @@ export namespace Prisma {
     idUser?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
-    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4014,7 +4014,7 @@ export namespace Prisma {
     id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
-    deviceInfo?: string | null
+    deviceInfo: string
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
   }
@@ -4023,7 +4023,7 @@ export namespace Prisma {
     id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
-    deviceInfo?: string | null
+    deviceInfo: string
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
   }
@@ -4061,7 +4061,7 @@ export namespace Prisma {
     idUser?: StringFilter<"Session"> | string
     refreshTokenHash?: StringFilter<"Session"> | string
     fechaExpiracion?: DateTimeFilter<"Session"> | Date | string
-    deviceInfo?: StringNullableFilter<"Session"> | string | null
+    deviceInfo?: StringFilter<"Session"> | string
     fechaCreacion?: DateTimeFilter<"Session"> | Date | string
     fechaActualizacion?: DateTimeFilter<"Session"> | Date | string
   }
@@ -4138,7 +4138,7 @@ export namespace Prisma {
     id?: string
     refreshTokenHash: string
     fechaExpiracion: Date | string
-    deviceInfo?: string | null
+    deviceInfo: string
     fechaCreacion?: Date | string
     fechaActualizacion?: Date | string
   }
@@ -4147,7 +4147,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
-    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4156,7 +4156,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
-    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4165,7 +4165,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     refreshTokenHash?: StringFieldUpdateOperationsInput | string
     fechaExpiracion?: DateTimeFieldUpdateOperationsInput | Date | string
-    deviceInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
   }

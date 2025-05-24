@@ -35,12 +35,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.7.0
- * Query Engine version: 3cff47a7f5d65c3ea74883f1d736e41d68ce91ed
+ * Prisma Client JS version: 6.8.2
+ * Query Engine version: 2060c79ba17c6bb9f5823312b6f6b7f4a845738e
  */
 Prisma.prismaVersion = {
-  client: "6.7.0",
-  engine: "3cff47a7f5d65c3ea74883f1d736e41d68ce91ed"
+  client: "6.8.2",
+  engine: "2060c79ba17c6bb9f5823312b6f6b7f4a845738e"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -162,8 +162,8 @@ const config = {
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
-  "clientVersion": "6.7.0",
-  "engineVersion": "3cff47a7f5d65c3ea74883f1d736e41d68ce91ed",
+  "clientVersion": "6.8.2",
+  "engineVersion": "2060c79ba17c6bb9f5823312b6f6b7f4a845738e",
   "datasourceNames": [
     "db"
   ],
@@ -177,8 +177,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel User {\n  id                       String    @id @map(\"id_discord\")\n  username                 String    @map(\"username\")\n  avatarHash               String    @map(\"avatar_hash\")\n  accessTokenDiscord       String?   @map(\"access_token_discord\")\n  ivAccessTokenDiscord     String?   @map(\"iv_access_token_discord\")\n  refreshTokenDiscord      String?   @map(\"refresh_token_discord\")\n  ivRefreshTokenDiscord    String?   @map(\"iv_refresh_token_discord\")\n  accessTokenDiscordExpire DateTime? @map(\"access_token_discord_expire\")\n  fechaCreacion            DateTime  @default(now()) @map(\"fecha_creacion\")\n  fechaActualizacion       DateTime  @updatedAt @map(\"fecha_actualizacion\")\n\n  sessions Session[]\n}\n\nmodel Session {\n  id                 String   @id @default(uuid())\n  idUser             String   @map(\"id_user\")\n  refreshTokenHash   String   @unique @map(\"refresh_token_hash\")\n  fechaExpiracion    DateTime @map(\"fecha_expiracion\")\n  deviceInfo         String?  @map(\"device_info\")\n  fechaCreacion      DateTime @default(now()) @map(\"fecha_creacion\")\n  fechaActualizacion DateTime @updatedAt @map(\"fecha_actualizacion\")\n\n  user User @relation(fields: [idUser], references: [id])\n}\n",
-  "inlineSchemaHash": "73232f60868e23a62de37243efe8607787d5e317acb4ae37580a7e39602da93a",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider        = \"prisma-client-js\"\n  output          = \"./generated/client\"\n  previewFeatures = [\"driverAdapters\"]\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = \"file:./dev.db\"\n}\n\nmodel User {\n  id                       String    @id @map(\"id_discord\")\n  username                 String    @map(\"username\")\n  avatarHash               String    @map(\"avatar_hash\")\n  accessTokenDiscord       String?   @map(\"access_token_discord\")\n  ivAccessTokenDiscord     String?   @map(\"iv_access_token_discord\")\n  refreshTokenDiscord      String?   @map(\"refresh_token_discord\")\n  ivRefreshTokenDiscord    String?   @map(\"iv_refresh_token_discord\")\n  accessTokenDiscordExpire DateTime? @map(\"access_token_discord_expire\")\n  fechaCreacion            DateTime  @default(now()) @map(\"fecha_creacion\")\n  fechaActualizacion       DateTime  @updatedAt @map(\"fecha_actualizacion\")\n\n  sessions Session[]\n}\n\nmodel Session {\n  id                 String   @id @default(uuid())\n  idUser             String   @map(\"id_user\")\n  refreshTokenHash   String   @unique @map(\"refresh_token_hash\")\n  fechaExpiracion    DateTime @map(\"fecha_expiracion\")\n  deviceInfo         String   @map(\"device_info\")\n  fechaCreacion      DateTime @default(now()) @map(\"fecha_creacion\")\n  fechaActualizacion DateTime @updatedAt @map(\"fecha_actualizacion\")\n\n  user User @relation(fields: [idUser], references: [id])\n}\n",
+  "inlineSchemaHash": "ada7d10bbd9588169d34a8d4ba08b6b453a02372e1ee858bd08992b9218b4590",
   "copyEngine": true
 }
 config.dirname = '/'

@@ -35,7 +35,7 @@ model Session {
   idUser             String   @map("id_user")
   refreshTokenHash   String   @unique @map("refresh_token_hash")
   fechaExpiracion    DateTime @map("fecha_expiracion")
-  deviceInfo         String?  @map("device_info")
+  deviceInfo         String   @map("device_info")
   fechaCreacion      DateTime @default(now()) @map("fecha_creacion")
   fechaActualizacion DateTime @updatedAt @map("fecha_actualizacion")
 

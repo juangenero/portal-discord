@@ -1,14 +1,14 @@
-import { AppError } from '../shared/errors/error.index';
-import Config from './config.dto';
+import { AppError } from '../shared/errors/error-factory';
+import ConfigData from './config.types';
 
 /**
  * Mapeo de variables de entorno a constantes de configuración para autocompletado
  */
-const CONFIG: Config = Object.freeze({
+const CONFIG: ConfigData = Object.freeze({
   // Aplicación
   PORT: process.env.PORT || '3000', // Puerto del servidor
   NODE_ENV: checkNodeEnv(), // Entorno de la aplicación
-  LEVEL_LOG: process.env.LEVEL_LOG || 'info', // Nivel del log
+  LEVEL_LOG: process.env.LEVEL_LOG || 'debug', // Nivel del log
 
   // JWT
   SIGN_TOKEN_JWT: process.env.SIGN_TOKEN_JWT || 'my_secret_key1', // Firma del token JWT

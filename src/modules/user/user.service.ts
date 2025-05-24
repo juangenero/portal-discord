@@ -1,67 +1,20 @@
 import { User } from '../../../prisma/generated/client';
-import CONFIG from '../../config/env.config';
-import { StrEncrypted } from '../../shared/utils/security/security.dto';
-import { encriptar } from '../../shared/utils/security/secutiryUtils';
-import { UserDto } from './user.dto';
-import { upsertUserBD } from './user.model';
+import { UserDto } from './types/user.dto';
+import { UpsertUserData } from './types/user.types';
+import { upsertUserDB } from './user.repository';
 
-const { SIGN_TOKENS_DISCORD } = CONFIG;
-
-export async function upsertUser(userDto: UserDto): Promise<UserDto> {
-  // Encriptar access token de discord
-  if (userDto.accessTokenDiscord) {
-    const accessTokenDiscordEncrypted: StrEncrypted = encriptar(
-      userDto.accessTokenDiscord,
-      SIGN_TOKENS_DISCORD
-    );
-
-    userDto = {
-      ...userDto,
-      accessTokenDiscord: accessTokenDiscordEncrypted.encrypted,
-      ivAccessTokenDiscord: accessTokenDiscordEncrypted.iv,
-    };
-  } else {
-    userDto = {
-      ...userDto,
-      accessTokenDiscord: null,
-      ivAccessTokenDiscord: null,
-    };
-  }
-
-  // Encriptar refresh token de discord
-  if (userDto.refreshTokenDiscord) {
-    const refreshTokenDiscordEncrypted: StrEncrypted = encriptar(
-      userDto.refreshTokenDiscord,
-      SIGN_TOKENS_DISCORD
-    );
-
-    userDto = {
-      ...userDto,
-      refreshTokenDiscord: refreshTokenDiscordEncrypted.encrypted,
-      ivRefreshTokenDiscord: refreshTokenDiscordEncrypted.iv,
-    };
-  } else {
-    userDto = {
-      ...userDto,
-      refreshTokenDiscord: null,
-      ivRefreshTokenDiscord: null,
-    };
-  }
-
+export async function upsertUser(upsertUserData: UpsertUserData): Promise<UserDto> {
   // Actualizar / Crear usuario
-  const usuario: User = await upsertUserBD(userDto);
+  const user: User = await upsertUserDB(upsertUserData);
 
   // Convertir la entidad a DTO
-  const result: UserDto = {
-    id: usuario.id,
-    username: usuario.username,
-    avatarHash: usuario.avatarHash,
-    accessTokenDiscord: usuario.accessTokenDiscord,
-    ivAccessTokenDiscord: usuario.ivAccessTokenDiscord,
-    refreshTokenDiscord: usuario.refreshTokenDiscord,
-    ivRefreshTokenDiscord: usuario.ivRefreshTokenDiscord,
-    accessTokenDiscordExpire: usuario.accessTokenDiscordExpire,
+  const userDto: UserDto = {
+    id: user.id,
+    username: user.username,
+    avatarHash: user.avatarHash,
+    fechaCreacion: user.fechaCreacion,
+    fechaActualizacion: user.fechaActualizacion,
   };
 
-  return result;
+  return userDto;
 }

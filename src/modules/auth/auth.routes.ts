@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { callbackCtrl, loginCtrl, refreshTokenCtrl } from './auth.controller';
+import { callbackCtrl, loginCtrl, logoutCtrl, refreshTokenCtrl } from './auth.controller';
 
-const authPublicRouter: Router = Router();
-const authPrivateRouter: Router = Router();
+const authRouter: Router = Router();
 
-authPublicRouter.get('/login', loginCtrl);
-authPublicRouter.post('/callback', callbackCtrl);
-authPublicRouter.put('/refresh-token', refreshTokenCtrl);
-// authPrivateRouter.delete('/logout', deleteCtrl);
+authRouter.get('/login', loginCtrl);
+authRouter.post('/callback', callbackCtrl);
+authRouter.put('/refresh-token', refreshTokenCtrl);
+authRouter.delete('/logout', logoutCtrl);
 
-export { authPrivateRouter, authPublicRouter };
+export default authRouter;

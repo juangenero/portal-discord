@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
-import { initialize, login, renewTokenJwt } from './auth.service';
+import { callback, getRefreshToken, getUrlAuthDiscord, logout } from './auth.service';
 
-export function loginCtrl(req: Request, res: Response) {
+// Obtener URL login
+export function loginCtrl(req: Request, res: Response): void {
   res.status(200).json({
-    url: initialize(),
+    url: getUrlAuthDiscord(),
   });
 }
 
+// Callback de OAuth2 (cliente)
 export async function callbackCtrl(req: Request, res: Response): Promise<void> {
   // IP
   const { ip } = req;
@@ -20,7 +22,7 @@ export async function callbackCtrl(req: Request, res: Response): Promise<void> {
   const { code, code_verifier } = req.body;
 
   // Procesar solicitud
-  const responseTokens = await login(code, code_verifier, clientIp, clientUserAgent);
+  const responseTokens = await callback(code, code_verifier, clientIp, clientUserAgent);
 
   // Respuesta
   const { name, value, options } = responseTokens.refreshTokenCookie;
@@ -28,6 +30,7 @@ export async function callbackCtrl(req: Request, res: Response): Promise<void> {
   res.status(200).json({ accessToken: responseTokens.accessToken });
 }
 
+// Obtener nuevo token de acceso
 export async function refreshTokenCtrl(req: Request, res: Response): Promise<void> {
   // IP
   const { ip } = req;
@@ -41,10 +44,25 @@ export async function refreshTokenCtrl(req: Request, res: Response): Promise<voi
   const refreshToken = req.cookies.refreshToken;
 
   // Procesar solicitud
-  const responseTokens = await renewTokenJwt(refreshToken, clientIp, clientUserAgent);
+  const responseTokens = await getRefreshToken(refreshToken, clientIp, clientUserAgent);
 
   // Montar respuesta
   const { name, value, options } = responseTokens.refreshTokenCookie;
   res.cookie(name, value, options);
   res.status(200).json({ accessToken: responseTokens.accessToken });
+}
+
+// Logout
+export async function logoutCtrl(req: Request, res: Response): Promise<void> {
+  // Refresh Token
+  const refreshToken = req.cookies.refreshToken;
+
+  // Procesar solicitud
+  const refreshTokenCookie = await logout(refreshToken);
+
+  // Limpiar cookie
+  res.clearCookie(refreshTokenCookie.name, refreshTokenCookie.options);
+
+  // Respuesta
+  res.status(204).send();
 }
