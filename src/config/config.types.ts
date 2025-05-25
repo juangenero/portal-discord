@@ -3,17 +3,11 @@ interface ConfigData {
   PORT: string;
   NODE_ENV: 'dev' | 'pro';
   LEVEL_LOG: string;
+  APP_RATE_LIMIT_TIME: number;
+  APP_RATE_LIMIT_REQUEST: number;
 
-  // JWT & REFRESH TOKEN
-  SIGN_TOKEN_JWT: string;
-  SIGN_REFRESH_TOKEN: string;
-  EXPIRE_TIME_REFRESH_TOKEN: number;
-  EXPIRE_TIME_ACCESS_TOKEN: number;
-
-  // SECURITY
+  // Auth
   SIGN_TOKENS_DISCORD: string;
-
-  // OAuth2 Discord
   DISCORD_OAUTH2_CLIENT_ID: string;
   DISCORD_OAUTH2_CLIENT_SECRET: string;
   DISCORD_OAUTH2_REDIRECT_URI: string;
@@ -22,6 +16,14 @@ interface ConfigData {
   DISCORD_URL_REVOKE_TOKEN: string;
   DISCORD_URL_USER: string;
   DISCORD_URL_AVATAR: string;
+
+  SIGN_TOKEN_JWT: string;
+  SIGN_REFRESH_TOKEN: string;
+  EXPIRE_TIME_REFRESH_TOKEN: number;
+  EXPIRE_TIME_ACCESS_TOKEN: number;
+
+  AUTH_RATE_LIMIT_TIME: number;
+  AUTH_RATE_LIMIT_REQUEST: number;
 
   // Bot Discord
   // TOKEN_BOT?: string;

@@ -9,14 +9,10 @@ const CONFIG: ConfigData = Object.freeze({
   PORT: process.env.PORT || '3000', // Puerto del servidor
   NODE_ENV: checkNodeEnv(), // Entorno de la aplicación
   LEVEL_LOG: process.env.LEVEL_LOG || 'debug', // Nivel del log
+  APP_RATE_LIMIT_TIME: Number(process.env.APP_RATE_LIMIT_TIME) || 60, // Número de segundos para reestablecer el contador del rate limit global
+  APP_RATE_LIMIT_REQUEST: Number(process.env.APP_RATE_LIMIT_REQUEST) || 10, // Número máximo de peticiones para el rate limit global
 
-  // JWT
-  SIGN_TOKEN_JWT: process.env.SIGN_TOKEN_JWT || 'my_secret_key1', // Firma del token JWT
-  SIGN_REFRESH_TOKEN: process.env.SIGN_REFRESH_TOKEN || 'my_secret_key2', // Firma del refresh token
-  EXPIRE_TIME_ACCESS_TOKEN: Number(process.env.EXPIRE_TIME_ACCESS_TOKEN) || 900, // Segundos de expiración access token (15 minutos por defecto)
-  EXPIRE_TIME_REFRESH_TOKEN: Number(process.env.EXPIRE_TIME_REFRESH_TOKEN) || 604800, // Segundos de expiración refresh token (7 días por defecto)
-
-  // Discord OAuth2
+  // Auth
   SIGN_TOKENS_DISCORD: process.env.SIGN_TOKENS_DISCORD || 'my_secret_key3', // Firma para los tokens de discord
   DISCORD_OAUTH2_CLIENT_ID: getEnvVar('DISCORD_OAUTH2_CLIENT_ID'),
   DISCORD_OAUTH2_CLIENT_SECRET: getEnvVar('DISCORD_OAUTH2_CLIENT_SECRET'),
@@ -26,6 +22,14 @@ const CONFIG: ConfigData = Object.freeze({
   DISCORD_URL_REVOKE_TOKEN: 'https://discord.com/api/oauth2/token/revoke',
   DISCORD_URL_USER: 'https://discord.com/api/users/@me',
   DISCORD_URL_AVATAR: 'https://cdn.discordapp.com/avatars/',
+
+  SIGN_TOKEN_JWT: process.env.SIGN_TOKEN_JWT || 'my_secret_key1', // Firma del token JWT
+  SIGN_REFRESH_TOKEN: process.env.SIGN_REFRESH_TOKEN || 'my_secret_key2', // Firma del refresh token
+  EXPIRE_TIME_ACCESS_TOKEN: Number(process.env.EXPIRE_TIME_ACCESS_TOKEN) || 900, // Segundos de expiración access token (15 minutos por defecto)
+  EXPIRE_TIME_REFRESH_TOKEN: Number(process.env.EXPIRE_TIME_REFRESH_TOKEN) || 604800, // Segundos de expiración refresh token (7 días por defecto)
+
+  AUTH_RATE_LIMIT_TIME: Number(process.env.AUTH_RATE_LIMIT_TIME) || 300, // Número de segundos para reestablecer el contador del rate limit de auth.routes
+  AUTH_RATE_LIMIT_REQUEST: Number(process.env.AUTH_RATE_LIMIT_REQUEST) || 10, // Número máximo de peticiones para el rate limit de auth.routes
 
   // Discord Bot
   // TOKEN_BOT: process.env.TOKEN_BOT,

@@ -41,7 +41,9 @@ export async function getTokenDiscord(
     return response.data;
   } catch (error: any) {
     throw new DiscordApiError(
-      `Error al obtener el token de discord. ${error.response.data.error_description}`
+      `Error al obtener el token de discord. ${
+        error.response.data ? JSON.stringify(error.response.data) : undefined
+      } `
     );
   }
 }
@@ -57,7 +59,9 @@ export async function getUsuarioDiscord(accessToken: string): Promise<ResponseUs
     return response.data;
   } catch (error: any) {
     throw new DiscordApiError(
-      `Error al obtener el usuario de discord. ${error.response.data.message}`
+      `Error al obtener el usuario de discord. ${
+        error.response.data ? JSON.stringify(error.response.data) : undefined
+      }`
     );
   }
 }

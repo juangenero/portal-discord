@@ -1,8 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
-import { AppError, AuthorizationError, PathNotFound } from '../errors/error-factory';
+import {
+  AppError,
+  AuthorizationError,
+  PathNotFound,
+  RateLimitError,
+  ValidationError,
+} from '../errors/error-factory';
 import { ResponseErrorClientDto } from '../errors/types/error.dto';
 import log from '../utils/log/logger';
-import { generateNanoId } from '../utils/other/stringUtils';
+import { generateNanoId } from '../utils/other/string.utils';
 
 /**
  * Middleware para manejar rutas no encontradas (404).
@@ -22,9 +28,11 @@ export const notFoundHandler = (req: Request, res: Response, next: NextFunction)
  * @param {NextFunction} next - Siguiente middleware (En este caspo no se usa).
  */
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
+  const isAppError = err instanceof AppError;
   const id = generateNanoId(20); // Generar un ID único para el error
   const { idUsuario, idSesion } = req.payload || {};
   const sesionInfo = idUsuario && idSesion ? `${idUsuario} / ${idSesion}` : 'No autenticado';
+  const detailsInfo = isAppError ? `detalles: ${err.details}` : undefined;
 
   // ---------- Registro del error ----------
   const logResponse = `
@@ -32,13 +40,14 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   id: ${id}
   endpoint: ${req.method} ${req.originalUrl}
   usuario/sesion: ${sesionInfo}
+  ${detailsInfo}
+  
   ${err.stack}
   ---------------------------------------------------------------------------------
   `;
   log.error(logResponse);
 
   // ---------- Respuesta al cliente ----------
-  const isAppError = err instanceof AppError;
 
   // Respuesta por defecto
   const clientResponse: ResponseErrorClientDto = {
@@ -62,9 +71,14 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   }
 
   // ValidationError
-  // else if (err instanceof ValidationError) {
-  //   clientResponse.message = err.message;
-  // }
+  else if (err instanceof ValidationError) {
+    clientResponse.message = err.message;
+  }
+
+  // RateLimitError
+  else if (err instanceof RateLimitError) {
+    clientResponse.message = err.message;
+  }
 
   res.status(clientResponse.status).json(clientResponse);
 };

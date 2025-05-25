@@ -55,17 +55,21 @@ function createAppError(
 // ------------------ Errores de la aplicación ------------------
 
 /**
- * Parámetros del constructor:
+ * Parámetros del constructor de erroes:
  * - errorName: Nombre del error
  * - defaultMessage: Mensaje por defecto
  * - defaultStatus: Código de estado HTTP por defecto
  */
 
+// Errores del cliente
+export const ValidationError = createAppError('ValidationError', 'Error al validar los datos', 400);
 export const AuthorizationError = createAppError('AuthorizationError', 'No autorizado', 401);
 export const ForbiddenError = createAppError('ForbiddenError', 'Permisos insuficientes', 403);
 export const PathNotFound = createAppError('PathNotFound', 'Ruta no encontrada', 404);
 export const NotFoundError = createAppError('NotFoundError', 'Recurso no encontrado', 404);
+export const RateLimitError = createAppError('RateLimitError', 'Rate limit superado', 429);
 
+// Errores del servidor
 export const DiscordApiError = createAppError('DiscordApiError', 'Error en la API de Discord', 500);
 export const IpApiError = createAppError('IpApiError', 'Error en la API de IPs', 500);
 export const DatabaseError = createAppError('DatabaseError', 'Error en la base de datos', 500);
