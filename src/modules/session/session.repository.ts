@@ -1,6 +1,7 @@
 import { Session } from '../../../prisma/generated/client';
 import prisma from '../../config/turso.config';
 import { DatabaseError } from '../../shared/errors/error-factory';
+import { DeviceInfoDto } from '../../shared/utils/client-info/types/device-info.dto';
 import { SessionWithUserData } from './types/session.domain';
 import { CreateSessionData } from './types/session.types';
 
@@ -20,11 +21,33 @@ export async function createSessionDB(input: CreateSessionData): Promise<Session
       },
     });
 
-    output.deviceInfo = JSON.parse(output.deviceInfo);
+    // output.deviceInfo = JSON.parse(output.deviceInfo);
 
     return output;
   } catch (error) {
     throw new DatabaseError(`Error al crear la sesión del usuario ${input.idUser}`);
+  }
+}
+
+/**
+ * Obtiene las sesiones de un usuario
+ * @param idUser ID del usuario
+ * @returns Lista de sesiones
+ */
+export async function getSessionsActiveByIdUserDB(idUser: string): Promise<Array<Session>> {
+  try {
+    const listSessions = await prisma.session.findMany({
+      where: {
+        idUser: idUser,
+        fechaExpiracion: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    return listSessions;
+  } catch (error) {
+    throw new DatabaseError(`Error al obtener las sesiones del usuario ${idUser}`);
   }
 }
 
@@ -57,7 +80,7 @@ export async function rotateRefreshTokensDB(
   refreshTokenHashOld: string,
   refreshTokenHashNew: string,
   fechaExpiracion: Date,
-  deviceInfo: string
+  deviceInfo: DeviceInfoDto
 ): Promise<SessionWithUserData | null> {
   try {
     const output = await prisma.session.update({
@@ -67,7 +90,7 @@ export async function rotateRefreshTokensDB(
       data: {
         refreshTokenHash: refreshTokenHashNew,
         fechaExpiracion: fechaExpiracion,
-        deviceInfo: deviceInfo,
+        deviceInfo: JSON.stringify(deviceInfo),
       },
       include: {
         user: {
@@ -86,7 +109,14 @@ export async function rotateRefreshTokensDB(
   }
 }
 
-export async function deleteSessionDB(refreshTokenHash: string): Promise<Session | null> {
+/**
+ * Elimina una sesión por su refresh token
+ * @param refreshTokenHash refresh token de la sesión
+ * @returns La sesisión eliminada
+ */
+export async function deleteSessionByRefreshTokenDB(
+  refreshTokenHash: string
+): Promise<Session | null> {
   try {
     const output = await prisma.session.delete({
       where: {
@@ -97,5 +127,20 @@ export async function deleteSessionDB(refreshTokenHash: string): Promise<Session
     return output;
   } catch (error) {
     throw new DatabaseError(`Error al eliminar la sesión con el token ${refreshTokenHash}`);
+  }
+}
+
+export async function deleteSessionByIdDB(idUser: string, idSesion: string) {
+  try {
+    const output = await prisma.session.delete({
+      where: {
+        id: idSesion,
+        idUser: idUser,
+      },
+    });
+
+    return output;
+  } catch (error) {
+    throw new DatabaseError(`No se pudo eliminar la sesión con ID ${idSesion}`);
   }
 }

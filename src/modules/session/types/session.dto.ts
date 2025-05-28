@@ -1,13 +1,11 @@
+import { DeviceInfoDto } from '../../../shared/utils/client-info/types/device-info.dto';
 import { UserDto } from '../../user/types/user.dto';
 
 export interface SessionDto {
   id: string;
   idUser: string;
-  refreshToken: string;
-  fechaExpiracion: Date;
-  fechaCreacion: Date;
   fechaActualizacion: Date;
-  deviceInfo: string;
+  deviceInfo: DeviceInfoDto;
 }
 
 export interface RotateRefreshTokenDto {

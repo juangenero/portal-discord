@@ -31,16 +31,16 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   const isAppError = err instanceof AppError;
   const id = generateNanoId(20); // Generar un ID único para el error
   const { idUsuario, idSesion } = req.payload || {};
-  const sesionInfo = idUsuario && idSesion ? `${idUsuario} / ${idSesion}` : 'No autenticado';
-  const detailsInfo = isAppError ? `detalles: ${err.details}` : undefined;
+  const authInfo = idUsuario && idSesion ? `${idUsuario} / ${idSesion}` : 'Sin autenticar';
+  const detailsInfo = isAppError && err.details ? err.details : 'Sin detalles';
 
   // ---------- Registro del error ----------
   const logResponse = `
   --------------------------------- Error Details ---------------------------------
-  id: ${id}
-  endpoint: ${req.method} ${req.originalUrl}
-  usuario/sesion: ${sesionInfo}
-  ${detailsInfo}
+  Id: ${id}
+  Endpoint: ${req.method} ${req.originalUrl}
+  Usuario/sesion: ${authInfo}
+  Detalles: ${detailsInfo}
   
   ${err.stack}
   ---------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     id: id,
   };
 
-  // Manejar principalmente el "message" del error enviado al cliente
+  // Se Maneja principalmente el "message" del error enviado al cliente
 
   // AuthorizationError
   if (err instanceof AuthorizationError) {

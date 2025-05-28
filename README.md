@@ -13,7 +13,6 @@
 
                      ---- code ----
 
-- endpoint recuperar sesiones / cerrar las activas by ID sesion/usuario
 - actualización manual de los datos de un usuario (incluye la gestión/reovación tokens discord)
 
                   ---- investigar ----

@@ -10,26 +10,36 @@ const {
   AUTH_RATE_LIMIT_REQUEST,
 } = CONFIG;
 
+// Rate limit para rutas progegidas
 export const appRateLimit = rateLimit({
   windowMs: APP_RATE_LIMIT_TIME * 1000,
   max: APP_RATE_LIMIT_REQUEST,
   standardHeaders: true,
   legacyHeaders: false,
+  keyGenerator: (req: Request, res: Response) => {
+    if (req.payload && req.payload.idUsuario) {
+      return req.payload.idUsuario;
+    }
+
+    return req.ip;
+  },
   handler: (req: Request, res: Response, next: NextFunction) => {
-    next(new RateLimitError('Rate limit superado', 'Demasiadas solicitudes a la API'));
+    next(new RateLimitError('Rate limit superado', 'Demasiadas solicitudes consecutivas a la API'));
   },
 });
 
+// Rate limit para auth
 export const authRateLimit = rateLimit({
   windowMs: AUTH_RATE_LIMIT_TIME * 1000,
   max: AUTH_RATE_LIMIT_REQUEST,
   standardHeaders: true,
   legacyHeaders: false,
+
   handler: (req: Request, res: Response, next: NextFunction) => {
     next(
       new RateLimitError(
         'Rate limit superado',
-        'Demasiadas solicitudes al servicio de autenticación'
+        'Demasiadas solicitudes consecutias al servicio de autenticación'
       )
     );
   },

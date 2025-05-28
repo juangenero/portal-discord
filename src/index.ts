@@ -1,35 +1,41 @@
 // import 'dotenv/config';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
 import path from 'path';
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 import CONFIG from './config/env.config';
-import { testPrivateRouter, testPublicRouter } from './modules/.test/test.routes';
-import authRouter from './modules/auth/auth.routes';
+import { testRouterPrivate, testRouterPublic } from './modules/.test/test.routes';
+import { authRouterPrivate, authRouterPublic } from './modules/auth/auth.routes';
+import sessionRouter from './modules/session/session.routes';
 import { authHandler } from './shared/middlewares/auth.middleware';
 import { errorHandler, notFoundHandler } from './shared/middlewares/error.middleware';
+import { swaggerOptions } from './shared/swagger/swagger';
 import log from './shared/utils/log/logger';
-import { appRateLimit, authRateLimit } from './shared/utils/rate-limits/limiter';
+import { appRateLimit, authRateLimit } from './shared/utils/rate-limits/limiters';
 
 const app: express.Application = express();
 
-// Configuración general del servidor
+// Configuración del servidor
+app.use(express.static(path.join(__dirname, './../public')));
 app.set('trust proxy', 1); // Confiar en proxy
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../../public'))); // TODO - Realmente necesario? Sólo para favicon
+app.use(cors());
 
 // Rutas públicas
-app.use('/test', testPublicRouter);
-app.use('/auth', authRateLimit, authRouter);
+app.use('/test', testRouterPublic);
+app.use('/auth', authRateLimit, authRouterPublic);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 
-// Rate limit global
-app.use(appRateLimit);
-
-// Middleware de autenticación
-app.use(authHandler);
+// Auth & rate limit app
+app.use(authHandler, appRateLimit);
 
 // Rutas privadas
-app.use('/test', testPrivateRouter);
+app.use('/test', testRouterPrivate);
+app.use('/auth', authRouterPrivate);
+app.use('/sesion', sessionRouter);
 
 // Middleware global para manejar errores
 app.use(notFoundHandler);
