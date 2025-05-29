@@ -43,7 +43,6 @@ const CONFIG: ConfigData = Object.freeze({
   // MAX_FILE_SIZE: process.env.MAX_FILE_SIZE || 1048576,
 });
 
-console.log(`CONFIG.MODE_DEBUG -> ${CONFIG.MODE_DEBUG}`);
 export default CONFIG;
 
 // Checkear si las variables de entorno críticas están definidas

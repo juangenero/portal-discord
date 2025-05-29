@@ -35,7 +35,6 @@ export async function callbackCtrl(req: Request, res: Response): Promise<void> {
 export async function refreshTokenCtrl(req: Request, res: Response): Promise<void> {
   // Refresh Token
   const refreshToken = req.cookies.refreshToken;
-  console.log(refreshToken);
 
   if (!refreshToken) {
     throw new AuthorizationError('Falta el refresh token en la solicitud');
