@@ -1,7 +1,6 @@
 import { Prisma, User } from '../../../prisma/generated/client';
 import prisma from '../../config/prisma.config';
 import { DatabaseError } from '../../shared/errors/error-factory';
-import log from '../../shared/utils/log/logger';
 import { encryptTokenDiscord } from '../../shared/utils/token/token.utils';
 import { UserDomain } from './types/user.domain';
 import { UpsertUserData } from './types/user.types';
@@ -12,8 +11,6 @@ import { UpsertUserData } from './types/user.types';
  * @returns {Promise<User>} - El usuario creado o actualizado.
  */
 export async function upsertUserDB(input: UpsertUserData): Promise<User> {
-  log.debug('INICIO upsertUserDB');
-  log.debug(`Input recibido -> ${JSON.stringify(input)}`);
   try {
     // Base para los objetos de creación y actualización
     const baseUserData = {
@@ -26,7 +23,6 @@ export async function upsertUserDB(input: UpsertUserData): Promise<User> {
       refreshTokenDiscord: null,
       ivRefreshTokenDiscord: null,
     };
-    log.debug(`baseUserData preparado ${JSON.stringify(baseUserData)}`);
 
     // Objeto para los campos del access token encriptado
     let encryptedAccessTokenFields: Partial<Prisma.UserCreateInput> = {};
@@ -36,9 +32,6 @@ export async function upsertUserDB(input: UpsertUserData): Promise<User> {
         accessTokenDiscord: encrypted,
         ivAccessTokenDiscord: iv,
       };
-      log.debug(`Campos de accessTokenDiscord encriptados: ${encryptedAccessTokenFields}`);
-    } else {
-      log.debug(`No se proporcionó accessTokenDiscord para encriptar`);
     }
 
     // Objeto para los campos del refresh token encriptado
@@ -49,13 +42,6 @@ export async function upsertUserDB(input: UpsertUserData): Promise<User> {
         refreshTokenDiscord: encrypted,
         ivRefreshTokenDiscord: iv,
       };
-      log.debug(
-        `Campos de refreshTokenDiscord encriptados -> ${JSON.stringify(
-          encryptedRefreshTokenFields
-        )}`
-      );
-    } else {
-      log.debug(`No se proporcionó refreshTokenDiscord para encriptar`);
     }
 
     // Objeto de creación
@@ -64,7 +50,6 @@ export async function upsertUserDB(input: UpsertUserData): Promise<User> {
       ...encryptedAccessTokenFields,
       ...encryptedRefreshTokenFields,
     };
-    log.debug(`Datos de creación (createData) preparados -> ${JSON.stringify(createData)}`);
 
     // Objeto de actualización
     const updateData: Prisma.UserUpdateInput = {
@@ -74,17 +59,13 @@ export async function upsertUserDB(input: UpsertUserData): Promise<User> {
       ...encryptedAccessTokenFields,
       ...encryptedRefreshTokenFields,
     };
-    log.debug(`Datos de actualización (updateData) preparados -> ${JSON.stringify(updateData)}`);
 
-    log.debug(`Ejecutando prisma.user.upsert para el usuario con ID -> ${input.id}`);
     const user: User = await prisma.user.upsert({
       where: { id: input.id },
       update: updateData,
       create: createData,
     });
-    log.debug(`Usuario upserted exitosamente -> ${JSON.stringify(user)}`);
 
-    log.debug('FIN upsertUserDB');
     return user;
   } catch (error) {
     throw new DatabaseError(

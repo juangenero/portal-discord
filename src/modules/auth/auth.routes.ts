@@ -31,6 +31,7 @@ const authRouter: Router = Router();
  *          [PKCE Code Generator](https://developer.pingidentity.com/en/tools/pkce-code-generator.html)
  *       tags:
  *         - Auth
+ *       security: []
  *       responses:
  *         200:
  *           description: URL de login obtenida correctamente.
@@ -63,7 +64,7 @@ authRouter.get('/login', loginCtrl);
  * @swagger
  * /auth/callback:
  *   post:
- *     summary: Intercambia el código de autorización de discord por un access token JWT y refresh token de la aplicación
+ *     summary: Intercambiar el código de autorización de discord por tokens de autenticación
  *     operationId: callback
  *     description: >
  *       Este endpoint se utiliza para intercambiar un código de autorización de Discord por un token de acceso y un token de refresco,
@@ -73,6 +74,7 @@ authRouter.get('/login', loginCtrl);
  *       Para ver la cookie (httpOnly) recibida con el refresh token, debe ir a las **herramientas de desarrollador (F12) > Aplicación > Cookies**
  *     tags:
  *       - Auth
+ *     security: []
  *     requestBody:
  *       required: true
  *       content:
@@ -115,11 +117,12 @@ authRouter.post('/callback', validateCallbackBody, callbackCtrl);
  * @swagger
  * /auth/refresh-token:
  *     put:
- *       summary: Renueva el token de acceso utilizando un token de refresco
+ *       summary: Renovar access token utilizando el refresh token
  *       description: Este endpoint permite a un cliente obtener un par de access token / refresh token válidos utilizando un refresh token existente. El token de refresco se espera en una cookie HTTP.
  *       operationId: refreshToken
  *       tags:
  *         - Auth
+ *       security: []
  *       parameters:
  *         - in: cookie
  *           name: refreshToken
@@ -164,11 +167,12 @@ authRouter.put('/refresh-token', refreshTokenCtrl);
  * paths:
  *   /auth/logout:
  *     delete:
- *       summary: Cierra la sesión del usuario
+ *       summary: Cerrar la sesión actual del usuario
  *       description: Este endpoint invalida el refresh token del usuario y elimina la cookie de refresh token del navegador, cerrando la sesión activa.
  *       operationId: logout
  *       tags:
  *         - Auth
+ *       security: []
  *       parameters:
  *         - in: cookie
  *           name: refreshToken

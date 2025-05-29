@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { getDeviceInfo } from '../../shared/utils/client-info/device-info.utils';
 import { generateHMAC } from '../../shared/utils/security/secutiry.utils';
 
@@ -39,4 +39,9 @@ export async function infoDeviceCtrl(req: Request, res: Response): Promise<void>
   const clientUserAgent = userAgent ? userAgent : '';
 
   res.send(await getDeviceInfo(clientIp, clientUserAgent));
+}
+
+// Info headers request
+export async function getHeader(req: Request, res: Response, next: NextFunction) {
+  res.status(200).json(req.headers);
 }

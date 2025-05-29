@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { AppError } from '../../shared/errors/error-factory';
-import { infoDeviceCtrl, testGetCookieCtrl, testSetCookieCtrl } from './test.controller';
-import { getHeader, getLogs } from './test.service';
+import { getHeader, infoDeviceCtrl, testGetCookieCtrl, testSetCookieCtrl } from './test.controller';
+import { getLogs } from './test.service';
 
 const testRouterPrivate: Router = Router();
 const testRouterPublic: Router = Router();

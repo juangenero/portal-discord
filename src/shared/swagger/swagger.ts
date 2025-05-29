@@ -11,6 +11,11 @@ import {
   Error429Schema,
   Error500Schema,
 } from './schemas/errors.schema';
+import {
+  ResponseDeviceInfoSchema,
+  ResponseListSessionSchema,
+  ResponseSessionSchema,
+} from './schemas/session.schema';
 
 const { PORT, NODE_ENV } = CONFIG;
 
@@ -29,12 +34,33 @@ export const swaggerOptions = {
             : `http://localhost:${PORT}`,
       },
     ],
+    security: [
+      {
+        JWT: [],
+      },
+    ],
     components: {
+      securitySchemes: {
+        JWT: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          description: 'Introduce el access token (JWT) obtenido de los endpoints de autenticación',
+        },
+      },
       schemas: {
+        // Auth
         AuthLoginOutput: ResponseLoginSchema,
         ResponseAccessToken: ResponseAccessTokenSchema,
         AuthCallbackInput: RequestCallbackSchema,
         AuthCookieRefreshToken: SetCookieRefreshToken,
+
+        // Session
+        ResponseListSession: ResponseListSessionSchema,
+        ResponseSession: ResponseSessionSchema,
+        ResponseDeviceInfo: ResponseDeviceInfoSchema,
+
+        // Errors
         Error500: Error500Schema,
         Error429: Error429Schema,
         Error401: Error401Schema,
