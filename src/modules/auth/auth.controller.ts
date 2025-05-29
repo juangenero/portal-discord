@@ -12,8 +12,7 @@ export function loginCtrl(req: Request, res: Response): void {
 // Callback de OAuth2 (cliente)
 export async function callbackCtrl(req: Request, res: Response): Promise<void> {
   // IP
-  // const { ip } = req;
-  const ip = '84.122.227.100';
+  const { ip } = req;
   const clientIp = typeof ip === 'string' && ip ? ip : '';
 
   // User-Agent
@@ -43,8 +42,7 @@ export async function refreshTokenCtrl(req: Request, res: Response): Promise<voi
   }
 
   // IP
-  // const { ip } = req;
-  const ip = '84.122.227.100';
+  const { ip } = req;
   const clientIp = typeof ip === 'string' && ip ? ip : '';
 
   // User-Agent
