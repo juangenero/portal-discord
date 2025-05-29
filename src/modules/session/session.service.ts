@@ -102,7 +102,7 @@ export async function verifyRefreshToken(refreshToken: string): Promise<void> {
 
   // Validar que la sesión no ha expirado
   if (new Date() > sessionBD.fechaExpiracion) {
-    throw new AuthorizationError(`El hash del token ${refreshTokenUserHashed} ha expirado`);
+    throw new AuthorizationError(`El token ${refreshToken} ha expirado`);
   }
 }
 

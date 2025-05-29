@@ -5,7 +5,7 @@ export const ResponseLoginSchema = {
     url: {
       type: 'string',
       example:
-        'https://discord.com/api/oauth2/authorize?client_id=123456789012345678&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback&response_type=code&scope=identify',
+        'https://discord.com/api/oauth2/authorize?client_id=1234567890&redirect_uri=http%3A%2F%2Flocalhost%2Fauth%2Fcallback&response_type=code&scope=identify',
       description: 'URL para iniciar sesión con Discord',
     },
   },

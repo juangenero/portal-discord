@@ -34,6 +34,14 @@ export async function callbackCtrl(req: Request, res: Response): Promise<void> {
 
 // Obtener nuevo token de acceso
 export async function refreshTokenCtrl(req: Request, res: Response): Promise<void> {
+  // Refresh Token
+  const refreshToken = req.cookies.refreshToken;
+  console.log(refreshToken);
+
+  if (!refreshToken) {
+    throw new AuthorizationError('Falta el refresh token en la solicitud');
+  }
+
   // IP
   // const { ip } = req;
   const ip = '84.122.227.100';
@@ -42,12 +50,6 @@ export async function refreshTokenCtrl(req: Request, res: Response): Promise<voi
   // User-Agent
   const userAgent = req.get('User-Agent');
   const clientUserAgent = userAgent ? userAgent : '';
-
-  // Refresh Token
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
-    throw new AuthorizationError('Falta el refresh token en la solicitud');
-  }
 
   // Procesar solicitud
   const responseTokens = await getRefreshToken(refreshToken, clientIp, clientUserAgent);

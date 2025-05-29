@@ -1,3 +1,4 @@
+import os from 'os';
 import CONFIG from '../../config/env.config';
 import {
   RequestCallbackSchema,
@@ -23,8 +24,7 @@ export const swaggerOptions = {
     },
     servers: [
       {
-        url: NODE_ENV === 'dev' ? `http://localhost:${PORT}` : undefined,
-        description: NODE_ENV === 'dev' ? 'Servidor local' : 'Servidor de producción',
+        url: NODE_ENV === 'dev' ? `http://localhost:${PORT}` : `https://${os.hostname}:${PORT}`,
       },
     ],
     components: {

@@ -10,12 +10,12 @@
   },
   "keywords": [
     "discord",
-    "api",
-    "portal"
+    "bot",
+    "api"
   ],
   "author": "Juan Genero",
   "license": "ISC",
-  "description": "API para la web de un servidor de Discord",
+  "description": "API/BOT Discord",
   "dependencies": {
     "@libsql/client": "^0.15.4",
     "@prisma/adapter-libsql": "^6.7.0",

@@ -72,7 +72,7 @@ export async function callback(
         httpOnly: true,
         secure: NODE_ENV === 'pro', // Solo HTTPS en producción
         expires: sesionCreated.fechaExpiracion,
-        sameSite: 'none',
+        sameSite: NODE_ENV === 'pro' ? 'none' : 'lax',
         path: '/auth',
       },
     },
@@ -109,9 +109,9 @@ export async function getRefreshToken(
       value: rotateRefreshTokenDto.refreshToken,
       options: {
         httpOnly: true,
-        secure: NODE_ENV === 'pro', // Solo se envía a través de HTTPS en producción
+        secure: NODE_ENV === 'pro',
         expires: rotateRefreshTokenDto.fechaExpiracion,
-        sameSite: 'none',
+        sameSite: NODE_ENV === 'pro' ? 'none' : 'lax',
         path: '/auth',
       },
     },
@@ -136,7 +136,7 @@ export async function logout(refreshToken: string): Promise<RefreshTokenCookieDa
       httpOnly: true,
       secure: NODE_ENV === 'pro',
       expires: new Date(Date.now()),
-      sameSite: 'none',
+      sameSite: NODE_ENV === 'pro' ? 'none' : 'lax',
       path: '/auth',
     },
   };
