@@ -5,14 +5,15 @@ import ConfigData from './config.types';
  * Mapeo de variables de entorno a constantes de configuración para autocompletado
  */
 const CONFIG: ConfigData = Object.freeze({
-  // Aplicación
+  // APLICACIÓN
   PORT: process.env.PORT || '3000', // Puerto del servidor
   NODE_ENV: checkNodeEnv(), // Entorno de la aplicación
   MODE_DEBUG: checkModeDebug(), // Modo debug de la aplicación
+  TRUST_PROXY: Number(process.env.TRUST_PROXY) || 1, // Saltos proxy para obtener la IP del cliente (con req.ip)
   APP_RATE_LIMIT_TIME: Number(process.env.APP_RATE_LIMIT_TIME) || 60, // Número de segundos para reestablecer el contador del rate limit global
   APP_RATE_LIMIT_REQUEST: Number(process.env.APP_RATE_LIMIT_REQUEST) || 10, // Número máximo de peticiones para el rate limit global
 
-  // Auth
+  // AUTH
   SIGN_TOKENS_DISCORD: process.env.SIGN_TOKENS_DISCORD || 'my_secret_key3', // Firma para los tokens de discord
   DISCORD_OAUTH2_CLIENT_ID: getEnvVar('DISCORD_OAUTH2_CLIENT_ID'),
   DISCORD_OAUTH2_CLIENT_SECRET: getEnvVar('DISCORD_OAUTH2_CLIENT_SECRET'),
@@ -35,15 +36,13 @@ const CONFIG: ConfigData = Object.freeze({
   // TOKEN_BOT: process.env.TOKEN_BOT,
   // SECONDS_TIMEOUT_BOT: process.env.SECONDS_TIMEOUT_BOT || 600,
 
-  // Base de datos
+  // DATABASE
   TURSO_DATABASE_URL: getEnvVar('TURSO_DATABASE_URL'),
   TURSO_AUTH_TOKEN: getEnvVar('TURSO_AUTH_TOKEN'),
 
   // Archivos
   // MAX_FILE_SIZE: process.env.MAX_FILE_SIZE || 1048576,
 });
-
-export default CONFIG;
 
 // Checkear si las variables de entorno críticas están definidas
 function getEnvVar(key: string): string {
@@ -70,3 +69,5 @@ function checkNodeEnv(): 'dev' | 'pro' {
 function checkModeDebug(): boolean {
   return process.env.MODE_DEBUG !== undefined && process.env.MODE_DEBUG.toLowerCase() === 'true';
 }
+
+export default CONFIG;

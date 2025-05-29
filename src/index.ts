@@ -15,11 +15,13 @@ import { swaggerOptions } from './shared/swagger/swagger';
 import log from './shared/utils/log/logger';
 import { appRateLimit, authRateLimit } from './shared/utils/rate-limits/limiters';
 
+const { PORT, TRUST_PROXY } = CONFIG;
+
 const app: express.Application = express();
 
 // Configuración del servidor
 app.use(express.static(path.join(__dirname, './../public')));
-app.set('trust proxy', 1); // Confiar en proxy
+app.set('trust proxy', TRUST_PROXY); // Confiar en proxy
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
@@ -47,6 +49,6 @@ process.on('unhandledRejection', (reason, promise) =>
 
 process.on('uncaughtException', (error) => console.error('Error síncrono no capturado: ', error));
 
-app.listen(CONFIG.PORT, () => {
-  log.info(`Servidor iniciado en el puerto ${CONFIG.PORT}`);
+app.listen(PORT, () => {
+  log.info(`Servidor iniciado en el puerto ${PORT}`);
 });

@@ -36,14 +36,14 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 
   // ---------- Registro del error ----------
   const logResponse = `
-  --------------------------------- Error Details ---------------------------------
+  --------------------------------------------------- Details ---------------------------------------------------
   Id: ${id}
   Endpoint: ${req.method} ${req.originalUrl}
   Usuario/sesion: ${authInfo}
   Detalles: ${detailsInfo}
   
   ${err.stack}
-  ---------------------------------------------------------------------------------
+  ---------------------------------------------------------------------------------------------------------------
   `;
   log.error(logResponse);
 
