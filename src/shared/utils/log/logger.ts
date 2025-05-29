@@ -2,7 +2,7 @@ import { join } from 'path';
 import { createLogger, format, transports } from 'winston';
 import CONFIG from '../../../config/env.config';
 
-const { LEVEL_LOG } = CONFIG;
+const { MODE_DEBUG } = CONFIG;
 const logDir = 'logs';
 
 const buildLogger = () => {
@@ -27,7 +27,7 @@ const buildLogger = () => {
   });
 
   const logger = createLogger({
-    level: LEVEL_LOG,
+    level: MODE_DEBUG ? 'debug' : 'info',
     format: baseFormat,
     transports: [new transports.Console(), errorFileTransport, appFileTransport],
   });

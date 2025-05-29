@@ -1,5 +1,5 @@
 import { Session } from '../../../prisma/generated/client';
-import prisma from '../../config/turso.config';
+import prisma from '../../config/prisma.config';
 import { DatabaseError } from '../../shared/errors/error-factory';
 import { DeviceInfoDto } from '../../shared/utils/client-info/types/device-info.dto';
 import { SessionWithUserData } from './types/session.domain';

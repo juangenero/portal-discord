@@ -8,7 +8,7 @@ const CONFIG: ConfigData = Object.freeze({
   // Aplicación
   PORT: process.env.PORT || '3000', // Puerto del servidor
   NODE_ENV: checkNodeEnv(), // Entorno de la aplicación
-  LEVEL_LOG: process.env.LEVEL_LOG || 'debug', // Nivel del log
+  MODE_DEBUG: checkModeDebug(), // Modo debug de la aplicación
   APP_RATE_LIMIT_TIME: Number(process.env.APP_RATE_LIMIT_TIME) || 60, // Número de segundos para reestablecer el contador del rate limit global
   APP_RATE_LIMIT_REQUEST: Number(process.env.APP_RATE_LIMIT_REQUEST) || 10, // Número máximo de peticiones para el rate limit global
 
@@ -43,6 +43,9 @@ const CONFIG: ConfigData = Object.freeze({
   // MAX_FILE_SIZE: process.env.MAX_FILE_SIZE || 1048576,
 });
 
+console.log(`CONFIG.MODE_DEBUG -> ${CONFIG.MODE_DEBUG}`);
+export default CONFIG;
+
 // Checkear si las variables de entorno críticas están definidas
 function getEnvVar(key: string): string {
   const value = process.env[key];
@@ -51,7 +54,7 @@ function getEnvVar(key: string): string {
   return value;
 }
 
-// Checkear el valor de NODE_ENV
+// Check NODE_ENV
 function checkNodeEnv(): 'dev' | 'pro' {
   const nodeEnvValue = getEnvVar('NODE_ENV');
 
@@ -64,4 +67,7 @@ function checkNodeEnv(): 'dev' | 'pro' {
   return nodeEnvValue;
 }
 
-export default CONFIG;
+// Check MODE_DEBUG
+function checkModeDebug(): boolean {
+  return process.env.MODE_DEBUG !== undefined && process.env.MODE_DEBUG.toLowerCase() === 'true';
+}

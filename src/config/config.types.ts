@@ -2,7 +2,7 @@ interface ConfigData {
   // Aplicación
   PORT: string;
   NODE_ENV: 'dev' | 'pro';
-  LEVEL_LOG: string;
+  MODE_DEBUG: boolean;
   APP_RATE_LIMIT_TIME: number;
   APP_RATE_LIMIT_REQUEST: number;
 

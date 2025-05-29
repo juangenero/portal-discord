@@ -4,7 +4,7 @@ import { join } from 'path';
 
 export async function getLogs(req: Request, res: Response, next: NextFunction) {
   try {
-    const logPath = join(process.cwd(), 'logs', 'error.log');
+    const logPath = join(process.cwd(), 'logs', 'app.log');
     const content = await readFile(logPath, 'utf-8');
 
     res.setHeader('Content-Type', 'text/plain');
