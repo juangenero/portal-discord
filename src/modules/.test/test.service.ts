@@ -13,3 +13,7 @@ export async function getLogs(req: Request, res: Response, next: NextFunction) {
     next(error);
   }
 }
+
+export async function getHeader(req: Request, res: Response, next: NextFunction) {
+  res.status(200).json(req.headers);
+}
