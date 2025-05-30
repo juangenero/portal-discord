@@ -1,6 +1,6 @@
 # API
 
-## config BD
+### config BD
 
 1. npx prisma generate
    - Crear cliente Prisma
@@ -11,14 +11,12 @@
 
 -------------------- siguientes pasos --------------------
 
-                     ---- code ----
+> code
 
 - actualización manual de los datos de un usuario (incluye la gestión/reovación tokens discord)
 
-                  ---- investigar ----
+> Investigar
 
-- frontend/backend mismo proyecto ¿despliegue posible?
 - autorización con roles de discord en cada petición?
-- react / astro / mixed ?
 
 # CLIENT
