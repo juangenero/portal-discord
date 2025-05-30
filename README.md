@@ -1,6 +1,6 @@
-# portal-discord-api
+# API
 
-# config BD
+## config BD
 
 1. npx prisma generate
    - Crear cliente Prisma
@@ -20,3 +20,5 @@
 - frontend/backend mismo proyecto ¿despliegue posible?
 - autorización con roles de discord en cada petición?
 - react / astro / mixed ?
+
+# CLIENT
