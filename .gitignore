@@ -99,8 +99,6 @@ client/.env.local
 # Salida de 'npm pack' para el Cliente
 client/*.tgz
 
----
-
 ### Exclusiones Globales del Repositorio (No específicas de una carpeta)
 
 # Configuración de IDEs
