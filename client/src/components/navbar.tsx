@@ -1,7 +1,5 @@
 import { Link } from '@heroui/link';
 import { Navbar as HeroUINavbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/navbar';
-import { link as linkStyles } from '@heroui/theme';
-import clsx from 'clsx';
 
 import { Logo } from '@/components/icons';
 import { ThemeSwitch } from '@/components/theme-switch';
@@ -20,14 +18,7 @@ export const Navbar = () => {
         </NavbarBrand>
         {/* Items menu */}
         <NavbarItem>
-          <Link
-            className={clsx(
-              linkStyles({ color: 'foreground' }),
-              'data-[active=true]:text-primary data-[active=true]:font-medium'
-            )}
-            color="foreground"
-            href="/dashboard/sonidos"
-          >
+          <Link color="foreground" href="/dashboard/sonidos">
             Sonidos
           </Link>
         </NavbarItem>
