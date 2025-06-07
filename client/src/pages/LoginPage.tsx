@@ -1,6 +1,5 @@
-
-import { title } from "@/components/primitives";
-import BaseLayout from "@/layouts/base-layout";
+import BaseLayout from '@/layouts/BaseLayout';
+import { title } from '@/shared/components/primitives';
 
 export default function LoginPage() {
   return (
