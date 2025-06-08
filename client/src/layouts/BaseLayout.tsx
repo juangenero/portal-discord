@@ -1,5 +1,5 @@
-import { Navbar } from '@/shared/components/Navbar';
-import { Link } from '@heroui/link';
+import Footer from '@/layouts/components/Footer';
+import { Navbar } from '@/layouts/components/header/Navbar';
 
 interface BaseLayoutProps {
   children: React.ReactNode;
@@ -11,11 +11,7 @@ export default function BaseLayout({ children, showNavbar = true }: BaseLayoutPr
     <div className="min-h-screen flex flex-col">
       {showNavbar && <Navbar />}
       <main className="flex-1">{children}</main>
-      <footer className="mt-auto w-full flex items-center justify-center py-3">
-        <Link className="flex items-center gap-1 text-current" href="#" title="heroui.com homepage">
-          <p className="text-primary">Alcalá City</p>
-        </Link>
-      </footer>
+      <Footer />
     </div>
   );
 }

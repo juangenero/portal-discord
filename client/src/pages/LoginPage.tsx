@@ -1,12 +1,25 @@
 import BaseLayout from '@/layouts/BaseLayout';
-import { title } from '@/shared/components/primitives';
+import { useAuth } from '@/modules/auth/AuthContext';
+import { DiscordIcon } from '@/shared/components/Icons';
+import { Button } from '@heroui/react';
 
 export default function LoginPage() {
+  const { login } = useAuth();
+
   return (
     <BaseLayout showNavbar={false}>
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <span className={title()}>Login</span>
-      </section>
+      <div className="absolute inset-0 z-0">
+        <img src="img/3.png" alt="Background" className="h-full w-full object-cover" />
+      </div>
+
+      <div className="absolute flex min-h-screen w-full items-start justify-center pt-48">
+        <section className="px-20 py-10 max-w-md backdrop-blur rounded-3xl">
+          <Button onPress={login} size="lg" color="primary">
+            <DiscordIcon />
+            Iniciar sesión
+          </Button>
+        </section>
+      </div>
     </BaseLayout>
   );
 }

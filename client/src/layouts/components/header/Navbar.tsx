@@ -1,9 +1,14 @@
-import { Link } from '@heroui/link';
-import { Navbar as HeroUINavbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/navbar';
+import {
+  Navbar as HeroUINavbar,
+  Link,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+} from '@heroui/react';
 
+import { ThemeSwitch } from '@/layouts/components/header/ThemeSwitch';
+import UserInfo from '@/layouts/components/header/UserInfo';
 import { Logo } from '@/shared/components/Icons';
-import { ThemeSwitch } from '@/shared/components/ThemeSwitch';
-import UserInfo from './UserInfo';
 
 export const Navbar = () => {
   return (

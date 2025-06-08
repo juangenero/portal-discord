@@ -1,4 +1,4 @@
-import { SwitchProps, useSwitch } from '@heroui/switch';
+import { SwitchProps, useSwitch } from '@heroui/react';
 import { useTheme } from '@heroui/use-theme';
 import { VisuallyHidden } from '@react-aria/visually-hidden';
 import clsx from 'clsx';
