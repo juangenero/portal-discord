@@ -6,7 +6,7 @@ const authRouter: Router = Router();
 
 /**
  * @swagger
- * /auth/login:
+ * /api/v1/auth/login:
  *     get:
  *       summary: Obtiene la URL de autorización de discord
  *       operationId: login
@@ -62,7 +62,7 @@ authRouter.get('/login', loginCtrl);
 
 /**
  * @swagger
- * /auth/callback:
+ * /api/v1/auth/callback:
  *   post:
  *     summary: Intercambiar el código de autorización de discord por tokens de autenticación
  *     operationId: callback
@@ -115,7 +115,7 @@ authRouter.post('/callback', validateCallbackBody, callbackCtrl);
 
 /**
  * @swagger
- * /auth/refresh-token:
+ * /api/v1/auth/refresh-token:
  *     put:
  *       summary: Renovar access token utilizando el refresh token
  *       description: Este endpoint permite a un cliente obtener un par de access token / refresh token válidos utilizando un refresh token existente. El token de refresco se espera en una cookie HTTP.
@@ -165,7 +165,7 @@ authRouter.put('/refresh-token', refreshTokenCtrl);
 /**
  * @swagger
  * paths:
- *   /auth/logout:
+ *   /api/v1/auth/logout:
  *     delete:
  *       summary: Cerrar la sesión actual del usuario
  *       description: Este endpoint invalida el refresh token del usuario y elimina la cookie de refresh token del navegador, cerrando la sesión activa.

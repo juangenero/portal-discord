@@ -18,6 +18,7 @@ import { appRateLimit, authRateLimit } from './shared/utils/rate-limits/limiters
 const { PORT, TRUST_PROXY } = CONFIG;
 
 const app: express.Application = express();
+const apiRouter = express.Router();
 
 // Configuración del servidor
 app.use(express.static(path.join(__dirname, './../public')));
@@ -27,16 +28,19 @@ app.use(cookieParser());
 app.use(cors());
 
 // Rutas públicas
-app.use('/test', testRouterPublic);
-app.use('/auth', authRateLimit, authRouter);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
+apiRouter.use('/test', testRouterPublic);
+apiRouter.use('/auth', authRateLimit, authRouter);
+apiRouter.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerOptions)));
 
 // Auth & rate limit app
-app.use(authHandler, appRateLimit);
+apiRouter.use(authHandler, appRateLimit);
 
 // Rutas privadas
-app.use('/test', testRouterPrivate);
-app.use('/sesion', sessionRouter);
+apiRouter.use('/test', testRouterPrivate);
+apiRouter.use('/sesion', sessionRouter);
+
+// Enrutador principal
+app.use('/api/v1', apiRouter);
 
 // Middleware global para manejar errores
 app.use(notFoundHandler);

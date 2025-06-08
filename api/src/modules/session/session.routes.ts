@@ -6,7 +6,7 @@ const sessionRouter: Router = Router();
 
 /**
  * @swagger
- * /sesion:
+ * /api/v1/sesion:
  *   get:
  *     summary: Obtener sesiones activas del usuario
  *     operationId: getSession
@@ -44,7 +44,7 @@ sessionRouter.get('/', getSessionsCtrl);
 /**
  * @swagger
  * paths:
- *   /sesion/:idSesion:
+ *   /api/v1/sesion/:idSesion:
  *     delete:
  *       summary: Cerrar la sesión actual del usuario
  *       description: Este endpoint elimina la sesión del ID pasado en la URL siempre y cuando pertenezca al usuario logado
