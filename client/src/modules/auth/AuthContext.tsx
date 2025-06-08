@@ -8,6 +8,7 @@ type AuthContextType = {
   isLoading: boolean;
   error: string | null;
   login: () => Promise<void>;
+  exchangeCode: (code: string, state: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 

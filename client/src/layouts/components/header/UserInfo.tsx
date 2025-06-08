@@ -1,17 +1,21 @@
+import { useAuth } from '@/modules/auth/AuthContext';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react';
 import { useNavigate } from 'react-router-dom';
 
 function UserInfo() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  console.log(user);
+
   return (
     <Dropdown>
       <DropdownTrigger>
         <User
           className="cursor-pointer"
           avatarProps={{
-            src: 'https://cdn.discordapp.com/avatars/358835415383539715/b1b15879434c2043aa915c8bbc5587cb.png',
+            src: `${user?.avatar}`,
           }}
-          name="xNeoXz"
+          name={user?.username}
         />
       </DropdownTrigger>
       <DropdownMenu>

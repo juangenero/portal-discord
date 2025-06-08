@@ -4,7 +4,7 @@ import { DiscordIcon } from '@/shared/components/Icons';
 import { Button } from '@heroui/react';
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, isLoading } = useAuth();
 
   return (
     <BaseLayout showNavbar={false}>
@@ -14,7 +14,7 @@ export default function LoginPage() {
 
       <div className="absolute flex min-h-screen w-full items-start justify-center pt-48">
         <section className="px-20 py-10 max-w-md backdrop-blur rounded-3xl">
-          <Button onPress={login} size="lg" color="primary">
+          <Button onPress={login} size="lg" color="primary" isLoading={isLoading}>
             <DiscordIcon />
             Iniciar sesión
           </Button>
