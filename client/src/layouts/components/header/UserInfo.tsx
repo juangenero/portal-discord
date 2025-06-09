@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 
 function UserInfo() {
   const navigate = useNavigate();
-  const { user } = useAuth();
-  console.log(user);
+  const { user, logout } = useAuth();
+
+  if (!user) return null;
 
   return (
     <Dropdown>
@@ -29,14 +30,7 @@ function UserInfo() {
           Mi perfil
         </DropdownItem>
 
-        <DropdownItem
-          key="delete"
-          color="danger"
-          className="text-danger"
-          onClick={() => {
-            navigate('/');
-          }}
-        >
+        <DropdownItem key="delete" color="danger" className="text-danger" onClick={logout}>
           Cerrar sesión
         </DropdownItem>
       </DropdownMenu>

@@ -1,4 +1,4 @@
-import { exchangeCodeApi, getUrlLogin } from '@/services/api.service';
+import { callbackApi, loginApi, logoutApi } from '@/services/api.service';
 import { generatePKCE, generateRandomString } from '@/shared/utils/security-utils';
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,25 +7,30 @@ import { User } from './Auth.types';
 
 export const useAuthLogic = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const navigate = useNavigate();
-  // Verificación inicial de autenticación
+
   useEffect(() => {
-    // console.log(import.meta.env.VITE_API_URL);
-    // checkAuthStatus();
+    checkLogin();
   }, []);
 
-  const checkAuthStatus = async () => {
+  // Verificación inicial de si existe un token JWT
+  const checkLogin = async () => {
     try {
-      setIsLoading(true);
-      const response = await fetch('/api/auth/me');
-      const userData = await response.json();
-      setUser(userData);
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (accessToken) {
+        const user: User = jwtDecode(accessToken);
+        console.info('usuario -> ', user);
+        setUser(user);
+      } else {
+        setUser(null);
+      }
     } catch (error) {
-      // console.error('Error al verificar autenticación:', error);
+      localStorage.removeItem('accessToken');
       setUser(null);
+      navigate('/');
     } finally {
       setIsLoading(false);
     }
@@ -34,6 +39,7 @@ export const useAuthLogic = () => {
   // Obtener URL login
   const login = async () => {
     try {
+      console.log('inicio login');
       setIsLoading(true);
       setError(null);
 
@@ -46,7 +52,7 @@ export const useAuthLogic = () => {
       sessionStorage.setItem('code_verifier', code_verifier);
 
       // Obtener URL completa de autenticación en Discord
-      const url: string = (await getUrlLogin()).data.url;
+      const url: string = (await loginApi()).data.url;
       let finalUrl: string =
         url + `&state=${state}&code_challenge=${code_challenge}&code_challenge_method=S256`;
 
@@ -57,11 +63,13 @@ export const useAuthLogic = () => {
       console.error('Error al obtener la URL de login', error);
     } finally {
       setIsLoading(false);
+      console.info('fin login');
     }
   };
 
-  const exchangeCode = useCallback(async (code: string, state: string) => {
+  const callback = useCallback(async (code: string, state: string) => {
     try {
+      console.log('inicio exchangeCode');
       setIsLoading(true);
 
       // Verificar state almacenado
@@ -82,7 +90,7 @@ export const useAuthLogic = () => {
       formData.append('code_verifier', code_verifier);
 
       // Realizar la petición POST
-      const { accessToken } = (await exchangeCodeApi(formData)).data;
+      const { accessToken } = (await callbackApi(formData)).data;
       localStorage.setItem('accessToken', accessToken);
       setUser(jwtDecode(accessToken));
 
@@ -97,30 +105,35 @@ export const useAuthLogic = () => {
       throw error;
     } finally {
       setIsLoading(false);
+      console.log('fin exchangeCode');
     }
   }, []);
 
   // Logout
   const logout = async () => {
-    // try {
-    //   setIsLoading(true);
-    //   await fetch('/api/auth/logout', { method: 'POST' });
-    //   setUser(null);
-    // } catch (error) {
-    //   console.error('Error en logout:', error);
-    //   throw error;
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    try {
+      console.log('inicio logout');
+      setIsLoading(true);
+      await logoutApi();
+      setUser(null);
+      localStorage.removeItem('accessToken');
+      navigate('/');
+    } catch (error) {
+      console.error('Error en logout:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+      console.log('fin logout');
+    }
   };
 
   return {
     user,
-    isAuthenticated: !!user,
+    isAuthenticated: !!user, // Boolean para saber si hay un usuario activo
     isLoading,
     error,
     login,
-    exchangeCode,
+    callback,
     logout,
   };
 };

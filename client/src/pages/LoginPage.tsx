@@ -2,9 +2,22 @@ import BaseLayout from '@/layouts/BaseLayout';
 import { useAuth } from '@/modules/auth/AuthContext';
 import { DiscordIcon } from '@/shared/components/Icons';
 import { Button } from '@heroui/react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  if (isLoading || isAuthenticated) {
+    return null;
+  }
 
   return (
     <BaseLayout showNavbar={false}>
