@@ -1,5 +1,6 @@
 import BaseLayout from '@/layouts/BaseLayout';
 import { useAuth } from '@/modules/auth/AuthContext';
+import Loader from '@/modules/auth/components/Loader';
 import { DiscordIcon } from '@/shared/components/Icons';
 import { Button } from '@heroui/react';
 import { useEffect } from 'react';
@@ -10,25 +11,35 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (!isLoading && isAuthenticated) {
       navigate('/dashboard', { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isLoading, isAuthenticated, navigate]);
 
-  if (isLoading || isAuthenticated) {
-    return null;
+  // Loader que se muestra mientras se hace la redirección del useEffect cuando se está logado
+  if (isAuthenticated && !isLoading) {
+    return <Loader />;
   }
 
   return (
     <BaseLayout showNavbar={false}>
+      {/* Imagen de fondo */}
       <div className="absolute inset-0 z-0">
-        <img src="img/3.png" alt="Background" className="h-full w-full object-cover" />
+        <img src="img/3.png" alt="background login page" className="h-full w-full object-cover" />
       </div>
 
+      {/* Cuadro de login */}
       <div className="absolute flex min-h-screen w-full items-start justify-center pt-48">
         <section className="px-20 py-10 max-w-md backdrop-blur rounded-3xl">
-          <Button onPress={login} size="lg" color="primary" isLoading={isLoading}>
-            <DiscordIcon />
+          <Button
+            onPress={async () => {
+              login();
+            }}
+            size="lg"
+            color="primary"
+            isLoading={isLoading}
+          >
+            {!isLoading && <DiscordIcon />}
             Iniciar sesión
           </Button>
         </section>

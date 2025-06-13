@@ -20,3 +20,9 @@
 - autorización con roles de discord en cada petición?
 
 # CLIENT
+
+1. Rutas protegidas
+2. cliente axios (con interceptores)
+3. component spinner
+4. modo oscuro en el spinner (pre aplicación dark mode)
+5. Sistema de alertas

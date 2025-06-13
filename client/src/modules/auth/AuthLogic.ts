@@ -1,4 +1,4 @@
-import { callbackApi, loginApi, logoutApi } from '@/services/api.service';
+import { callbackApi, loginApi, logoutApi, refreshTokenApi } from '@/services/api.service';
 import { generatePKCE, generateRandomString } from '@/shared/utils/security-utils';
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
@@ -8,15 +8,15 @@ import { User } from './Auth.types';
 export const useAuthLogic = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('check login');
     checkLogin();
   }, []);
 
   // Verificación inicial de si existe un token JWT
-  const checkLogin = async () => {
+  const checkLogin = () => {
     try {
       const accessToken = localStorage.getItem('accessToken');
 
@@ -39,9 +39,7 @@ export const useAuthLogic = () => {
   // Obtener URL login
   const login = async () => {
     try {
-      console.log('inicio login');
       setIsLoading(true);
-      setError(null);
 
       // Generar PKCE y state
       const { code_verifier, code_challenge } = await generatePKCE();
@@ -59,17 +57,13 @@ export const useAuthLogic = () => {
       // Redirección a la URL
       window.location.href = finalUrl;
     } catch (error) {
-      setError('Error en el proceso de login');
       console.error('Error al obtener la URL de login', error);
-    } finally {
       setIsLoading(false);
-      console.info('fin login');
     }
   };
 
   const callback = useCallback(async (code: string, state: string) => {
     try {
-      console.log('inicio exchangeCode');
       setIsLoading(true);
 
       // Verificar state almacenado
@@ -88,11 +82,9 @@ export const useAuthLogic = () => {
       const formData = new URLSearchParams();
       formData.append('code', code);
       formData.append('code_verifier', code_verifier);
-
-      // Realizar la petición POST
       const { accessToken } = (await callbackApi(formData)).data;
-      localStorage.setItem('accessToken', accessToken);
       setUser(jwtDecode(accessToken));
+      localStorage.setItem('accessToken', accessToken);
 
       // Limpiar storage
       sessionStorage.removeItem('state');
@@ -101,29 +93,40 @@ export const useAuthLogic = () => {
       navigate('/dashboard/sonidos');
     } catch (error) {
       navigate('/');
-      console.error('Error en exchange:', error);
+      console.error('Error en callback:', error);
       throw error;
     } finally {
       setIsLoading(false);
-      console.log('fin exchangeCode');
     }
   }, []);
+
+  // Refresh token
+  const refreshToken = async () => {
+    try {
+      setIsLoading(true);
+      const { accessToken } = (await refreshTokenApi()).data;
+      setUser(jwtDecode(accessToken));
+      localStorage.setItem('accessToken', accessToken);
+    } catch (error) {
+      console.error('Error en refreshToken:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Logout
   const logout = async () => {
     try {
-      console.log('inicio logout');
       setIsLoading(true);
-      await logoutApi();
       setUser(null);
       localStorage.removeItem('accessToken');
       navigate('/');
+      logoutApi();
     } catch (error) {
       console.error('Error en logout:', error);
       throw error;
     } finally {
       setIsLoading(false);
-      console.log('fin logout');
     }
   };
 
@@ -131,9 +134,9 @@ export const useAuthLogic = () => {
     user,
     isAuthenticated: !!user, // Boolean para saber si hay un usuario activo
     isLoading,
-    error,
     login,
     callback,
+    refreshToken,
     logout,
   };
 };

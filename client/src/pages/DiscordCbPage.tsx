@@ -1,5 +1,5 @@
 import { useAuth } from '@/modules/auth/AuthContext';
-import { Spinner } from '@heroui/react';
+import Loader from '@/modules/auth/components/Loader';
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -17,17 +17,9 @@ export default function DiscordCbPage() {
       cbRef.current = true;
       callback(code, state);
     } else if (!code || !state) {
-      navigate('/');
+      navigate('/', { replace: true });
     }
   }, [code, state, callback]);
 
-  if (code && state) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center">
-        <Spinner variant="gradient" size="lg" />
-      </div>
-    );
-  }
-
-  return null; // fallback
+  return <Loader />;
 }
