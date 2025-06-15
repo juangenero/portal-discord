@@ -1,20 +1,13 @@
 import BaseLayout from '@/layouts/BaseLayout';
+import { useAuth } from '@/modules/auth/AuthContext';
 import { rutaProtegidaTest } from '@/services/api.service';
 import { title } from '@/shared/components/primitives';
-import { axiosInterceptorResponse } from '@/shared/utils/axios-instance';
 import { addToast, Button } from '@heroui/react';
 import { useTheme } from '@heroui/use-theme';
-import { useEffect, useState } from 'react';
 
 function TestPage() {
-  const { theme, setTheme } = useTheme();
-  const [state, setState] = useState('a');
-
-  useEffect(() => {
-    // Configuramos los interceptores cuando el componente se monta.
-    // Le pasamos la función setAppState para que el interceptor pueda actualizar el estado.
-    axiosInterceptorResponse(setState);
-  }, []);
+  const { theme } = useTheme();
+  const { user } = useAuth();
 
   return (
     <BaseLayout>
@@ -22,6 +15,13 @@ function TestPage() {
         <h1 className={title()}>Test</h1>
         {/* BOTONES */}
         <div className="flex flex-row gap-2">
+          <Button
+            onPress={() => {
+              alert('Un cs?');
+            }}
+          >
+            Botón para el SONE
+          </Button>
           <Button onPress={rutaProtegidaTest}>Test endpoint protegido</Button>
           <Button
             onPress={() => {
@@ -38,9 +38,11 @@ function TestPage() {
         </div>
 
         {/* TEXTOS */}
-        <div className="flex flex-col gap-2">
-          <span>theme: {theme}</span>
-          <span>state: {state}</span>
+        <div className="flex flex-col justify-center items-center gap-2">
+          <h1 className="font-bold text-2xl">theme</h1>
+          <span className=" text-center">{theme}</span>
+          <h1 className="font-bold text-2xl">user</h1>
+          <span className=" text-center w-8/12">{JSON.stringify(user)}</span>
         </div>
       </section>
     </BaseLayout>

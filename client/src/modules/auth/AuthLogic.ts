@@ -1,4 +1,5 @@
-import { callbackApi, loginApi, logoutApi } from '@/services/api.service';
+import { callbackApi, loginApi, logoutApi, refreshTokenApi } from '@/services/api.service';
+import { configureInterceptorResponse } from '@/shared/utils/axios-instance';
 import { generatePKCE, generateRandomString } from '@/shared/utils/security-utils';
 import { addToast } from '@heroui/react';
 import { jwtDecode } from 'jwt-decode';
@@ -13,6 +14,12 @@ export function useAuthLogic() {
 
   useEffect(() => {
     checkLogin();
+
+    // Se inicia el interceptor de axios para las respuestas, pasándole la lógica para el refresh token
+    configureInterceptorResponse({
+      refreshToken,
+      clearJwt,
+    });
   }, []);
 
   // Verificación inicial de si existe un token JWT
@@ -105,7 +112,7 @@ export function useAuthLogic() {
 
       navigate('/dashboard/sonidos');
     } catch (error) {
-      console.error('Error en callback:', error);
+      console.error('Error en callback: ', error);
       addToast({
         title: 'ERROR',
         description: 'Ocurrió un error en el proceso de login, inténtelo de nuevo.',
@@ -119,26 +126,26 @@ export function useAuthLogic() {
   }, []);
 
   // Refresh token
-  // const refreshToken = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const { accessToken } = (await refreshTokenApi()).data;
-  //     setUser(jwtDecode(accessToken));
-  //     localStorage.setItem('accessToken', accessToken);
-  //   } catch (error) {
-  //     console.error('Error en refreshToken:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const refreshToken = async () => {
+    try {
+      setIsLoading(true);
+      const { accessToken } = (await refreshTokenApi()).data;
+      setUser(jwtDecode(accessToken));
+      localStorage.setItem('accessToken', accessToken);
+      return accessToken;
+    } catch (error) {
+      console.error(`Error en refreshToken ${error}`);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Logout
   const logout = async () => {
     try {
       setIsLoading(true);
-      setUser(null);
-      localStorage.clear();
-      navigate('/');
+      clearJwt();
       await logoutApi();
       addToast({
         title: 'OK',
@@ -157,6 +164,13 @@ export function useAuthLogic() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Limpia de forma local el estado de la sesión y redirige al login
+  const clearJwt = () => {
+    localStorage.removeItem('accessToken');
+    setUser(null);
+    navigate('/');
   };
 
   return {

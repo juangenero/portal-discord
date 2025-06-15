@@ -1,4 +1,3 @@
-import { refreshTokenApi } from '@/services/api.service';
 import axios from 'axios';
 
 // Tipo para el array de promesas "pausadas"
@@ -59,9 +58,13 @@ api.interceptors.request.use(
 );
 
 // 2. Cuando alguna solicitud devuelva 401, llamar al endpoint de callback (refresh token)
-export const axiosInterceptorResponse = (
-  setState: React.Dispatch<React.SetStateAction<string>>
-) => {
+export const configureInterceptorResponse = ({
+  refreshToken,
+  clearJwt,
+}: {
+  refreshToken: Function;
+  clearJwt: Function;
+}) => {
   api.interceptors.response.use(
     (response) => {
       return response;
@@ -71,7 +74,12 @@ export const axiosInterceptorResponse = (
       console.log('Instancia de Axios - Solicitud inicial con error -> ', originalRequest);
 
       // Si el error es 401 y no es la solicitud de refresh token en sí
-      if (error.response.status === 401 && originalRequest.url !== '/auth/refresh-token') {
+      if (
+        error?.response?.status === 401 &&
+        originalRequest.url !== '/auth/refresh-token' &&
+        !originalRequest._retry
+      ) {
+        originalRequest._retry = true;
         console.log('Instancia de Axios -> El error es 401 y no fué en /auth/refresh-token');
         // Añadir solicitud a la cola, si ya estábamos refrescando el token
         if (isRefreshingToken) {
@@ -104,10 +112,7 @@ export const axiosInterceptorResponse = (
         return new Promise(async (resolve, reject) => {
           // Intentar obtener el nuevo token
           try {
-            const { accessToken: newAccessToken } = (await refreshTokenApi()).data;
-            localStorage.setItem('accessToken', newAccessToken);
-            setState(newAccessToken);
-            // TODO - Falta mecanismo para actualizar estado User de React
+            const newAccessToken = await refreshToken();
 
             // Reintentar la solicitud original con el nuevo token
             console.log('Instancia de Axios -> Reintentando solicitud original ', originalRequest);
@@ -120,9 +125,7 @@ export const axiosInterceptorResponse = (
           } catch (refreshError) {
             // Si la obtención del nuevo token falla
             console.log('Instancia de Axios - Fallo en refresh token -> ', refreshError);
-            localStorage.clear();
-            // TODO - Falta mecanismo para actualizar estado User de React
-            window.location.href = '/';
+            clearJwt();
 
             // Rechaza las solicitud inicial y las que se pausaron
             reject(refreshError);

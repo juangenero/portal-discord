@@ -35,25 +35,24 @@ export default function LoginPage() {
         />
       </div>
 
-      {/* Cuadro de login */}
-      <div className="absolute flex min-h-screen w-full items-start justify-center pt-48">
-        <section>
-          <Button
-            onPress={async () => {
-              login();
-            }}
-            size="lg"
-            color="secondary"
-            isLoading={isLoading}
-            className="hover:scale-125"
-          >
-            <span className="flex justify-center gap-2">
-              {!isLoading && <DiscordIcon />}
-              Acceder
-            </span>
-          </Button>
-        </section>
-      </div>
+      {/* Botón de login */}
+
+      <section className="flex min-h-screen w-full items-start justify-center pt-[15%]">
+        <Button
+          onPress={async () => {
+            login();
+          }}
+          size="lg"
+          color="default"
+          isLoading={isLoading}
+          className="hover:scale-125"
+        >
+          <span className="flex items-center gap-2">
+            {!isLoading && <DiscordIcon />}
+            Acceder
+          </span>
+        </Button>
+      </section>
     </BaseLayout>
   );
 }
