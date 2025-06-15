@@ -1,5 +1,5 @@
 import { useAuth } from '@/modules/auth/AuthContext';
-import Loader from '@/modules/auth/components/Loader';
+import { Spinner } from '@heroui/react';
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -21,5 +21,10 @@ export default function DiscordCbPage() {
     }
   }, [code, state, callback]);
 
-  return <Loader />;
+  // Loader que se muestra cuando mientras se está realizando el callback o la redirección
+  return (
+    <div className="h-screen w-full flex items-center justify-center">
+      <Spinner variant="gradient" size="lg" />
+    </div>
+  );
 }

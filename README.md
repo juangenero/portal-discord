@@ -14,15 +14,13 @@
 > code
 
 - actualización manual de los datos de un usuario (incluye la gestión/reovación tokens discord)
+- middleware para checkear roles de discord
 
 > Investigar
 
-- autorización con roles de discord en cada petición?
-
 # CLIENT
 
-1. Rutas protegidas
-2. cliente axios (con interceptores)
-3. component spinner
-4. modo oscuro en el spinner (pre aplicación dark mode)
-5. Sistema de alertas
+1. Refrescar estado usuario desde interceptor
+2. Sistema de alertas
+3. Control de errores robusto y (centralizado ?)
+4. Skeleton en tabla sesiones activas

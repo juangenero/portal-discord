@@ -1,8 +1,7 @@
 import BaseLayout from '@/layouts/BaseLayout';
 import { useAuth } from '@/modules/auth/AuthContext';
-import Loader from '@/modules/auth/components/Loader';
 import { DiscordIcon } from '@/shared/components/Icons';
-import { Button } from '@heroui/react';
+import { Button, Spinner } from '@heroui/react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +17,11 @@ export default function LoginPage() {
 
   // Loader que se muestra mientras se hace la redirección del useEffect cuando se está logado
   if (isAuthenticated && !isLoading) {
-    return <Loader />;
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        <Spinner variant="gradient" size="lg" />
+      </div>
+    );
   }
 
   return (
