@@ -14,6 +14,7 @@ const CONFIG: ConfigData = Object.freeze({
   APP_RATE_LIMIT_TIME: Number(process.env.APP_RATE_LIMIT_TIME) || 60, // Número de segundos para reestablecer el contador del rate limit global
   APP_RATE_LIMIT_REQUEST: Number(process.env.APP_RATE_LIMIT_REQUEST) || 30, // Número máximo de peticiones para el rate limit global
   URL_ORIGIN_CLIENT: getEnvVar('URL_ORIGIN_CLIENT'), // URL del cliente permitida en las CORS
+  ENABLE_FILE_LOGGING: checkBoolean('ENABLE_FILE_LOGGING'), // Activar el guardado de logs en el sistema de archivos (./src/logs)
 
   // AUTH
   SIGN_TOKENS_DISCORD: process.env.SIGN_TOKENS_DISCORD || 'my_secret_key3', // Firma para los tokens de discord

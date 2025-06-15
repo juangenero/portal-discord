@@ -8,6 +8,7 @@ interface ConfigData {
   APP_RATE_LIMIT_TIME: number;
   APP_RATE_LIMIT_REQUEST: number;
   URL_ORIGIN_CLIENT: string;
+  ENABLE_FILE_LOGGING: boolean;
 
   // Auth
   SIGN_TOKENS_DISCORD: string;

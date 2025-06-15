@@ -2,7 +2,7 @@ import { join } from 'path';
 import { createLogger, format, transports } from 'winston';
 import CONFIG from '../../../config/env.config';
 
-const { MODE_DEBUG } = CONFIG;
+const { MODE_DEBUG, ENABLE_FILE_LOGGING } = CONFIG;
 const logDir = 'logs';
 
 const buildLogger = () => {
@@ -13,23 +13,32 @@ const buildLogger = () => {
     })
   );
 
-  // Transporte para error.log (solo errores)
-  const errorFileTransport = new transports.File({
-    filename: join(logDir, 'error.log'),
-    level: 'error',
-    format: baseFormat,
-  });
+  // Configuración del transport
+  const loggerTransports: [transports.FileTransportInstance | transports.ConsoleTransportInstance] =
+    [new transports.Console()];
 
-  // Transporte para app.log (todos los niveles)
-  const appFileTransport = new transports.File({
-    filename: join(logDir, 'app.log'),
-    format: baseFormat,
-  });
+  if (ENABLE_FILE_LOGGING) {
+    // Transporte para app.log (todos los niveles)
+    const appFileTransport = new transports.File({
+      filename: join(logDir, 'app.log'),
+      format: baseFormat,
+    });
+
+    // Transporte para error.log (solo errores)
+    const errorFileTransport = new transports.File({
+      filename: join(logDir, 'error.log'),
+      level: 'error',
+      format: baseFormat,
+    });
+
+    // Agregar a la configuración los 2 transports creados
+    loggerTransports.push(appFileTransport, errorFileTransport);
+  }
 
   const logger = createLogger({
     level: MODE_DEBUG ? 'debug' : 'info',
     format: baseFormat,
-    transports: [new transports.Console(), errorFileTransport, appFileTransport],
+    transports: loggerTransports,
   });
 
   return {
