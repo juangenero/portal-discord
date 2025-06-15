@@ -1,90 +1,138 @@
-import { AuthContextType } from '@/modules/auth/AuthContext';
+import { refreshTokenApi } from '@/services/api.service';
 import axios from 'axios';
 
-// Se recomienda exportar e importar esta instancia de axios en lugar de usar la default
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // Tu base URL de la API
-  headers: {
-    'Content-Type': 'application/json', // O 'application/x-www-form-urlencoded' según tu backend
-  },
-  withCredentials: true, // Esto es importante si usas cookies para el refresh token
-});
-
-// Variable global para almacenar las funciones de auth del contexto
-// Esta es la clave para que el interceptor pueda acceder a `refreshToken` y `logout`
-let globalAuthService: AuthContextType | null = null;
-
-// Función para inyectar el servicio de autenticación desde el AuthProvider
-export const setGlobalAuthService = (service: AuthContextType) => {
-  globalAuthService = service;
+// Tipo para el array de promesas "pausadas"
+type PausedPromise = {
+  resolve: (value?: string | null) => void;
+  reject: (reason?: any) => void;
 };
 
-// 1. Añadir el token JWT a la cabecera "Authorization"
-api.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+// Instancia de axios para los endpoint de authenticación de la API
+export const apiAuth = axios.create({
+  baseURL: import.meta.env.VITE_API_URL + '/api/v1/auth',
+  withCredentials: true,
+});
+
+/**
+ * Puntos que cubre la instancia "api"
+ *
+ * 1. El token JWT se añade a la cabecera "Authorization"
+ * 2. Cuando se recibe un 401 en una solicitud (que no sea la de refresco) se intenta refrescar
+ * 3. Mientras se está intentando refrescar el token, se encolan las solicitudes que se realicen
+ * 4. Si se refresca el token se reintenta la solicitud original y las encoladas
+ * 5. Si no se puede refrescar el token se rechaza la solicitud original y las encoladas
+ */
+
+// Instancia de axios para los endpoints protegidos de la API
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL + '/api/v1',
+  withCredentials: true,
+});
+
+let isRefreshingToken = false; // Controlar si hay una petición de refresh token en curso
+let failedQueue: Array<PausedPromise> = []; // Almacenar las solicitudes fallidas mientras se refresca el token
+
+// Cola para procesar las peticiones con 401 mientras se refresca el token
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(token);
     }
-    return config;
+  });
+  failedQueue = [];
+};
+
+// 1. Añadir token JWT a la cabecera de todas las peticiones
+api.interceptors.request.use(
+  (req) => {
+    const jwtToken = localStorage.getItem('accessToken');
+    if (jwtToken) {
+      req.headers.Authorization = `Bearer ${jwtToken}`;
+    }
+    return req;
   },
   (error) => {
     return Promise.reject(error);
   }
 );
 
-// 2. Realizar el refresco del token cuando reciba un 401 (excepto en el propio endpoint de refresh)
-// 3. Si recibe 401 en el refresco, redirige al login
+// 2. Cuando alguna solicitud devuelva 401, llamar al endpoint de callback (refresh token)
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
+    console.log('Instancia de Axios - Solicitud inicial con error -> ', originalRequest);
 
-    // Asegurarse de que el servicio de autenticación esté disponible
-    const authService = globalAuthService;
-    if (!authService) {
-      console.error(
-        'Servicio de autenticación no disponible para el interceptor. Asegúrate de que AuthProvider envuelva la App.'
-      );
-      return Promise.reject(error);
-    }
-
-    // Comprobar si es un 401 y no es la petición de refresco en sí misma
-    // Asume que tu endpoint de refresh token contiene '/api/auth/refresh'
-    // ¡¡MUY IMPORTANTE!! Ajusta la condición de `!originalRequest.url?.includes('/api/auth/refresh')`
-    // a la URL real de tu endpoint de refresco.
-    if (
-      error.response?.status === 401 &&
-      originalRequest.url &&
-      !originalRequest.url.includes('/api/auth/refresh')
-    ) {
-      try {
+    // Si el error es 401 y no es la solicitud de refresh token en sí
+    if (error.response.status === 401 && originalRequest.url !== '/auth/refresh-token') {
+      console.log('Instancia de Axios -> El error es 401 y no fué en /auth/refresh-token');
+      // Añadir solicitud a la cola, si ya estábamos refrescando el token
+      if (isRefreshingToken) {
         console.log(
-          '401 recibido en una petición a endpoint protegido. Intentando refrescar token...'
+          'Instancia de Axios -> El token ya se está refrescando, pausando solicitud inicial'
         );
-        await authService.refreshToken(); // Intenta renovar el token
-
-        // Si el refresco fue exitoso, reintenta la petición original con el nuevo token
-        const newAccessToken = localStorage.getItem('accessToken');
-        if (newAccessToken) {
-          // Asegurarse de que se haya guardado el nuevo token
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return api(originalRequest); // Reintentar la petición original
-        } else {
-          // Esto no debería pasar si refreshToken fue exitoso
-          throw new Error('Refresh token successful but no new access token found.');
-        }
-      } catch (refreshError: any) {
-        // Si el refresco falla (ej. también devuelve 401 o cualquier otro error en el refresh endpoint)
-        console.error('Error al intentar refrescar el token. Redirigiendo a login.', refreshError);
-        authService.logout(); // Limpia el estado local y redirige al login
-        return Promise.reject(refreshError); // Rechaza la petición original
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            console.log(
+              'Instancia de Axios -> Reintenando solicitudes pausadas con el token ',
+              token
+            );
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => {
+            console.log(
+              'Instancia de Axios -> Rechazando solicitudes pausadas, no se pudo refrescar el token ',
+              err
+            );
+            return Promise.reject(err);
+          });
       }
+
+      isRefreshingToken = true; // Indicar que el proceso de refresco ha comenzado
+
+      // Realiza la solicitud de refresh token
+      return new Promise(async (resolve, reject) => {
+        // Intentar obtener el nuevo token
+        try {
+          const { accessToken: newAccessToken } = (await refreshTokenApi()).data;
+          localStorage.setItem('accessToken', newAccessToken);
+          // TODO - Falta mecanismo para actualizar estado User de React
+
+          // Reintentar la solicitud original con el nuevo token
+          console.log('Instancia de Axios -> Reintentando solicitud original ', originalRequest);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          resolve(api(originalRequest));
+
+          // Reintentar las solicitudes en cola (pausadas) con el nuevo token
+          console.log('Instancia de Axios -> Reintenando solicitudes pausadas');
+          processQueue(null, newAccessToken);
+        } catch (refreshError) {
+          // Si la obtención del nuevo token falla
+          console.log('Instancia de Axios - Fallo en refresh token -> ', refreshError);
+          localStorage.clear();
+          // TODO - Falta mecanismo para actualizar estado User de React
+          window.location.href = '/';
+
+          // Rechaza las solicitud inicial y las que se pausaron
+          reject(refreshError);
+          processQueue(refreshError);
+        } finally {
+          isRefreshingToken = false;
+        }
+      });
     }
 
-    // Para cualquier otro error o si no es un 401 manejado
+    // Devuelve cualquier otro error no manejado a la solicitud inicial
+    console.log(`Axios instance - Error no manejado -> ${error}`);
     return Promise.reject(error);
   }
 );
 
-export default api; // Exporta tu instancia de Axios configurada
+export default api;

@@ -1,6 +1,6 @@
 // import type { NavigateOptions } from 'react-router-dom';
 
-import { HeroUIProvider } from '@heroui/system';
+import { HeroUIProvider } from '@heroui/react';
 import { useTheme } from '@heroui/use-theme';
 import { NavigateOptions, useHref, useNavigate } from 'react-router-dom';
 
@@ -10,7 +10,7 @@ declare module '@react-types/shared' {
   }
 }
 
-const ThemeInitializer: React.FC = () => {
+const ThemeInitializer = () => {
   useTheme();
   return null;
 };

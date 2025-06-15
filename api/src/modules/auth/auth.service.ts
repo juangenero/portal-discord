@@ -13,8 +13,15 @@ import { upsertUser } from '../user/user.service';
 import { ResponseTokensDto } from './types/auth.dto';
 import { RefreshTokenCookieData } from './types/auth.types';
 
-const { NODE_ENV, DISCORD_URL_AUTH, DISCORD_OAUTH2_CLIENT_ID, DISCORD_OAUTH2_REDIRECT_URI } =
-  CONFIG;
+const {
+  NODE_ENV,
+  DISCORD_URL_AUTH,
+  DISCORD_OAUTH2_CLIENT_ID,
+  DISCORD_OAUTH2_REDIRECT_URI,
+  PATH_COOKIE,
+} = CONFIG;
+
+const isProduction = NODE_ENV === 'pro';
 
 // Paso 1 - Devuelve la URL para iniciar el flujo de login en Discord
 export function getUrlAuthDiscord(): string {
@@ -70,10 +77,10 @@ export async function callback(
       value: sesionCreated.refreshToken,
       options: {
         httpOnly: true,
-        secure: NODE_ENV === 'pro', // Solo HTTPS en producción
+        secure: isProduction, // Solo HTTPS en producción
         expires: sesionCreated.fechaExpiracion,
-        sameSite: NODE_ENV === 'pro' ? 'none' : 'lax',
-        path: '/auth',
+        sameSite: isProduction ? 'none' : 'lax',
+        path: PATH_COOKIE,
       },
     },
   };
@@ -111,8 +118,8 @@ export async function getRefreshToken(
         httpOnly: true,
         secure: NODE_ENV === 'pro',
         expires: rotateRefreshTokenDto.fechaExpiracion,
-        sameSite: NODE_ENV === 'pro' ? 'none' : 'lax',
-        path: '/auth',
+        sameSite: isProduction ? 'none' : 'lax',
+        path: PATH_COOKIE,
       },
     },
   };
@@ -134,10 +141,10 @@ export async function logout(refreshToken: string): Promise<RefreshTokenCookieDa
     value: '',
     options: {
       httpOnly: true,
-      secure: NODE_ENV === 'pro',
+      secure: isProduction,
       expires: new Date(Date.now()),
-      sameSite: NODE_ENV === 'pro' ? 'none' : 'lax',
-      path: '/auth',
+      sameSite: isProduction ? 'none' : 'lax',
+      path: PATH_COOKIE,
     },
   };
 

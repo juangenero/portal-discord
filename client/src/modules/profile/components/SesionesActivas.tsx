@@ -5,6 +5,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -18,6 +19,7 @@ import { useEffect, useState } from 'react';
 function SesionesActivas() {
   const { user } = useAuth();
   const [sessions, setSessions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getSessions();
@@ -30,6 +32,8 @@ function SesionesActivas() {
       (a: any, b: any) =>
         new Date(b.fechaActualizacion).getTime() - new Date(a.fechaActualizacion).getTime()
     );
+
+    setIsLoading(false);
     setSessions(sortedSessions);
   }
 
@@ -59,6 +63,10 @@ function SesionesActivas() {
       label: 'IP',
     },
     {
+      key: 'browser',
+      label: 'NAVEGADOR',
+    },
+    {
       key: 'location',
       label: 'UBICACIÓN',
     },
@@ -77,12 +85,16 @@ function SesionesActivas() {
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={sessions}>
+      <TableBody
+        items={sessions}
+        isLoading={isLoading}
+        loadingContent={<Spinner variant="gradient" />}
+      >
         {(sesion: any) => (
           <TableRow key={sesion.id}>
             {/* SISTEMA */}
             <TableCell>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-2">
                 {sesion.deviceInfo.sistemaOperativo === 'Windows' ? <WindowIcon size={16} /> : null}
                 {sesion.deviceInfo.sistemaOperativo}
               </div>
@@ -91,15 +103,16 @@ function SesionesActivas() {
             {/* IP */}
             <TableCell>{sesion.deviceInfo.ip}</TableCell>
 
+            {/* NAVEGADOR */}
+            <TableCell>{sesion.deviceInfo.navegador}</TableCell>
+
             {/* UBICACIÓN */}
             <TableCell>
               <div className="flex items-center gap-1">
                 <LocationIcon size={16} />
                 {`${sesion.deviceInfo.ciudad ?? sesion.deviceInfo.ciudad}`}
-                {', '}
-                {`${sesion.deviceInfo.region ?? sesion.deviceInfo.region}`}
-                {', '}
-                {`${sesion.deviceInfo.pais ?? sesion.deviceInfo.pais}`}{' '}
+                {sesion.deviceInfo.region ? ', ' + sesion.deviceInfo.region : undefined}
+                {sesion.deviceInfo.pais ? ', ' + sesion.deviceInfo.pais : undefined}
               </div>
             </TableCell>
 
@@ -112,13 +125,13 @@ function SesionesActivas() {
                 <Popover placement="top">
                   <PopoverTrigger>
                     <div>
-                      <TrashIcon size={20} color="gray" />
+                      <TrashIcon size={20} color="gray" className="cursor-pointer" />
                     </div>
                   </PopoverTrigger>
                   <PopoverContent>
                     <div className="px-1 py-2">
-                      <div className="font-bold">Esta es tu sesión actual</div>
-                      <div className="text-tiny">Puedes cerrarla desde el menú de usuario</div>
+                      <div className="font-extrabold">Esta es tu sesión actual</div>
+                      <div>Puedes cerrarla desde el menú de usuario</div>
                     </div>
                   </PopoverContent>
                 </Popover>

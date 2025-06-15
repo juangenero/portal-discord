@@ -8,5 +8,6 @@ export default defineConfig({
   base: './',
   server: {
     open: true,
+    host: true,
   },
 });

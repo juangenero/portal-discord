@@ -1,4 +1,4 @@
-import { callbackApi, loginApi, logoutApi, refreshTokenApi } from '@/services/api.service';
+import { callbackApi, loginApi, logoutApi } from '@/services/api.service';
 import { generatePKCE, generateRandomString } from '@/shared/utils/security-utils';
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
@@ -11,7 +11,6 @@ export const useAuthLogic = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('check login');
     checkLogin();
   }, []);
 
@@ -101,27 +100,27 @@ export const useAuthLogic = () => {
   }, []);
 
   // Refresh token
-  const refreshToken = async () => {
-    try {
-      setIsLoading(true);
-      const { accessToken } = (await refreshTokenApi()).data;
-      setUser(jwtDecode(accessToken));
-      localStorage.setItem('accessToken', accessToken);
-    } catch (error) {
-      console.error('Error en refreshToken:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const refreshToken = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const { accessToken } = (await refreshTokenApi()).data;
+  //     setUser(jwtDecode(accessToken));
+  //     localStorage.setItem('accessToken', accessToken);
+  //   } catch (error) {
+  //     console.error('Error en refreshToken:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   // Logout
   const logout = async () => {
     try {
       setIsLoading(true);
+      await logoutApi();
       setUser(null);
-      localStorage.removeItem('accessToken');
+      localStorage.clear();
       navigate('/');
-      logoutApi();
     } catch (error) {
       console.error('Error en logout:', error);
       throw error;
@@ -136,7 +135,6 @@ export const useAuthLogic = () => {
     isLoading,
     login,
     callback,
-    refreshToken,
     logout,
   };
 };

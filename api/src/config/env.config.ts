@@ -8,10 +8,12 @@ const CONFIG: ConfigData = Object.freeze({
   // APLICACIÓN
   PORT: process.env.PORT || '3000', // Puerto del servidor
   NODE_ENV: checkNodeEnv(), // Entorno de la aplicación
-  MODE_DEBUG: checkModeDebug(), // Modo debug de la aplicación
+  MODE_DEBUG: checkBoolean('MODE_DEBUG'), // Modo debug de la aplicación
   TRUST_PROXY: Number(process.env.TRUST_PROXY) || 1, // Saltos proxy para obtener la IP del cliente (con req.ip)
+  APP_RATE_LIMIT_ENABLED: checkBoolean('APP_RATE_LIMIT_ENABLED'), // Activar rate limit de aplicación
   APP_RATE_LIMIT_TIME: Number(process.env.APP_RATE_LIMIT_TIME) || 60, // Número de segundos para reestablecer el contador del rate limit global
-  APP_RATE_LIMIT_REQUEST: Number(process.env.APP_RATE_LIMIT_REQUEST) || 10, // Número máximo de peticiones para el rate limit global
+  APP_RATE_LIMIT_REQUEST: Number(process.env.APP_RATE_LIMIT_REQUEST) || 30, // Número máximo de peticiones para el rate limit global
+  URL_ORIGIN_CLIENT: getEnvVar('URL_ORIGIN_CLIENT'), // URL del cliente permitida en las CORS
 
   // AUTH
   SIGN_TOKENS_DISCORD: process.env.SIGN_TOKENS_DISCORD || 'my_secret_key3', // Firma para los tokens de discord
@@ -28,8 +30,10 @@ const CONFIG: ConfigData = Object.freeze({
   SIGN_REFRESH_TOKEN: process.env.SIGN_REFRESH_TOKEN || 'my_secret_key2', // Firma del refresh token
   EXPIRE_TIME_ACCESS_TOKEN: Number(process.env.EXPIRE_TIME_ACCESS_TOKEN) || 900, // Segundos de expiración access token (15 minutos por defecto)
   EXPIRE_TIME_REFRESH_TOKEN: Number(process.env.EXPIRE_TIME_REFRESH_TOKEN) || 604800, // Segundos de expiración refresh token (7 días por defecto)
+  PATH_COOKIE: process.env.PATH_COOKIE || '/api/v1/auth', // Ruta donde el navegador enviará las cookies
 
-  AUTH_RATE_LIMIT_TIME: Number(process.env.AUTH_RATE_LIMIT_TIME) || 300, // Número de segundos para reestablecer el contador del rate limit de auth.routes
+  AUTH_RATE_LIMIT_ENABLED: checkBoolean('AUTH_RATE_LIMIT_ENABLED'), // Activar rate limit de aplicación
+  AUTH_RATE_LIMIT_TIME: Number(process.env.AUTH_RATE_LIMIT_TIME) || 60, // Número de segundos para reestablecer el contador del rate limit de auth.routes
   AUTH_RATE_LIMIT_REQUEST: Number(process.env.AUTH_RATE_LIMIT_REQUEST) || 10, // Número máximo de peticiones para el rate limit de auth.routes
 
   // Discord Bot
@@ -65,9 +69,10 @@ function checkNodeEnv(): 'dev' | 'pro' {
   return nodeEnvValue;
 }
 
-// Check MODE_DEBUG
-function checkModeDebug(): boolean {
-  return process.env.MODE_DEBUG !== undefined && process.env.MODE_DEBUG.toLowerCase() === 'true';
+// Check variables booleanas
+function checkBoolean(key: string): boolean {
+  const envVarValue = process.env[key];
+  return envVarValue !== undefined && envVarValue.toLowerCase() === 'true';
 }
 
 export default CONFIG;

@@ -97,7 +97,9 @@ export async function verifyRefreshToken(refreshToken: string): Promise<void> {
 
   // Validar existencia de la sesión
   if (!sessionBD) {
-    throw new AuthorizationError(`No existe la sesión con el token ${refreshToken}`);
+    throw new AuthorizationError(
+      `No existe la sesión con el token ${refreshToken} -> HASH -> ${refreshTokenUserHashed}`
+    );
   }
 
   // Validar que la sesión no ha expirado

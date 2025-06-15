@@ -15,7 +15,7 @@ import { swaggerOptions } from './shared/swagger/swagger';
 import log from './shared/utils/log/logger';
 import { appRateLimit, authRateLimit } from './shared/utils/rate-limits/limiters';
 
-const { PORT, TRUST_PROXY } = CONFIG;
+const { PORT, TRUST_PROXY, URL_ORIGIN_CLIENT } = CONFIG;
 
 const app: express.Application = express();
 const apiRouter = express.Router();
@@ -25,7 +25,12 @@ app.use(express.static(path.join(__dirname, './../public')));
 app.set('trust proxy', TRUST_PROXY); // Confiar en proxy
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors());
+app.use(
+  cors({
+    origin: URL_ORIGIN_CLIENT,
+    credentials: true, // Permitir envío y recepción de cookies
+  })
+);
 
 // Rutas públicas
 apiRouter.use('/test', testRouterPublic);
@@ -43,8 +48,7 @@ apiRouter.use('/sesion', sessionRouter);
 app.use('/api/v1', apiRouter);
 
 // Middleware global para manejar errores
-app.use(notFoundHandler);
-app.use(errorHandler);
+app.use(notFoundHandler, errorHandler);
 
 // Manejo de errores globales fuera del ciclo de Express
 process.on('unhandledRejection', (reason, promise) =>

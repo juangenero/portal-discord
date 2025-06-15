@@ -1,51 +1,38 @@
-import axios from 'axios';
+import { api, apiAuth } from '@/shared/utils/axios-instance';
+
+// AUTH
 
 export async function loginApi() {
-  return await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/auth/login`);
+  return await apiAuth.get(`/login`);
 }
 
 export async function callbackApi(formData: URLSearchParams) {
-  return await axios.post(`/api/v1/auth/callback`, formData, {
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  });
+  return await apiAuth.post(`/callback`, formData);
 }
 
 export async function refreshTokenApi() {
-  return await axios.put('/api/v1/auth/refresh-token', null, {
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true,
-  });
+  return await apiAuth.put('/refresh-token');
 }
 
 export async function logoutApi() {
-  return await axios.delete(`/api/v1/auth/logout`, {
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true,
-  });
+  return await apiAuth.delete(`/logout`);
 }
 
 // SESIONES
 
 export async function getSessionsApi() {
-  return await axios.get(`/api/v1/sesion`, {
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-    },
-  });
+  return await api.get(`/sesion`);
 }
 
 export async function deleteSessionApi(idSession: string) {
-  return await axios.delete(`/api/v1/sesion/${idSession}`, {
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true,
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-    },
-  });
+  return await api.delete(`/sesion/${idSession}`);
+}
+
+// TEST
+export async function infoDeviceTest() {
+  return await api.get(`/test/info-device`);
+}
+
+export async function rutaProtegidaTest() {
+  return await api.get(`/test/ruta-protegida`);
 }

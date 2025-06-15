@@ -4,8 +4,10 @@ interface ConfigData {
   NODE_ENV: 'dev' | 'pro';
   MODE_DEBUG: boolean;
   TRUST_PROXY: number;
+  APP_RATE_LIMIT_ENABLED: boolean;
   APP_RATE_LIMIT_TIME: number;
   APP_RATE_LIMIT_REQUEST: number;
+  URL_ORIGIN_CLIENT: string;
 
   // Auth
   SIGN_TOKENS_DISCORD: string;
@@ -22,7 +24,9 @@ interface ConfigData {
   SIGN_REFRESH_TOKEN: string;
   EXPIRE_TIME_REFRESH_TOKEN: number;
   EXPIRE_TIME_ACCESS_TOKEN: number;
+  PATH_COOKIE: string;
 
+  AUTH_RATE_LIMIT_ENABLED: boolean;
   AUTH_RATE_LIMIT_TIME: number;
   AUTH_RATE_LIMIT_REQUEST: number;
 

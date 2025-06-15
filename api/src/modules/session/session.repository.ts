@@ -2,6 +2,7 @@ import { Session } from '../../../prisma/generated/client';
 import prisma from '../../config/prisma.config';
 import { DatabaseError } from '../../shared/errors/error-factory';
 import { DeviceInfoDto } from '../../shared/utils/client-info/types/device-info.dto';
+import log from '../../shared/utils/log/logger';
 import { SessionWithUserData } from './types/session.domain';
 import { CreateSessionData } from './types/session.types';
 
@@ -64,6 +65,8 @@ export async function getSessionByTokenDB(tokenHash: string): Promise<Session | 
         refreshTokenHash: tokenHash,
       },
     });
+
+    log.debug(`getSessionByTokenDB -> ${JSON.stringify(session)}`);
 
     return session;
   } catch (error) {

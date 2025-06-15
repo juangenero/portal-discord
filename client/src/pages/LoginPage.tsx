@@ -25,22 +25,29 @@ export default function LoginPage() {
     <BaseLayout showNavbar={false}>
       {/* Imagen de fondo */}
       <div className="absolute inset-0 z-0">
-        <img src="img/3.png" alt="background login page" className="h-full w-full object-cover" />
+        <img
+          src="/images/2.png"
+          alt="background login page"
+          className="h-full w-full object-cover"
+        />
       </div>
 
       {/* Cuadro de login */}
       <div className="absolute flex min-h-screen w-full items-start justify-center pt-48">
-        <section className="px-20 py-10 max-w-md backdrop-blur rounded-3xl">
+        <section>
           <Button
             onPress={async () => {
               login();
             }}
             size="lg"
-            color="primary"
+            color="secondary"
             isLoading={isLoading}
+            className="hover:scale-125"
           >
-            {!isLoading && <DiscordIcon />}
-            Iniciar sesión
+            <span className="flex justify-center gap-2">
+              {!isLoading && <DiscordIcon />}
+              Acceder
+            </span>
           </Button>
         </section>
       </div>
