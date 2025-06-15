@@ -7,19 +7,17 @@ export default function SonidoPage() {
 
   return (
     <BaseLayout>
-      <div className="flex flex-col items-center justify-center">
-        <h1 className={title()}>Sonidos</h1>
+      <h1 className={title()}>Sonidos</h1>
 
-        <div>
-          <img
-            src={theme === 'light' ? '/images/soundboard_light.png' : '/images/soundboard_dark.png'}
-            alt="soundboard"
-            onClick={() => {
-              window.open('https://alcala-city.github.io/soundboard', '_blank');
-            }}
-            className="rounded-lg cursor-pointer mt-10"
-          />
-        </div>
+      <div>
+        <img
+          src={theme === 'light' ? '/images/soundboard_light.png' : '/images/soundboard_dark.png'}
+          alt="soundboard"
+          onClick={() => {
+            window.open('https://alcala-city.github.io/soundboard', '_blank');
+          }}
+          className="rounded-lg cursor-pointer mt-10"
+        />
       </div>
     </BaseLayout>
   );

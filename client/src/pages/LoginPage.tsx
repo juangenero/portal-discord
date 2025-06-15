@@ -25,7 +25,7 @@ export default function LoginPage() {
   }
 
   return (
-    <BaseLayout showNavbar={false}>
+    <BaseLayout showNavbar={false} showFooter={false}>
       {/* Imagen de fondo */}
       <div className="absolute inset-0 z-0">
         <img

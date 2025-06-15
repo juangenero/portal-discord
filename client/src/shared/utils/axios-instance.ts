@@ -59,80 +59,85 @@ api.interceptors.request.use(
 );
 
 // 2. Cuando alguna solicitud devuelva 401, llamar al endpoint de callback (refresh token)
-api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
-    console.log('Instancia de Axios - Solicitud inicial con error -> ', originalRequest);
+export const axiosInterceptorResponse = (
+  setState: React.Dispatch<React.SetStateAction<string>>
+) => {
+  api.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    async (error) => {
+      const originalRequest = error.config;
+      console.log('Instancia de Axios - Solicitud inicial con error -> ', originalRequest);
 
-    // Si el error es 401 y no es la solicitud de refresh token en sí
-    if (error.response.status === 401 && originalRequest.url !== '/auth/refresh-token') {
-      console.log('Instancia de Axios -> El error es 401 y no fué en /auth/refresh-token');
-      // Añadir solicitud a la cola, si ya estábamos refrescando el token
-      if (isRefreshingToken) {
-        console.log(
-          'Instancia de Axios -> El token ya se está refrescando, pausando solicitud inicial'
-        );
-        return new Promise(function (resolve, reject) {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            console.log(
-              'Instancia de Axios -> Reintenando solicitudes pausadas con el token ',
-              token
-            );
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return api(originalRequest);
+      // Si el error es 401 y no es la solicitud de refresh token en sí
+      if (error.response.status === 401 && originalRequest.url !== '/auth/refresh-token') {
+        console.log('Instancia de Axios -> El error es 401 y no fué en /auth/refresh-token');
+        // Añadir solicitud a la cola, si ya estábamos refrescando el token
+        if (isRefreshingToken) {
+          console.log(
+            'Instancia de Axios -> El token ya se está refrescando, pausando solicitud inicial'
+          );
+          return new Promise(function (resolve, reject) {
+            failedQueue.push({ resolve, reject });
           })
-          .catch((err) => {
-            console.log(
-              'Instancia de Axios -> Rechazando solicitudes pausadas, no se pudo refrescar el token ',
-              err
-            );
-            return Promise.reject(err);
-          });
+            .then((token) => {
+              console.log(
+                'Instancia de Axios -> Reintenando solicitudes pausadas con el token ',
+                token
+              );
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              return api(originalRequest);
+            })
+            .catch((err) => {
+              console.log(
+                'Instancia de Axios -> Rechazando solicitudes pausadas, no se pudo refrescar el token ',
+                err
+              );
+              return Promise.reject(err);
+            });
+        }
+
+        isRefreshingToken = true; // Indicar que el proceso de refresco ha comenzado
+
+        // Realiza la solicitud de refresh token
+        return new Promise(async (resolve, reject) => {
+          // Intentar obtener el nuevo token
+          try {
+            const { accessToken: newAccessToken } = (await refreshTokenApi()).data;
+            localStorage.setItem('accessToken', newAccessToken);
+            setState(newAccessToken);
+            // TODO - Falta mecanismo para actualizar estado User de React
+
+            // Reintentar la solicitud original con el nuevo token
+            console.log('Instancia de Axios -> Reintentando solicitud original ', originalRequest);
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            resolve(api(originalRequest));
+
+            // Reintentar las solicitudes en cola (pausadas) con el nuevo token
+            console.log('Instancia de Axios -> Reintenando solicitudes pausadas');
+            processQueue(null, newAccessToken);
+          } catch (refreshError) {
+            // Si la obtención del nuevo token falla
+            console.log('Instancia de Axios - Fallo en refresh token -> ', refreshError);
+            localStorage.clear();
+            // TODO - Falta mecanismo para actualizar estado User de React
+            window.location.href = '/';
+
+            // Rechaza las solicitud inicial y las que se pausaron
+            reject(refreshError);
+            processQueue(refreshError);
+          } finally {
+            isRefreshingToken = false;
+          }
+        });
       }
 
-      isRefreshingToken = true; // Indicar que el proceso de refresco ha comenzado
-
-      // Realiza la solicitud de refresh token
-      return new Promise(async (resolve, reject) => {
-        // Intentar obtener el nuevo token
-        try {
-          const { accessToken: newAccessToken } = (await refreshTokenApi()).data;
-          localStorage.setItem('accessToken', newAccessToken);
-          // TODO - Falta mecanismo para actualizar estado User de React
-
-          // Reintentar la solicitud original con el nuevo token
-          console.log('Instancia de Axios -> Reintentando solicitud original ', originalRequest);
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          resolve(api(originalRequest));
-
-          // Reintentar las solicitudes en cola (pausadas) con el nuevo token
-          console.log('Instancia de Axios -> Reintenando solicitudes pausadas');
-          processQueue(null, newAccessToken);
-        } catch (refreshError) {
-          // Si la obtención del nuevo token falla
-          console.log('Instancia de Axios - Fallo en refresh token -> ', refreshError);
-          localStorage.clear();
-          // TODO - Falta mecanismo para actualizar estado User de React
-          window.location.href = '/';
-
-          // Rechaza las solicitud inicial y las que se pausaron
-          reject(refreshError);
-          processQueue(refreshError);
-        } finally {
-          isRefreshingToken = false;
-        }
-      });
+      // Devuelve cualquier otro error no manejado a la solicitud inicial
+      console.log(`Axios instance - Error no manejado -> ${error}`);
+      return Promise.reject(error);
     }
-
-    // Devuelve cualquier otro error no manejado a la solicitud inicial
-    console.log(`Axios instance - Error no manejado -> ${error}`);
-    return Promise.reject(error);
-  }
-);
+  );
+};
 
 export default api;

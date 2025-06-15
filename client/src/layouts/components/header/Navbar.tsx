@@ -20,6 +20,11 @@ export const Navbar = () => {
             Sonidos
           </RouterLink>
         </NavbarItem>
+        <NavbarItem>
+          <RouterLink color="foreground" to="/dashboard/test">
+            Test
+          </RouterLink>
+        </NavbarItem>
       </NavbarContent>
       {/* Menú de usuario */}
       <NavbarContent justify="end">

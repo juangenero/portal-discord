@@ -1,11 +1,12 @@
 import { callbackApi, loginApi, logoutApi } from '@/services/api.service';
 import { generatePKCE, generateRandomString } from '@/shared/utils/security-utils';
+import { addToast } from '@heroui/react';
 import { jwtDecode } from 'jwt-decode';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from './Auth.types';
 
-export const useAuthLogic = () => {
+export function useAuthLogic() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -21,15 +22,21 @@ export const useAuthLogic = () => {
 
       if (accessToken) {
         const user: User = jwtDecode(accessToken);
-        console.info('usuario -> ', user);
         setUser(user);
       } else {
         setUser(null);
       }
     } catch (error) {
+      console.log('Error al validar la sesión ', error);
       localStorage.removeItem('accessToken');
       setUser(null);
       navigate('/');
+      addToast({
+        title: 'ERROR',
+        description: 'No se pudo validar su sesión.',
+        severity: 'danger',
+        color: 'danger',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -57,6 +64,13 @@ export const useAuthLogic = () => {
       window.location.href = finalUrl;
     } catch (error) {
       console.error('Error al obtener la URL de login', error);
+      addToast({
+        title: 'ERROR',
+        description: 'No se pudo obtener la URL de autorización de Discord.',
+        severity: 'danger',
+        color: 'danger',
+      });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -91,9 +105,14 @@ export const useAuthLogic = () => {
 
       navigate('/dashboard/sonidos');
     } catch (error) {
-      navigate('/');
       console.error('Error en callback:', error);
-      throw error;
+      addToast({
+        title: 'ERROR',
+        description: 'Ocurrió un error en el proceso de login, inténtelo de nuevo.',
+        severity: 'danger',
+        color: 'danger',
+      });
+      navigate('/');
     } finally {
       setIsLoading(false);
     }
@@ -117,13 +136,24 @@ export const useAuthLogic = () => {
   const logout = async () => {
     try {
       setIsLoading(true);
-      await logoutApi();
       setUser(null);
       localStorage.clear();
       navigate('/');
+      await logoutApi();
+      addToast({
+        title: 'OK',
+        description: 'Sesión cerrada correctamente.',
+        severity: 'success',
+        color: 'success',
+      });
     } catch (error) {
       console.error('Error en logout:', error);
-      throw error;
+      addToast({
+        title: 'AVISO',
+        description: 'La sesión no se cerró correctamente en el servidor.',
+        severity: 'warning',
+        color: 'warning',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -137,4 +167,4 @@ export const useAuthLogic = () => {
     callback,
     logout,
   };
-};
+}

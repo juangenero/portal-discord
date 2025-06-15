@@ -1,6 +1,6 @@
 // import type { NavigateOptions } from 'react-router-dom';
 
-import { HeroUIProvider } from '@heroui/react';
+import { HeroUIProvider, ToastProvider } from '@heroui/react';
 import { useTheme } from '@heroui/use-theme';
 import { NavigateOptions, useHref, useNavigate } from 'react-router-dom';
 
@@ -20,6 +20,12 @@ export function Provider({ children }: { children: React.ReactNode }) {
 
   return (
     <HeroUIProvider navigate={navigate} useHref={useHref} locale="es-ES">
+      <ToastProvider
+        toastProps={{
+          shouldShowTimeoutProgress: true,
+        }}
+      />
+
       <ThemeInitializer />
       {children}
     </HeroUIProvider>

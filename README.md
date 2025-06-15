@@ -20,7 +20,7 @@
 
 # CLIENT
 
-1. Refrescar estado usuario desde interceptor
-2. Sistema de alertas
-3. Control de errores robusto y (centralizado ?)
-4. Skeleton en tabla sesiones activas
+- Refrescar estado usuario desde interceptor
+- Control de errores robusto y centralizado (TypeGuard) y ¿¿log local??
+- Reorganizar carpetas / types
+- Skeleton en tabla sesiones activas

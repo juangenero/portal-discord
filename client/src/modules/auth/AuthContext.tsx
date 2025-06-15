@@ -14,9 +14,7 @@ export type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const auth = useAuthLogic();
-
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={useAuthLogic()}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
