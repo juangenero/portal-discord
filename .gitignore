@@ -87,7 +87,7 @@ client/.vuepress/dist/
 client/**/.vitepress/dist/
 client/.docusaurus/
 client/.temp
-client/public/
+# client/public/
 
 # Variables de entorno del Cliente
 client/.env
