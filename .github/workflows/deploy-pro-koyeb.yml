@@ -8,12 +8,12 @@ on:
       - 'api/**'
 
 jobs:
-  redeploy: 
+  redeploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Trigger Koyeb Redeployment
         env:
           KOYEB_API_TOKEN: ${{ secrets.KOYEB_API_TOKEN }}
@@ -23,4 +23,4 @@ jobs:
             -H "Authorization: Bearer $KOYEB_API_TOKEN" \
             -H "Content-Type: application/json" \
             "https://app.koyeb.com/v1/services/${{ env.KOYEB_SERVICE_ID }}/redeploy" \
-            -d '{}' # Cuerpo vacío para re-despliegue estándar (último commit, usa caché)
+            -d '{}'

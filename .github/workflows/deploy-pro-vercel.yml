@@ -1,4 +1,4 @@
-name: Deploy Client Vercel
+name: Deploy client Vercel
 
 on:
   push:
