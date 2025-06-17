@@ -29,7 +29,7 @@ export default function LoginPage() {
       {/* Imagen de fondo */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/images/2.png"
+          src="/images/background_login.png"
           alt="background login page"
           className="h-full w-full object-cover"
         />
