@@ -16,9 +16,8 @@ jobs:
       - name: Check for 'client' changes and deploy
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
-        run: |
-          # Detecta si hay cambios en el subdirectorio 'client'
-          # 'git diff --quiet' devuelve 0 si NO hay cambios, 1 si SÍ los hay.
+        run:
+          | # Detecta si hay cambios en el subdirectorio client. 'git diff --quiet' devuelve 0 si NO hay cambios, 1 si SÍ los hay.
           git diff --quiet HEAD^ HEAD -- ./client/
           if [ $? -ne 0 ]; then
             echo "Cambios detectados en 'client'. Llamando al Deploy Hook de Vercel..."
