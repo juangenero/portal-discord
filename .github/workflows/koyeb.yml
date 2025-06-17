@@ -1,0 +1,44 @@
+name: Deploy API to Koyeb
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./api
+      - name: Build API
+        run: npm run build
+        working-directory: ./api
+      - name: Trigger Koyeb Deployment
+        env:
+          KOYEB_API_TOKEN: ${{ secrets.KOYEB_API_TOKEN }}
+          KOYEB_SERVICE_ID: ${{ secrets.KOYEB_SERVICE_ID }}
+        run: |
+          curl -X PUT \
+            -H "Authorization: Bearer $KOYEB_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            "https://app.koyeb.com/v1/deployments" \
+            -d '{
+              "service_id": "'"$KOYEB_SERVICE_ID"'",
+              "source": {
+                "type": "GIT",
+                "git": {
+                  "repository": "github.com/juangenero/portal-discord",
+                  "branch": "main"
+                }
+              }
+            }'
