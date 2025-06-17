@@ -1,4 +1,4 @@
-name: Deploy API on API changes
+name: Deploy api Koyeb
 
 on:
   push:
