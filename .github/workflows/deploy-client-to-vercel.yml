@@ -8,28 +8,16 @@ on:
       - 'client/**'
 
 jobs:
-  deploy:
+  redeploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Trigger Vercel Deploy Hook
+      - name: Trigger Vercel Redeployment
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
         run: |
-          echo "Cambios detectados en 'client'. Llamando al Deploy Hook de Vercel..."
-          # Realiza la llamada POST al Deploy Hook.
-          # -v para ver los detalles de la conexión (útil para depurar).
-          # --fail-with-body para ver el cuerpo de la respuesta en caso de error HTTP.
-          curl -X POST -v --fail-with-body "$VERCEL_DEPLOY_HOOK"
-
-          # Captura el código de salida de curl para verificar el éxito.
-          CURL_EXIT_CODE=$?
-          if [ $CURL_EXIT_CODE -eq 0 ]; then
-            echo "Deploy Hook de Vercel llamado con éxito."
-          else
-            echo "ERROR: Fallo al llamar al Deploy Hook de Vercel. Código de salida de curl: $CURL_EXIT_CODE."
-            echo "Revisa los logs de 'curl' arriba para más detalles sobre el error."
-            exit 1 # Fuerza que el paso falle si curl no pudo llamar al hook.
-          fi
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            "${{ secrets.VERCEL_DEPLOY_HOOK }}"
