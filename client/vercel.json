@@ -5,8 +5,8 @@
       "destination": "/index.html"
     },
     {
-      "source": "/assets/(.*)",
-      "destination": "/assets/$1"
+      "source": "/:path((?!.*\\.).*)",
+      "destination": "/index.html"
     },
     {
       "source": "/:path*",
