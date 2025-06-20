@@ -5,7 +5,7 @@ export async function getSonidos() {
   try {
     const result = await prisma.sonido.findMany({
       select: { id: true, nombre: true, emoji: true },
-      take: 30,
+      // take: 30,
     });
     return result;
   } catch (error) {
