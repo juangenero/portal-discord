@@ -1,14 +1,16 @@
 import BaseLayout from '@/layouts/BaseLayout';
-import { subtitle, title } from '@/shared/components/primitives';
+import Sonidos from '@/modules/sonido/components/Sonidos';
+import { SonidoProvider } from '@/modules/sonido/SonidoContext';
+import { title } from '@/shared/components/primitives';
 
 export default function SonidoPage() {
   return (
-    <BaseLayout>
-      <h1 className={title()}>Sonidos</h1>
-
-      <div className="mt-5">
-        <h1 className={subtitle()}>Sonidisimo</h1>
-      </div>
-    </BaseLayout>
+    <SonidoProvider>
+      <BaseLayout>
+        <h1 className={title()}>Soundboard</h1>
+        <br />
+        <Sonidos />
+      </BaseLayout>
+    </SonidoProvider>
   );
 }

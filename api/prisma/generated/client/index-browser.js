@@ -140,6 +140,15 @@ exports.Prisma.SessionScalarFieldEnum = {
   fechaActualizacion: 'fechaActualizacion'
 };
 
+exports.Prisma.SonidoScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  emoji: 'emoji',
+  filename: 'filename',
+  file: 'file',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -153,7 +162,8 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Session: 'Session'
+  Session: 'Session',
+  Sonido: 'Sonido'
 };
 
 /**

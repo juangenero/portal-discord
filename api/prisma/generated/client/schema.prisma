@@ -42,3 +42,12 @@ model Session {
 
   user User @relation(fields: [idUser], references: [id])
 }
+
+model Sonido {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  emoji     String?
+  filename  String
+  file      Bytes
+  createdAt DateTime @default(now())
+}

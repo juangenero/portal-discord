@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthorizationError } from '../../shared/errors/error-factory';
+import log from '../../shared/utils/log/logger';
 import { callback, getRefreshToken, getUrlAuthDiscord, logout } from './auth.service';
 
 // Obtener URL login
@@ -12,7 +13,8 @@ export function loginCtrl(req: Request, res: Response): void {
 // Callback de OAuth2 (cliente)
 export async function callbackCtrl(req: Request, res: Response): Promise<void> {
   // IP
-  const { ip } = req;
+  // const { ip } = req;
+  const ip = '84.122.227.100';
   const clientIp = typeof ip === 'string' && ip ? ip : '';
 
   // User-Agent
@@ -35,13 +37,15 @@ export async function callbackCtrl(req: Request, res: Response): Promise<void> {
 export async function refreshTokenCtrl(req: Request, res: Response): Promise<void> {
   // Refresh Token
   const refreshToken = req.cookies.refreshToken;
+  log.debug(`RefreshToken recibido -> ${refreshToken}`);
 
   if (!refreshToken) {
     throw new AuthorizationError('Falta el refresh token en la solicitud');
   }
 
   // IP
-  const { ip } = req;
+  // const { ip } = req;
+  const ip = '84.122.227.100';
   const clientIp = typeof ip === 'string' && ip ? ip : '';
 
   // User-Agent
@@ -54,7 +58,11 @@ export async function refreshTokenCtrl(req: Request, res: Response): Promise<voi
   // Montar respuesta
   const { name, value, options } = responseTokens.refreshTokenCookie;
   res.cookie(name, value, options);
-  res.status(200).json({ accessToken: responseTokens.accessToken });
+
+  // TODO
+  setTimeout(() => {
+    res.status(200).json({ accessToken: responseTokens.accessToken });
+  }, 1000);
 }
 
 // Logout

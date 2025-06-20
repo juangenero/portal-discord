@@ -32,15 +32,16 @@ interface ConfigData {
   AUTH_RATE_LIMIT_REQUEST: number;
 
   // Bot Discord
-  // TOKEN_BOT?: string;
-  // SECONDS_TIMEOUT_BOT?: number;
+  TOKEN_BOT: string;
+  SECONDS_TIMEOUT_BOT: number;
+  DISCORD_GUILD_ID: string;
 
   // Base de datos
   TURSO_DATABASE_URL: string;
   TURSO_AUTH_TOKEN: string;
 
   // Archivos
-  // MAX_FILE_SIZE?: number;
+  MAX_FILE_SIZE: number;
 }
 
 export default ConfigData;

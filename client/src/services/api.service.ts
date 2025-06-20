@@ -36,3 +36,16 @@ export async function infoDeviceTest() {
 export async function rutaProtegidaTest() {
   return await api.get(`/test/ruta-protegida`);
 }
+
+// ------------ SONIDO ------------
+export async function addSonidoApi(formData: any) {
+  return await api.post(`/sonido/create`, formData);
+}
+
+export async function getSonidosApi() {
+  return await api.get(`/sonido`);
+}
+
+export async function playSonidoApi(id: any) {
+  return await api.get(`/sonido/play/${id}`);
+}

@@ -6,9 +6,11 @@ import path from 'path';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import CONFIG from './config/env.config';
+import { loginBotDiscord } from './integrations/discord/discord-client.gateway';
 import { testRouterPrivate, testRouterPublic } from './modules/.test/test.routes';
 import authRouter from './modules/auth/auth.routes';
 import sessionRouter from './modules/session/session.routes';
+import sonidoRouter from './modules/sonido/sonido.routes';
 import { authHandler } from './shared/middlewares/auth.middleware';
 import { errorHandler, notFoundHandler } from './shared/middlewares/error.middleware';
 import { swaggerOptions } from './shared/swagger/swagger';
@@ -32,6 +34,9 @@ app.use(
   })
 );
 
+// Login bot discord
+loginBotDiscord();
+
 // Rutas públicas
 apiRouter.use('/test', testRouterPublic);
 apiRouter.use('/auth', authRateLimit, authRouter);
@@ -43,6 +48,7 @@ apiRouter.use(authHandler, appRateLimit);
 // Rutas privadas
 apiRouter.use('/test', testRouterPrivate);
 apiRouter.use('/sesion', sessionRouter);
+apiRouter.use('/sonido', sonidoRouter);
 
 // Enrutador principal
 app.use('/api/v1', apiRouter);

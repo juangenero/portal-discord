@@ -38,15 +38,16 @@ const CONFIG: ConfigData = Object.freeze({
   AUTH_RATE_LIMIT_REQUEST: Number(process.env.AUTH_RATE_LIMIT_REQUEST) || 10, // Número máximo de peticiones para el rate limit de auth.routes
 
   // Discord Bot
-  // TOKEN_BOT: process.env.TOKEN_BOT,
-  // SECONDS_TIMEOUT_BOT: process.env.SECONDS_TIMEOUT_BOT || 600,
+  TOKEN_BOT: getEnvVar('TOKEN_BOT'),
+  SECONDS_TIMEOUT_BOT: Number(process.env.SECONDS_TIMEOUT_BOT) || 600,
+  DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID || '982724208343810058',
 
   // DATABASE
   TURSO_DATABASE_URL: getEnvVar('TURSO_DATABASE_URL'),
   TURSO_AUTH_TOKEN: getEnvVar('TURSO_AUTH_TOKEN'),
 
   // Archivos
-  // MAX_FILE_SIZE: process.env.MAX_FILE_SIZE || 1048576,
+  MAX_FILE_SIZE: Number('process.env.MAX_FILE_SIZE') || 1048576,
 });
 
 // Checkear si las variables de entorno críticas están definidas

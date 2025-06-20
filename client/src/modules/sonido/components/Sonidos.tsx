@@ -1,0 +1,45 @@
+import { Input } from '@heroui/react';
+import { useEffect } from 'react';
+import { useSonido } from '../SonidoContext';
+import CardSonido from './CardSonido';
+// import AddAudio from './AddAudio.js';
+
+function Sonidos() {
+  const { fetchSonidos, search, handleSearchSonido, sonidosFiltered } = useSonido();
+
+  useEffect(() => {
+    fetchSonidos();
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center">
+      {/* Añadir sonido */}
+      {/* <AddAudio handleAddAudio={handleAddAudio} /> */}
+
+      {/* Buscador */}
+      <div className="w-96">
+        <Input label="Buscar" value={search} onChange={(e) => handleSearchSonido(e.target.value)} />
+      </div>
+
+      {/* Contador de sonidos */}
+      <p className="text-xl mt-2 mb-6">{`Mostrando ${sonidosFiltered.length} sonidos`}</p>
+
+      {/* Lista de sonidos */}
+      <div>
+        {sonidosFiltered.length < 1 && <p>No se encontraron audios</p>}
+
+        {sonidosFiltered.length > 0 && (
+          <div className="grid grid-cols-6 gap-5">
+            {sonidosFiltered.map((sonido: any) => (
+              <div key={sonido.id}>
+                <CardSonido sonido={sonido} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Sonidos;

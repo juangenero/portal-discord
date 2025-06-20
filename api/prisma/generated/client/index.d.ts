@@ -23,6 +23,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  * 
  */
 export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
+/**
+ * Model Sonido
+ * 
+ */
+export type Sonido = $Result.DefaultSelection<Prisma.$SonidoPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -168,6 +173,16 @@ export class PrismaClient<
     * ```
     */
   get session(): Prisma.SessionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.sonido`: Exposes CRUD operations for the **Sonido** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Sonidos
+    * const sonidos = await prisma.sonido.findMany()
+    * ```
+    */
+  get sonido(): Prisma.SonidoDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -609,7 +624,8 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    Session: 'Session'
+    Session: 'Session',
+    Sonido: 'Sonido'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -628,7 +644,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session"
+      modelProps: "user" | "session" | "sonido"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -780,6 +796,80 @@ export namespace Prisma {
           }
         }
       }
+      Sonido: {
+        payload: Prisma.$SonidoPayload<ExtArgs>
+        fields: Prisma.SonidoFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SonidoFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SonidoFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>
+          }
+          findFirst: {
+            args: Prisma.SonidoFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SonidoFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>
+          }
+          findMany: {
+            args: Prisma.SonidoFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>[]
+          }
+          create: {
+            args: Prisma.SonidoCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>
+          }
+          createMany: {
+            args: Prisma.SonidoCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SonidoCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>[]
+          }
+          delete: {
+            args: Prisma.SonidoDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>
+          }
+          update: {
+            args: Prisma.SonidoUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>
+          }
+          deleteMany: {
+            args: Prisma.SonidoDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SonidoUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SonidoUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>[]
+          }
+          upsert: {
+            args: Prisma.SonidoUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SonidoPayload>
+          }
+          aggregate: {
+            args: Prisma.SonidoAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSonido>
+          }
+          groupBy: {
+            args: Prisma.SonidoGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SonidoGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SonidoCountArgs<ExtArgs>
+            result: $Utils.Optional<SonidoCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -870,6 +960,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     user?: UserOmit
     session?: SessionOmit
+    sonido?: SonidoOmit
   }
 
   /* Types for Logging */
@@ -3210,6 +3301,1046 @@ export namespace Prisma {
 
 
   /**
+   * Model Sonido
+   */
+
+  export type AggregateSonido = {
+    _count: SonidoCountAggregateOutputType | null
+    _avg: SonidoAvgAggregateOutputType | null
+    _sum: SonidoSumAggregateOutputType | null
+    _min: SonidoMinAggregateOutputType | null
+    _max: SonidoMaxAggregateOutputType | null
+  }
+
+  export type SonidoAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SonidoSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SonidoMinAggregateOutputType = {
+    id: number | null
+    nombre: string | null
+    emoji: string | null
+    filename: string | null
+    file: Uint8Array | null
+    createdAt: Date | null
+  }
+
+  export type SonidoMaxAggregateOutputType = {
+    id: number | null
+    nombre: string | null
+    emoji: string | null
+    filename: string | null
+    file: Uint8Array | null
+    createdAt: Date | null
+  }
+
+  export type SonidoCountAggregateOutputType = {
+    id: number
+    nombre: number
+    emoji: number
+    filename: number
+    file: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SonidoAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type SonidoSumAggregateInputType = {
+    id?: true
+  }
+
+  export type SonidoMinAggregateInputType = {
+    id?: true
+    nombre?: true
+    emoji?: true
+    filename?: true
+    file?: true
+    createdAt?: true
+  }
+
+  export type SonidoMaxAggregateInputType = {
+    id?: true
+    nombre?: true
+    emoji?: true
+    filename?: true
+    file?: true
+    createdAt?: true
+  }
+
+  export type SonidoCountAggregateInputType = {
+    id?: true
+    nombre?: true
+    emoji?: true
+    filename?: true
+    file?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SonidoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Sonido to aggregate.
+     */
+    where?: SonidoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sonidos to fetch.
+     */
+    orderBy?: SonidoOrderByWithRelationInput | SonidoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SonidoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sonidos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sonidos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Sonidos
+    **/
+    _count?: true | SonidoCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SonidoAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SonidoSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SonidoMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SonidoMaxAggregateInputType
+  }
+
+  export type GetSonidoAggregateType<T extends SonidoAggregateArgs> = {
+        [P in keyof T & keyof AggregateSonido]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSonido[P]>
+      : GetScalarType<T[P], AggregateSonido[P]>
+  }
+
+
+
+
+  export type SonidoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SonidoWhereInput
+    orderBy?: SonidoOrderByWithAggregationInput | SonidoOrderByWithAggregationInput[]
+    by: SonidoScalarFieldEnum[] | SonidoScalarFieldEnum
+    having?: SonidoScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SonidoCountAggregateInputType | true
+    _avg?: SonidoAvgAggregateInputType
+    _sum?: SonidoSumAggregateInputType
+    _min?: SonidoMinAggregateInputType
+    _max?: SonidoMaxAggregateInputType
+  }
+
+  export type SonidoGroupByOutputType = {
+    id: number
+    nombre: string
+    emoji: string | null
+    filename: string
+    file: Uint8Array
+    createdAt: Date
+    _count: SonidoCountAggregateOutputType | null
+    _avg: SonidoAvgAggregateOutputType | null
+    _sum: SonidoSumAggregateOutputType | null
+    _min: SonidoMinAggregateOutputType | null
+    _max: SonidoMaxAggregateOutputType | null
+  }
+
+  type GetSonidoGroupByPayload<T extends SonidoGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SonidoGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SonidoGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SonidoGroupByOutputType[P]>
+            : GetScalarType<T[P], SonidoGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SonidoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    emoji?: boolean
+    filename?: boolean
+    file?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["sonido"]>
+
+  export type SonidoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    emoji?: boolean
+    filename?: boolean
+    file?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["sonido"]>
+
+  export type SonidoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    nombre?: boolean
+    emoji?: boolean
+    filename?: boolean
+    file?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["sonido"]>
+
+  export type SonidoSelectScalar = {
+    id?: boolean
+    nombre?: boolean
+    emoji?: boolean
+    filename?: boolean
+    file?: boolean
+    createdAt?: boolean
+  }
+
+  export type SonidoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "emoji" | "filename" | "file" | "createdAt", ExtArgs["result"]["sonido"]>
+
+  export type $SonidoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Sonido"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      nombre: string
+      emoji: string | null
+      filename: string
+      file: Uint8Array
+      createdAt: Date
+    }, ExtArgs["result"]["sonido"]>
+    composites: {}
+  }
+
+  type SonidoGetPayload<S extends boolean | null | undefined | SonidoDefaultArgs> = $Result.GetResult<Prisma.$SonidoPayload, S>
+
+  type SonidoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SonidoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SonidoCountAggregateInputType | true
+    }
+
+  export interface SonidoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Sonido'], meta: { name: 'Sonido' } }
+    /**
+     * Find zero or one Sonido that matches the filter.
+     * @param {SonidoFindUniqueArgs} args - Arguments to find a Sonido
+     * @example
+     * // Get one Sonido
+     * const sonido = await prisma.sonido.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SonidoFindUniqueArgs>(args: SelectSubset<T, SonidoFindUniqueArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Sonido that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SonidoFindUniqueOrThrowArgs} args - Arguments to find a Sonido
+     * @example
+     * // Get one Sonido
+     * const sonido = await prisma.sonido.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SonidoFindUniqueOrThrowArgs>(args: SelectSubset<T, SonidoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sonido that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SonidoFindFirstArgs} args - Arguments to find a Sonido
+     * @example
+     * // Get one Sonido
+     * const sonido = await prisma.sonido.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SonidoFindFirstArgs>(args?: SelectSubset<T, SonidoFindFirstArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Sonido that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SonidoFindFirstOrThrowArgs} args - Arguments to find a Sonido
+     * @example
+     * // Get one Sonido
+     * const sonido = await prisma.sonido.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SonidoFindFirstOrThrowArgs>(args?: SelectSubset<T, SonidoFindFirstOrThrowArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Sonidos that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SonidoFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Sonidos
+     * const sonidos = await prisma.sonido.findMany()
+     * 
+     * // Get first 10 Sonidos
+     * const sonidos = await prisma.sonido.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const sonidoWithIdOnly = await prisma.sonido.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SonidoFindManyArgs>(args?: SelectSubset<T, SonidoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Sonido.
+     * @param {SonidoCreateArgs} args - Arguments to create a Sonido.
+     * @example
+     * // Create one Sonido
+     * const Sonido = await prisma.sonido.create({
+     *   data: {
+     *     // ... data to create a Sonido
+     *   }
+     * })
+     * 
+     */
+    create<T extends SonidoCreateArgs>(args: SelectSubset<T, SonidoCreateArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Sonidos.
+     * @param {SonidoCreateManyArgs} args - Arguments to create many Sonidos.
+     * @example
+     * // Create many Sonidos
+     * const sonido = await prisma.sonido.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SonidoCreateManyArgs>(args?: SelectSubset<T, SonidoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Sonidos and returns the data saved in the database.
+     * @param {SonidoCreateManyAndReturnArgs} args - Arguments to create many Sonidos.
+     * @example
+     * // Create many Sonidos
+     * const sonido = await prisma.sonido.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Sonidos and only return the `id`
+     * const sonidoWithIdOnly = await prisma.sonido.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SonidoCreateManyAndReturnArgs>(args?: SelectSubset<T, SonidoCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Sonido.
+     * @param {SonidoDeleteArgs} args - Arguments to delete one Sonido.
+     * @example
+     * // Delete one Sonido
+     * const Sonido = await prisma.sonido.delete({
+     *   where: {
+     *     // ... filter to delete one Sonido
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SonidoDeleteArgs>(args: SelectSubset<T, SonidoDeleteArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Sonido.
+     * @param {SonidoUpdateArgs} args - Arguments to update one Sonido.
+     * @example
+     * // Update one Sonido
+     * const sonido = await prisma.sonido.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SonidoUpdateArgs>(args: SelectSubset<T, SonidoUpdateArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Sonidos.
+     * @param {SonidoDeleteManyArgs} args - Arguments to filter Sonidos to delete.
+     * @example
+     * // Delete a few Sonidos
+     * const { count } = await prisma.sonido.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SonidoDeleteManyArgs>(args?: SelectSubset<T, SonidoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sonidos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SonidoUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Sonidos
+     * const sonido = await prisma.sonido.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SonidoUpdateManyArgs>(args: SelectSubset<T, SonidoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Sonidos and returns the data updated in the database.
+     * @param {SonidoUpdateManyAndReturnArgs} args - Arguments to update many Sonidos.
+     * @example
+     * // Update many Sonidos
+     * const sonido = await prisma.sonido.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Sonidos and only return the `id`
+     * const sonidoWithIdOnly = await prisma.sonido.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SonidoUpdateManyAndReturnArgs>(args: SelectSubset<T, SonidoUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Sonido.
+     * @param {SonidoUpsertArgs} args - Arguments to update or create a Sonido.
+     * @example
+     * // Update or create a Sonido
+     * const sonido = await prisma.sonido.upsert({
+     *   create: {
+     *     // ... data to create a Sonido
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Sonido we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SonidoUpsertArgs>(args: SelectSubset<T, SonidoUpsertArgs<ExtArgs>>): Prisma__SonidoClient<$Result.GetResult<Prisma.$SonidoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Sonidos.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SonidoCountArgs} args - Arguments to filter Sonidos to count.
+     * @example
+     * // Count the number of Sonidos
+     * const count = await prisma.sonido.count({
+     *   where: {
+     *     // ... the filter for the Sonidos we want to count
+     *   }
+     * })
+    **/
+    count<T extends SonidoCountArgs>(
+      args?: Subset<T, SonidoCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SonidoCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Sonido.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SonidoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SonidoAggregateArgs>(args: Subset<T, SonidoAggregateArgs>): Prisma.PrismaPromise<GetSonidoAggregateType<T>>
+
+    /**
+     * Group by Sonido.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SonidoGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SonidoGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SonidoGroupByArgs['orderBy'] }
+        : { orderBy?: SonidoGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SonidoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSonidoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Sonido model
+   */
+  readonly fields: SonidoFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Sonido.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SonidoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Sonido model
+   */
+  interface SonidoFieldRefs {
+    readonly id: FieldRef<"Sonido", 'Int'>
+    readonly nombre: FieldRef<"Sonido", 'String'>
+    readonly emoji: FieldRef<"Sonido", 'String'>
+    readonly filename: FieldRef<"Sonido", 'String'>
+    readonly file: FieldRef<"Sonido", 'Bytes'>
+    readonly createdAt: FieldRef<"Sonido", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Sonido findUnique
+   */
+  export type SonidoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * Filter, which Sonido to fetch.
+     */
+    where: SonidoWhereUniqueInput
+  }
+
+  /**
+   * Sonido findUniqueOrThrow
+   */
+  export type SonidoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * Filter, which Sonido to fetch.
+     */
+    where: SonidoWhereUniqueInput
+  }
+
+  /**
+   * Sonido findFirst
+   */
+  export type SonidoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * Filter, which Sonido to fetch.
+     */
+    where?: SonidoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sonidos to fetch.
+     */
+    orderBy?: SonidoOrderByWithRelationInput | SonidoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sonidos.
+     */
+    cursor?: SonidoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sonidos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sonidos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sonidos.
+     */
+    distinct?: SonidoScalarFieldEnum | SonidoScalarFieldEnum[]
+  }
+
+  /**
+   * Sonido findFirstOrThrow
+   */
+  export type SonidoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * Filter, which Sonido to fetch.
+     */
+    where?: SonidoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sonidos to fetch.
+     */
+    orderBy?: SonidoOrderByWithRelationInput | SonidoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Sonidos.
+     */
+    cursor?: SonidoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sonidos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sonidos.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Sonidos.
+     */
+    distinct?: SonidoScalarFieldEnum | SonidoScalarFieldEnum[]
+  }
+
+  /**
+   * Sonido findMany
+   */
+  export type SonidoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * Filter, which Sonidos to fetch.
+     */
+    where?: SonidoWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Sonidos to fetch.
+     */
+    orderBy?: SonidoOrderByWithRelationInput | SonidoOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Sonidos.
+     */
+    cursor?: SonidoWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Sonidos from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Sonidos.
+     */
+    skip?: number
+    distinct?: SonidoScalarFieldEnum | SonidoScalarFieldEnum[]
+  }
+
+  /**
+   * Sonido create
+   */
+  export type SonidoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Sonido.
+     */
+    data: XOR<SonidoCreateInput, SonidoUncheckedCreateInput>
+  }
+
+  /**
+   * Sonido createMany
+   */
+  export type SonidoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Sonidos.
+     */
+    data: SonidoCreateManyInput | SonidoCreateManyInput[]
+  }
+
+  /**
+   * Sonido createManyAndReturn
+   */
+  export type SonidoCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * The data used to create many Sonidos.
+     */
+    data: SonidoCreateManyInput | SonidoCreateManyInput[]
+  }
+
+  /**
+   * Sonido update
+   */
+  export type SonidoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Sonido.
+     */
+    data: XOR<SonidoUpdateInput, SonidoUncheckedUpdateInput>
+    /**
+     * Choose, which Sonido to update.
+     */
+    where: SonidoWhereUniqueInput
+  }
+
+  /**
+   * Sonido updateMany
+   */
+  export type SonidoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Sonidos.
+     */
+    data: XOR<SonidoUpdateManyMutationInput, SonidoUncheckedUpdateManyInput>
+    /**
+     * Filter which Sonidos to update
+     */
+    where?: SonidoWhereInput
+    /**
+     * Limit how many Sonidos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Sonido updateManyAndReturn
+   */
+  export type SonidoUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * The data used to update Sonidos.
+     */
+    data: XOR<SonidoUpdateManyMutationInput, SonidoUncheckedUpdateManyInput>
+    /**
+     * Filter which Sonidos to update
+     */
+    where?: SonidoWhereInput
+    /**
+     * Limit how many Sonidos to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Sonido upsert
+   */
+  export type SonidoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Sonido to update in case it exists.
+     */
+    where: SonidoWhereUniqueInput
+    /**
+     * In case the Sonido found by the `where` argument doesn't exist, create a new Sonido with this data.
+     */
+    create: XOR<SonidoCreateInput, SonidoUncheckedCreateInput>
+    /**
+     * In case the Sonido was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SonidoUpdateInput, SonidoUncheckedUpdateInput>
+  }
+
+  /**
+   * Sonido delete
+   */
+  export type SonidoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+    /**
+     * Filter which Sonido to delete.
+     */
+    where: SonidoWhereUniqueInput
+  }
+
+  /**
+   * Sonido deleteMany
+   */
+  export type SonidoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Sonidos to delete
+     */
+    where?: SonidoWhereInput
+    /**
+     * Limit how many Sonidos to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Sonido without action
+   */
+  export type SonidoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sonido
+     */
+    select?: SonidoSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Sonido
+     */
+    omit?: SonidoOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -3247,6 +4378,18 @@ export namespace Prisma {
   };
 
   export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+  export const SonidoScalarFieldEnum: {
+    id: 'id',
+    nombre: 'nombre',
+    emoji: 'emoji',
+    filename: 'filename',
+    file: 'file',
+    createdAt: 'createdAt'
+  };
+
+  export type SonidoScalarFieldEnum = (typeof SonidoScalarFieldEnum)[keyof typeof SonidoScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -3288,6 +4431,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Bytes'
+   */
+  export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
     
   /**
    * Deep Input Types
@@ -3437,6 +4594,65 @@ export namespace Prisma {
     deviceInfo?: StringWithAggregatesFilter<"Session"> | string
     fechaCreacion?: DateTimeWithAggregatesFilter<"Session"> | Date | string
     fechaActualizacion?: DateTimeWithAggregatesFilter<"Session"> | Date | string
+  }
+
+  export type SonidoWhereInput = {
+    AND?: SonidoWhereInput | SonidoWhereInput[]
+    OR?: SonidoWhereInput[]
+    NOT?: SonidoWhereInput | SonidoWhereInput[]
+    id?: IntFilter<"Sonido"> | number
+    nombre?: StringFilter<"Sonido"> | string
+    emoji?: StringNullableFilter<"Sonido"> | string | null
+    filename?: StringFilter<"Sonido"> | string
+    file?: BytesFilter<"Sonido"> | Uint8Array
+    createdAt?: DateTimeFilter<"Sonido"> | Date | string
+  }
+
+  export type SonidoOrderByWithRelationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    emoji?: SortOrderInput | SortOrder
+    filename?: SortOrder
+    file?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SonidoWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: SonidoWhereInput | SonidoWhereInput[]
+    OR?: SonidoWhereInput[]
+    NOT?: SonidoWhereInput | SonidoWhereInput[]
+    nombre?: StringFilter<"Sonido"> | string
+    emoji?: StringNullableFilter<"Sonido"> | string | null
+    filename?: StringFilter<"Sonido"> | string
+    file?: BytesFilter<"Sonido"> | Uint8Array
+    createdAt?: DateTimeFilter<"Sonido"> | Date | string
+  }, "id">
+
+  export type SonidoOrderByWithAggregationInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    emoji?: SortOrderInput | SortOrder
+    filename?: SortOrder
+    file?: SortOrder
+    createdAt?: SortOrder
+    _count?: SonidoCountOrderByAggregateInput
+    _avg?: SonidoAvgOrderByAggregateInput
+    _max?: SonidoMaxOrderByAggregateInput
+    _min?: SonidoMinOrderByAggregateInput
+    _sum?: SonidoSumOrderByAggregateInput
+  }
+
+  export type SonidoScalarWhereWithAggregatesInput = {
+    AND?: SonidoScalarWhereWithAggregatesInput | SonidoScalarWhereWithAggregatesInput[]
+    OR?: SonidoScalarWhereWithAggregatesInput[]
+    NOT?: SonidoScalarWhereWithAggregatesInput | SonidoScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Sonido"> | number
+    nombre?: StringWithAggregatesFilter<"Sonido"> | string
+    emoji?: StringNullableWithAggregatesFilter<"Sonido"> | string | null
+    filename?: StringWithAggregatesFilter<"Sonido"> | string
+    file?: BytesWithAggregatesFilter<"Sonido"> | Uint8Array
+    createdAt?: DateTimeWithAggregatesFilter<"Sonido"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -3601,6 +4817,66 @@ export namespace Prisma {
     deviceInfo?: StringFieldUpdateOperationsInput | string
     fechaCreacion?: DateTimeFieldUpdateOperationsInput | Date | string
     fechaActualizacion?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SonidoCreateInput = {
+    nombre: string
+    emoji?: string | null
+    filename: string
+    file: Uint8Array
+    createdAt?: Date | string
+  }
+
+  export type SonidoUncheckedCreateInput = {
+    id?: number
+    nombre: string
+    emoji?: string | null
+    filename: string
+    file: Uint8Array
+    createdAt?: Date | string
+  }
+
+  export type SonidoUpdateInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    emoji?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    file?: BytesFieldUpdateOperationsInput | Uint8Array
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SonidoUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    emoji?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    file?: BytesFieldUpdateOperationsInput | Uint8Array
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SonidoCreateManyInput = {
+    id?: number
+    nombre: string
+    emoji?: string | null
+    filename: string
+    file: Uint8Array
+    createdAt?: Date | string
+  }
+
+  export type SonidoUpdateManyMutationInput = {
+    nombre?: StringFieldUpdateOperationsInput | string
+    emoji?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    file?: BytesFieldUpdateOperationsInput | Uint8Array
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SonidoUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nombre?: StringFieldUpdateOperationsInput | string
+    emoji?: NullableStringFieldUpdateOperationsInput | string | null
+    filename?: StringFieldUpdateOperationsInput | string
+    file?: BytesFieldUpdateOperationsInput | Uint8Array
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -3804,6 +5080,85 @@ export namespace Prisma {
     fechaActualizacion?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type BytesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[]
+    notIn?: Uint8Array[]
+    not?: NestedBytesFilter<$PrismaModel> | Uint8Array
+  }
+
+  export type SonidoCountOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    emoji?: SortOrder
+    filename?: SortOrder
+    file?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SonidoAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SonidoMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    emoji?: SortOrder
+    filename?: SortOrder
+    file?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SonidoMinOrderByAggregateInput = {
+    id?: SortOrder
+    nombre?: SortOrder
+    emoji?: SortOrder
+    filename?: SortOrder
+    file?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SonidoSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type BytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[]
+    notIn?: Uint8Array[]
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Uint8Array
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
+  }
+
   export type SessionCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -3874,6 +5229,18 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSessionsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
+  }
+
+  export type BytesFieldUpdateOperationsInput = {
+    set?: Uint8Array
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -4008,6 +5375,50 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBytesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[]
+    notIn?: Uint8Array[]
+    not?: NestedBytesFilter<$PrismaModel> | Uint8Array
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Uint8Array | BytesFieldRefInput<$PrismaModel>
+    in?: Uint8Array[]
+    notIn?: Uint8Array[]
+    not?: NestedBytesWithAggregatesFilter<$PrismaModel> | Uint8Array
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBytesFilter<$PrismaModel>
+    _max?: NestedBytesFilter<$PrismaModel>
   }
 
   export type SessionCreateWithoutUserInput = {
