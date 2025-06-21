@@ -35,6 +35,7 @@ interface ConfigData {
   TOKEN_BOT: string;
   SECONDS_TIMEOUT_BOT: number;
   DISCORD_GUILD_ID: string;
+  DISCORD_CHANNEL_LOG_ID: string;
 
   // Base de datos
   TURSO_DATABASE_URL: string;

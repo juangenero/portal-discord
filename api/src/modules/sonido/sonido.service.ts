@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import CONFIG from '../../config/env.config';
 import {
   playSoundDiscord,
   sendDiscordMessage,
@@ -49,7 +50,7 @@ export async function reproducirSonido(id: number, userId: string, username: str
 
     // Enviar mensaje al canal de discord
     let msg = `${username} reprodujo '${sonido?.nombre}'`;
-    await sendDiscordMessage('1325165235132301393', msg);
+    await sendDiscordMessage(CONFIG.DISCORD_CHANNEL_LOG_ID, msg);
 
     return result;
   } catch (error: any) {
