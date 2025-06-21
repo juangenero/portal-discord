@@ -6,9 +6,9 @@ import path from 'path';
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import CONFIG from './config/env.config';
-import { loginBotDiscord } from './integrations/discord/discord-client.gateway';
 import { testRouterPrivate, testRouterPublic } from './modules/.test/test.routes';
 import authRouter from './modules/auth/auth.routes';
+import { initConfigDiscord } from './modules/discord/discord.service';
 import sessionRouter from './modules/session/session.routes';
 import sonidoRouter from './modules/sonido/sonido.routes';
 import { authHandler } from './shared/middlewares/auth.middleware';
@@ -35,7 +35,7 @@ app.use(
 );
 
 // Login bot discord
-loginBotDiscord();
+initConfigDiscord();
 
 // Rutas públicas
 apiRouter.use('/test', testRouterPublic);

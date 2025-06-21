@@ -22,11 +22,13 @@ let timeout: NodeJS.Timeout | null = null; // Timeout del bot
 // TODO - aqui podría ir el objeto GUILD
 
 // Cliente de discord
-const client = new Client({
+export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessages,
   ],
 });
 
