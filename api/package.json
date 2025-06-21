@@ -17,7 +17,6 @@
   "description": "API/BOT Discord",
   "dependencies": {
     "@discordjs/voice": "^0.18.0",
-    "@distube/ytdl-core": "^4.16.12",
     "@libsql/client": "^0.15.4",
     "@prisma/adapter-libsql": "^6.7.0",
     "@prisma/client": "^6.8.2",
