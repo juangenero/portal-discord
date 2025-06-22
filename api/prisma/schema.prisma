@@ -19,7 +19,7 @@ datasource db {
 model User {
   id                       String    @id @map("id_discord")
   username                 String    @map("username")
-  avatarHash               String    @map("avatar_hash")
+  avatarHash               String?   @map("avatar_hash")
   accessTokenDiscord       String?   @map("access_token_discord")
   ivAccessTokenDiscord     String?   @map("iv_access_token_discord")
   refreshTokenDiscord      String?   @map("refresh_token_discord")

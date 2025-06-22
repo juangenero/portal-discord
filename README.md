@@ -2,24 +2,37 @@
 
 ## config BD
 
-### Crear BD
+### Crear BD Turso
 
-1. npx prisma generate
-   - Crear cliente Prisma
-2. Comando para exportar DDL:
-   - npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > init.sql
-3. Comando para ejecutar el DDL en Turso (desde wsl):
-   - turso db shell alcala-city < init.sql
+1. Configurar schema prisma
 
-### Migrar BD
+2. Generar migración inicial (genera dev.db local)
 
-- npx prisma generate
-- npx prisma migrate diff --from-empty --to-schema-datamodel .\prisma\schema.prisma --script > init.sql
-- npx prisma migrate dev --name init
-- npx prisma db pull/push
+   > npx prisma migrate dev --name <nombre-migración>
 
-- Turso DB -> https://turso.tech/
-- Configuración Prisma -> https://www.youtube.com/watch?v=YX30LmRip6M
+3. Desde WSL, ejecutar el DDL en Turso:
+
+   > turso db shell <nombre-bd> < prisma/migrations/<nombre-migración>/migration.sql
+
+4. Generar cliente de prisma:
+
+   > npx prisma generate
+
+### Migrar BD Turso
+
+1. Aplicar cambios necesarios en schema.prisma
+
+2. Generar de forma local la migración, para tener la BD local sincronizada con los cambios realizados en turso:
+
+   > npx prisma migrate dev --name <nombre-migración>
+
+3. Desde WSL, ejecutar el script en Turso:
+
+   > turso db shell <nombre-bd> < prisma/migrations/<nombre-migración>/migration.sql
+
+4. Generar cliente prisma
+
+   > npx prisma generate
 
 -------------------- siguientes pasos --------------------
 

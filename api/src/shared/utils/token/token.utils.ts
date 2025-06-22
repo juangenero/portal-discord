@@ -27,7 +27,7 @@ export function createTokenJwt(input: JwtPayloadData): string {
   const payload: JwtPayloadData = {
     idUsuario: input.idUsuario,
     username: input.username,
-    avatar: getAvatarUrl(input.idUsuario, input.avatar), // Obtenemos la URL mediante el hash del avatar
+    avatar: input.avatar ? getAvatarUrl(input.idUsuario, input.avatar) : null, // Obtenemos la URL mediante el hash del avatar
     idSesion: input.idSesion,
   };
 

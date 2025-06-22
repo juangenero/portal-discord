@@ -7,6 +7,6 @@ export interface CreateRefreshTokenData {
 export interface JwtPayloadData {
   idUsuario: string;
   username: string;
-  avatar: string;
+  avatar: string | null;
   idSesion: string;
 }

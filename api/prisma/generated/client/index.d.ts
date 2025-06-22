@@ -1251,7 +1251,7 @@ export namespace Prisma {
   export type UserGroupByOutputType = {
     id: string
     username: string
-    avatarHash: string
+    avatarHash: string | null
     accessTokenDiscord: string | null
     ivAccessTokenDiscord: string | null
     refreshTokenDiscord: string | null
@@ -1348,7 +1348,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       username: string
-      avatarHash: string
+      avatarHash: string | null
       accessTokenDiscord: string | null
       ivAccessTokenDiscord: string | null
       refreshTokenDiscord: string | null
@@ -4457,7 +4457,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
     username?: StringFilter<"User"> | string
-    avatarHash?: StringFilter<"User"> | string
+    avatarHash?: StringNullableFilter<"User"> | string | null
     accessTokenDiscord?: StringNullableFilter<"User"> | string | null
     ivAccessTokenDiscord?: StringNullableFilter<"User"> | string | null
     refreshTokenDiscord?: StringNullableFilter<"User"> | string | null
@@ -4471,7 +4471,7 @@ export namespace Prisma {
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     username?: SortOrder
-    avatarHash?: SortOrder
+    avatarHash?: SortOrderInput | SortOrder
     accessTokenDiscord?: SortOrderInput | SortOrder
     ivAccessTokenDiscord?: SortOrderInput | SortOrder
     refreshTokenDiscord?: SortOrderInput | SortOrder
@@ -4488,7 +4488,7 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     username?: StringFilter<"User"> | string
-    avatarHash?: StringFilter<"User"> | string
+    avatarHash?: StringNullableFilter<"User"> | string | null
     accessTokenDiscord?: StringNullableFilter<"User"> | string | null
     ivAccessTokenDiscord?: StringNullableFilter<"User"> | string | null
     refreshTokenDiscord?: StringNullableFilter<"User"> | string | null
@@ -4502,7 +4502,7 @@ export namespace Prisma {
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     username?: SortOrder
-    avatarHash?: SortOrder
+    avatarHash?: SortOrderInput | SortOrder
     accessTokenDiscord?: SortOrderInput | SortOrder
     ivAccessTokenDiscord?: SortOrderInput | SortOrder
     refreshTokenDiscord?: SortOrderInput | SortOrder
@@ -4521,7 +4521,7 @@ export namespace Prisma {
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
     username?: StringWithAggregatesFilter<"User"> | string
-    avatarHash?: StringWithAggregatesFilter<"User"> | string
+    avatarHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     accessTokenDiscord?: StringNullableWithAggregatesFilter<"User"> | string | null
     ivAccessTokenDiscord?: StringNullableWithAggregatesFilter<"User"> | string | null
     refreshTokenDiscord?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -4658,7 +4658,7 @@ export namespace Prisma {
   export type UserCreateInput = {
     id: string
     username: string
-    avatarHash: string
+    avatarHash?: string | null
     accessTokenDiscord?: string | null
     ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
@@ -4672,7 +4672,7 @@ export namespace Prisma {
   export type UserUncheckedCreateInput = {
     id: string
     username: string
-    avatarHash: string
+    avatarHash?: string | null
     accessTokenDiscord?: string | null
     ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
@@ -4686,7 +4686,7 @@ export namespace Prisma {
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    avatarHash?: StringFieldUpdateOperationsInput | string
+    avatarHash?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4700,7 +4700,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    avatarHash?: StringFieldUpdateOperationsInput | string
+    avatarHash?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4714,7 +4714,7 @@ export namespace Prisma {
   export type UserCreateManyInput = {
     id: string
     username: string
-    avatarHash: string
+    avatarHash?: string | null
     accessTokenDiscord?: string | null
     ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
@@ -4727,7 +4727,7 @@ export namespace Prisma {
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    avatarHash?: StringFieldUpdateOperationsInput | string
+    avatarHash?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4740,7 +4740,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    avatarHash?: StringFieldUpdateOperationsInput | string
+    avatarHash?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5480,7 +5480,7 @@ export namespace Prisma {
   export type UserCreateWithoutSessionsInput = {
     id: string
     username: string
-    avatarHash: string
+    avatarHash?: string | null
     accessTokenDiscord?: string | null
     ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
@@ -5493,7 +5493,7 @@ export namespace Prisma {
   export type UserUncheckedCreateWithoutSessionsInput = {
     id: string
     username: string
-    avatarHash: string
+    avatarHash?: string | null
     accessTokenDiscord?: string | null
     ivAccessTokenDiscord?: string | null
     refreshTokenDiscord?: string | null
@@ -5522,7 +5522,7 @@ export namespace Prisma {
   export type UserUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    avatarHash?: StringFieldUpdateOperationsInput | string
+    avatarHash?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
@@ -5535,7 +5535,7 @@ export namespace Prisma {
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     username?: StringFieldUpdateOperationsInput | string
-    avatarHash?: StringFieldUpdateOperationsInput | string
+    avatarHash?: NullableStringFieldUpdateOperationsInput | string | null
     accessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     ivAccessTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
     refreshTokenDiscord?: NullableStringFieldUpdateOperationsInput | string | null
