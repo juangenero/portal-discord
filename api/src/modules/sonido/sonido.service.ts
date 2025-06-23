@@ -1,12 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import CONFIG from '../../config/env.config';
-import {
-  playSoundDiscord,
-  sendDiscordMessage,
-} from '../../integrations/discord/discord-client.gateway';
+import { sendMessageDiscord } from '../../integrations/discord/bot/utils';
 import { AppError } from '../../shared/errors/error-factory';
 import log from '../../shared/utils/log/logger';
+import { playSoundDiscord } from '../discord/discord.service';
 import {
   createSonido,
   deleteSonidoDB,
@@ -49,8 +46,8 @@ export async function reproducirSonido(id: number, userId: string, username: str
     const sonido = await getSonidoById(id);
 
     // Enviar mensaje al canal de discord
-    let msg = `${username} reprodujo '${sonido?.nombre}'`;
-    await sendDiscordMessage(CONFIG.DISCORD_CHANNEL_LOG_ID, msg);
+    let msg = `**${username}** reprodujo '**${sonido?.nombre}**'`;
+    await sendMessageDiscord(msg);
 
     return result;
   } catch (error: any) {

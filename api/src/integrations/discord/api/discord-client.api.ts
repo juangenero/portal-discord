@@ -1,6 +1,6 @@
 import axios, { AxiosHeaders } from 'axios';
-import CONFIG from '../../config/env.config';
-import { DiscordApiError } from '../../shared/errors/error-factory';
+import CONFIG from '../../../config/env.config';
+import { DiscordApiError } from '../../../shared/errors/error-factory';
 import { ResponseTokenDiscordData, ResponseUserDiscordData } from './discord.types';
 
 const {

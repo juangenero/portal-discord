@@ -1,5 +1,8 @@
 import CONFIG from '../../config/env.config';
-import { getTokenDiscord, getUsuarioDiscord } from '../../integrations/discord/discord-client.api';
+import {
+  getTokenDiscord,
+  getUsuarioDiscord,
+} from '../../integrations/discord/api/discord-client.api';
 import { createTokenJwt } from '../../shared/utils/token/token.utils';
 import { JwtPayloadData } from '../../shared/utils/token/types/token.types';
 import {

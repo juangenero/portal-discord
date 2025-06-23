@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import CONFIG from '../../../config/env.config';
-import { getAvatarUrl } from '../../../integrations/discord/discord-client.api';
+import { getAvatarUrl } from '../../../integrations/discord/api/discord-client.api';
 import {
   desencriptar,
   encriptar,
