@@ -1,24 +1,33 @@
 import { loginBot } from '../../integrations/discord/bot/client';
 import { conectarCanalDiscord } from '../../integrations/discord/bot/connection';
 import { usePlayerDiscord } from '../../integrations/discord/bot/player';
-import { getUserChanelId } from '../../integrations/discord/bot/utils';
+import { getUserChanel, sendMessageDiscord } from '../../integrations/discord/bot/utils';
 import log from '../../shared/utils/log/logger';
+import { JwtPayloadData } from '../../shared/utils/token/types/token.types';
 
 export async function initBotDiscord() {
   await loginBot();
 }
 
 // ORQUESTADOR
-export async function playSoundDiscord(sonido: any, usuarioId: string) {
+export async function playSoundDiscord(
+  payload: JwtPayloadData,
+  metadataSonido: any,
+  filePath: string
+) {
   try {
     // 1. OBTENER CANAL
-    const channelId = await getUserChanelId(usuarioId);
+    const userChannel = await getUserChanel(payload.idUsuario);
 
     // 2. CONECTAR AL CANAL
-    const conexion = await conectarCanalDiscord(channelId);
+    const conexion = await conectarCanalDiscord(userChannel.id);
 
     // 3. REPRODUCIR SONIDO
-    const result: any = await usePlayerDiscord(conexion, sonido);
+    const result = await usePlayerDiscord(conexion, metadataSonido, filePath);
+
+    // 4. ENVIAR LOG
+    const msgLog = `**${payload.username}** reprodujo '**${metadataSonido.nombre}** en **${userChannel.name}**'`;
+    sendMessageDiscord(msgLog);
 
     return result;
   } catch (error) {

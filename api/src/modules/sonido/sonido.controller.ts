@@ -23,9 +23,10 @@ export async function obtenerSonidosCtrl(req: Request, res: Response, next: Next
 
 export async function reproducirSonidoCtrl(req: Request, res: Response, next: NextFunction) {
   try {
-    const { idUsuario, username } = req.payload;
+    const payload = req.payload;
     const idSonido = parseInt(req.params.id);
-    const result = await reproducirSonido(idSonido, idUsuario, username);
+    const result = await reproducirSonido(idSonido, payload);
+
     res.json({ result: result });
   } catch (error) {
     next(error);

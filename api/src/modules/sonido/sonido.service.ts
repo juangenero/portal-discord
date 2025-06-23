@@ -1,18 +1,26 @@
 import fs from 'fs';
 import path from 'path';
-import { sendMessageDiscord } from '../../integrations/discord/bot/utils';
 import { AppError } from '../../shared/errors/error-factory';
-import log from '../../shared/utils/log/logger';
+import { JwtPayloadData } from '../../shared/utils/token/types/token.types';
 import { playSoundDiscord } from '../discord/discord.service';
 import {
   createSonido,
-  deleteSonidoDB,
-  getSonidoById,
+  getFileByIdBD,
+  getMetadataSonidoByIdBD,
   getSonidos,
 } from '../sonido/sonido.repository';
 
-const uploads = `${__dirname}/../../../uploads/`;
+// Obtener lista de sonidos
+export async function obtenerSonidos() {
+  try {
+    const result = await getSonidos();
+    return result;
+  } catch (error: any) {
+    throw new AppError(error);
+  }
+}
 
+// Crear sonido
 export async function crearSonido(nombre: any, audioName: any, audioBase64: any, emoji: any) {
   try {
     const result = createSonido({
@@ -24,93 +32,41 @@ export async function crearSonido(nombre: any, audioName: any, audioBase64: any,
 
     return result;
   } catch (error: any) {
-    throw new Error(error);
-  }
-}
-
-// Obtener lista de sonidos
-export async function obtenerSonidos() {
-  try {
-    const result = await getSonidos();
-    return result;
-  } catch (error: any) {
-    throw new Error(error);
-  }
-}
-
-export async function reproducirSonido(id: number, userId: string, username: string) {
-  try {
-    // TODO - por optimizar ..
-    const filename = await checkAudioFileSystem(id);
-    const result = await playSoundDiscord(filename, userId);
-    const sonido = await getSonidoById(id);
-
-    // Enviar mensaje al canal de discord
-    let msg = `**${username}** reprodujo '**${sonido?.nombre}**'`;
-    await sendMessageDiscord(msg);
-
-    return result;
-  } catch (error: any) {
     throw new AppError(error);
   }
 }
 
-export async function deleteSonido(id: any) {
+// Reproducir sonido
+export async function reproducirSonido(id: number, payload: JwtPayloadData) {
   try {
-    deleteSonidoDB(id);
-    // eliminarArchivo(path.join(uploads, result.filename));
-    return 'ok';
-  } catch (error: any) {
-    throw new AppError(error);
-  }
-}
+    const metadataSonido = await getMetadataSonidoByIdBD(id);
+    const filePath = await checkAudioFileSystem(metadataSonido);
+    const result = await playSoundDiscord(payload, metadataSonido, filePath);
 
-async function getFileNameById(id: any) {
-  try {
-    const sonido = await getSonidoById(id);
-    return sonido?.filename;
+    return result;
   } catch (error: any) {
     throw new AppError(error);
   }
 }
 
 // Check si el archivo existe en el sistema de archivos
-async function checkAudioFileSystem(id: any) {
-  log.debug('INICIO checkAudioFileSystem');
-  const filename = await getFileNameById(id);
+async function checkAudioFileSystem(metadataSonido: any) {
+  // Definir ruta local
+  const uploads = `${__dirname}/../../../uploads/`;
+  const filePath = path.join(uploads, metadataSonido.filename);
 
-  if (filename) {
-    const filePath = path.join(uploads, filename);
-
+  // Si el archivo no existe, lo crea en la ruta local
+  try {
+    await fs.promises.access(filePath);
+  } catch (error) {
     try {
-      // Comprueba si el archivo existe
-      await fs.promises.access(filePath, fs.constants.F_OK);
-      return filename; // Si el archivo existe, retorna el nombre del archivo
-    } catch (err) {
-      log.debug(`Descargando ${filename} en el sistema de archivos`);
+      const sonido = await getFileByIdBD(metadataSonido.id);
+      await fs.promises.writeFile(filePath, sonido.file);
+      console.log(`Sonido '${metadataSonido.nombre}' descargado en '${filePath}'`);
+    } catch (error) {
+      throw new AppError('Error al guardar el sonido en el sistema de archivos: ');
     }
-
-    try {
-      // Si no existe, lo descarga de la BD
-      const sonido = await getSonidoById(id);
-
-      if (sonido) {
-        await fs.promises.writeFile(filePath, sonido.file);
-      }
-    } catch (err) {
-      log.error(`Error guardando el audio de la BD: ${err}`);
-    }
-
-    return filename;
   }
-}
 
-// Eliminar archivo del sistema de archivos
-function eliminarArchivo(nombreArchivo: any) {
-  fs.unlink(nombreArchivo, (err) => {
-    if (err) {
-      log.error(`Error al eliminar el archivo: ${err.message}`);
-      return;
-    }
-  });
+  return filePath;
 }

@@ -1,4 +1,5 @@
 import prisma from '../../config/prisma.config';
+import { AppError } from '../../shared/errors/error-factory';
 
 // Obtener todos los sonidos
 export async function getSonidos() {
@@ -14,17 +15,44 @@ export async function getSonidos() {
 }
 
 // Obtener sonido por ID
-export async function getSonidoById(id: any) {
+export async function getMetadataSonidoByIdBD(id: number) {
   try {
     const result = await prisma.sonido.findUnique({
       where: {
         id: id,
       },
+      select: {
+        id: true,
+        nombre: true,
+        filename: true,
+      },
     });
+
+    if (!result) throw new AppError(`No existe ningún sonido con ID ${id}`);
 
     return result;
   } catch (error) {
-    throw new Error(`getSonidoById -> ${error}`);
+    throw new Error(`getMetadataSonidoByIdBD -> ${error}`);
+  }
+}
+
+export async function getFileByIdBD(id: number) {
+  try {
+    const result = await prisma.sonido.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        file: true,
+      },
+    });
+
+    if (!result) throw new AppError(`No existe ningún sonido con ID ${id}`);
+
+    return result;
+  } catch (error) {
+    throw new Error(`getFileByIdBD -> ${error}`);
   }
 }
 
@@ -37,34 +65,5 @@ export async function createSonido(sonido: any) {
     return result;
   } catch (error) {
     throw new Error(`createSonido -> ${error}`);
-  }
-}
-
-// Actualizar sonido
-// export async function updateSonido(sonido) {
-//   try {
-//     const result = await prisma.sonido.update({
-//       where: {
-//         id: sonido.id,
-//       },
-//       data: sonido,
-//     });
-//     return result;
-//   } catch (error) {
-//     throw new Error(`updateSonido -> ${error}`);
-//   }
-// }
-
-// Eliminar sonido
-export async function deleteSonidoDB(id: any) {
-  try {
-    const result = await prisma.sonido.delete({
-      where: {
-        id: id,
-      },
-    });
-    return result;
-  } catch (error) {
-    throw new Error(`deleteSonido -> ${error}`);
   }
 }

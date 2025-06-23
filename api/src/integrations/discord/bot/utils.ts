@@ -1,30 +1,25 @@
-import { Guild, GuildBasedChannel, GuildMember } from 'discord.js';
+import { Guild, GuildBasedChannel, GuildMember, Message, VoiceBasedChannel } from 'discord.js';
 import CONFIG from '../../../config/env.config';
 import { AppError } from '../../../shared/errors/error-factory';
-import log from '../../../shared/utils/log/logger';
 import { client } from './client';
 
 const { DISCORD_GUILD_ID, DISCORD_CHANNEL_LOG_ID } = CONFIG;
 
 // Enviar texto a un canal
-export async function sendMessageDiscord(msg: string): Promise<void> {
+export async function sendMessageDiscord(msg: string): Promise<Message<boolean>> {
   try {
-    // 1. Obtener la guild (servidor)
+    // Obtener canal del log
     const guild = await getGuild(DISCORD_GUILD_ID);
-
-    // 2. Obtener el canal por su ID
     const channel = await getChannel(guild, DISCORD_CHANNEL_LOG_ID);
 
-    // 3. Comprobar si es canal de texto
+    // Check canal de texto
     if (!channel.isTextBased()) {
       throw new AppError(`El canal con ID ${DISCORD_CHANNEL_LOG_ID} no es un canal de texto.`);
     }
 
-    // 4. Enviar el mensaje
-    await channel.send(msg);
-    log.debug(`Mensaje enviado al canal ${DISCORD_CHANNEL_LOG_ID}: "${msg}"`);
+    // Enviar mensaje
+    return channel.send(msg);
   } catch (error: any) {
-    log.error(`Error al enviar mensaje al canal ${DISCORD_CHANNEL_LOG_ID}: ${error.message}`);
     throw new AppError(
       `No se pudo enviar el mensaje al canal ${DISCORD_CHANNEL_LOG_ID}. Causa: ${error.message}`
     );
@@ -65,20 +60,16 @@ export async function getMember(guild: Guild, userId: string): Promise<GuildMemb
   }
 }
 
-/**
- * Obtiene el canal de voz al que está conectado el usuario
- * @param {string} userId - El ID de Discord del usuario.
- * @returns {Promise<idChannel: string>}
- */
-export async function getUserChanelId(userId: string): Promise<string> {
+// Obtiene el canal de voz al que está conectado el usuario
+export async function getUserChanel(userId: string): Promise<VoiceBasedChannel> {
   try {
     const guild = await getGuild(DISCORD_GUILD_ID);
     const member = await getMember(guild, userId);
-    const channel = member.voice.channel?.id;
+    const channel = member.voice.channel;
     if (!channel) throw new AppError(`El usuario ${userId} no está en ningún canal de voz`);
 
     return channel;
   } catch (error) {
-    throw new AppError('Ocurrió un error al obtener el ID del canal');
+    throw new AppError('Ocurrió un error al obtener canal de voz del usuario');
   }
 }

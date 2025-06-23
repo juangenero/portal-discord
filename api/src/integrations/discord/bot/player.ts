@@ -13,7 +13,8 @@ let audioPlayer: AudioPlayer | null = null; // Reproductor de audio
 
 export async function usePlayerDiscord(
   conexion: VoiceConnection,
-  filename: string
+  metadataSonido: any,
+  filePath: string
 ): Promise<boolean> {
   // Asegura que el reproductor global exista y tenga sus listeners
   initAudioPlayer();
@@ -23,7 +24,6 @@ export async function usePlayerDiscord(
     throw new AppError('No hay una conexión de voz activa para reproducir el sonido.');
   }
 
-  const filePath = `${__dirname}/../../../../uploads/${filename}`;
   const resource = createAudioResource(filePath);
 
   return new Promise<boolean>((resolve, reject) => {
@@ -41,7 +41,7 @@ export async function usePlayerDiscord(
       // Remover los listeners específicos de esta promesa para evitar fugas
       audioPlayer!.removeListener(AudioPlayerStatus.Playing, onPlaying);
       audioPlayer!.removeListener('error', onError); // También remover el error listener
-      log.info(`Reproducción de '${filename}' INICIADA y promesa RESUELTA.`);
+      log.info(`Reproduciendo '${metadataSonido.nombre}'`);
       resolve(true); // Resuelve la promesa cuando el audio comienza
     };
 
@@ -50,7 +50,7 @@ export async function usePlayerDiscord(
       // Remover los listeners específicos de esta promesa
       audioPlayer!.removeListener(AudioPlayerStatus.Playing, onPlaying);
       audioPlayer!.removeListener('error', onError);
-      log.error(`Error al reproducir '${filename}': ${error.message}`);
+      log.error(`Error al reproducir '${metadataSonido.nombre}': ${error.message}`);
       // El audioPlayer.stop() ya lo maneja el listener global de error en initAudioPlayer
       reject(new AppError(`Error al iniciar la reproducción: ${error.message}`));
     };
@@ -61,14 +61,14 @@ export async function usePlayerDiscord(
 
     // Iniciar la reproducción del nuevo recurso
     audioPlayer!.play(resource);
-    log.debug(`Solicitud de reproducción para: ${filename}`);
+    log.debug(`Solicitud de reproducción para: ${metadataSonido.nombre}`);
 
     // Nota: Los logs de 'Playing' del reproductor global (en initAudioPlayer)
     // se encargarán de llamar a timeoutBot().
   }).catch((error) => {
     // Este catch es para errores que puedan ocurrir antes de que la promesa de new Promise se cree
     // o para re-lanzar el reject si la promesa se rechaza.
-    log.error(`Fallo general en reproducirSonido para ${filename}: ${error.message}`);
+    log.error(`Fallo general en reproducirSonido para ${metadataSonido.nombre}: ${error.message}`);
     throw error;
   });
 }
