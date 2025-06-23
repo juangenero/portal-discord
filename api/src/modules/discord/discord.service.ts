@@ -26,7 +26,7 @@ export async function playSoundDiscord(
     const result = await usePlayerDiscord(conexion, metadataSonido, filePath);
 
     // 4. ENVIAR LOG
-    const msgLog = `**${payload.username}** reprodujo '**${metadataSonido.nombre}** en **${userChannel.name}**'`;
+    const msgLog = `<@!${payload.idUsuario}> reprodujo ***${metadataSonido.nombre}*** en <#${userChannel.id}>`;
     sendMessageDiscord(msgLog);
 
     return result;
