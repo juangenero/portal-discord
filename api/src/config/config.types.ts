@@ -2,7 +2,8 @@ interface ConfigData {
   // Aplicación
   PORT: string;
   NODE_ENV: 'dev' | 'pro';
-  MODE_DEBUG: boolean;
+  DEBUG: boolean;
+  DEBUG_PRISMA: boolean;
   TRUST_PROXY: number;
   APP_RATE_LIMIT_ENABLED: boolean;
   APP_RATE_LIMIT_TIME: number;

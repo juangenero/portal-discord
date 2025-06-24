@@ -8,7 +8,8 @@ const CONFIG: ConfigData = Object.freeze({
   // APLICACIÓN
   PORT: process.env.PORT || '3000', // Puerto del servidor
   NODE_ENV: checkNodeEnv(), // Entorno de la aplicación
-  MODE_DEBUG: checkBoolean('MODE_DEBUG'), // Modo debug de la aplicación
+  DEBUG: checkBoolean('DEBUG'), // Modo debug de la aplicación
+  DEBUG_PRISMA: checkBoolean('DEBUG_PRISMA'), // Modo debug de prisma (!! 'DEBUG' TAMBIÉN DEBE SER TRUE)
   TRUST_PROXY: Number(process.env.TRUST_PROXY) || 1, // Saltos proxy para obtener la IP del cliente (con req.ip)
   APP_RATE_LIMIT_ENABLED: checkBoolean('APP_RATE_LIMIT_ENABLED'), // Activar rate limit de aplicación
   APP_RATE_LIMIT_TIME: Number(process.env.APP_RATE_LIMIT_TIME) || 60, // Número de segundos para reestablecer el contador del rate limit global

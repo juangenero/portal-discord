@@ -2,7 +2,7 @@ import { join } from 'path';
 import { createLogger, format, transports } from 'winston';
 import CONFIG from '../../../config/env.config';
 
-const { MODE_DEBUG, ENABLE_FILE_LOGGING } = CONFIG;
+const { DEBUG, ENABLE_FILE_LOGGING } = CONFIG;
 const logDir = 'logs';
 
 const buildLogger = () => {
@@ -36,7 +36,7 @@ const buildLogger = () => {
   }
 
   const logger = createLogger({
-    level: MODE_DEBUG ? 'debug' : 'info',
+    level: DEBUG ? 'debug' : 'info',
     format: baseFormat,
     transports: loggerTransports,
   });

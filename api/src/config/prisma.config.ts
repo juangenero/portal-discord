@@ -3,7 +3,7 @@ import { Prisma, PrismaClient } from '../../prisma/generated/client';
 import log from '../shared/utils/log/logger';
 import CONFIG from './env.config';
 
-const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, MODE_DEBUG } = CONFIG;
+const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, DEBUG_PRISMA } = CONFIG;
 
 const tursoAdapter = new PrismaLibSQL({
   url: `${TURSO_DATABASE_URL}`,
@@ -17,7 +17,7 @@ const logConfig: Prisma.LogDefinition[] = [
 ];
 
 // En modo DEBUG saldrán los logs de querys e info
-if (MODE_DEBUG) {
+if (DEBUG_PRISMA) {
   logConfig.unshift({ emit: 'event', level: 'info' }, { emit: 'event', level: 'query' });
 }
 
