@@ -20,6 +20,11 @@ import { appRateLimit, authRateLimit } from './shared/utils/rate-limits/limiters
 const { PORT, TRUST_PROXY, URL_ORIGIN_CLIENT } = CONFIG;
 
 const app: express.Application = express();
+
+app.listen(PORT, () => {
+  log.info(`Servidor iniciado en el puerto ${PORT}`);
+});
+
 const apiRouter = express.Router();
 
 // Configuración del servidor
@@ -62,7 +67,3 @@ process.on('unhandledRejection', (reason, promise) =>
 );
 
 process.on('uncaughtException', (error) => console.error('Error síncrono no capturado: ', error));
-
-app.listen(PORT, () => {
-  log.info(`Servidor iniciado en el puerto ${PORT}`);
-});

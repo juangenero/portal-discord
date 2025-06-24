@@ -64,7 +64,7 @@ async function checkAudioFileSystem(metadataSonido: any) {
       await fs.promises.writeFile(filePath, sonido.file);
       console.log(`Sonido '${metadataSonido.nombre}' descargado en '${filePath}'`);
     } catch (error) {
-      throw new AppError('Error al guardar el sonido en el sistema de archivos: ');
+      throw new AppError('Error al guardar el sonido en el sistema de archivos');
     }
   }
 

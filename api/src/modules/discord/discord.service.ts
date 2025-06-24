@@ -1,12 +1,11 @@
-import { loginBot } from '../../integrations/discord/bot/client';
-import { conectarCanalDiscord } from '../../integrations/discord/bot/connection';
+import { channelLog, initBotDiscordWs } from '../../integrations/discord/bot';
+import { conectarCanalWs } from '../../integrations/discord/bot/connection';
 import { usePlayerDiscord } from '../../integrations/discord/bot/player';
-import { getUserChanel, sendMessageDiscord } from '../../integrations/discord/bot/utils';
-import log from '../../shared/utils/log/logger';
+import { getUserChanel } from '../../integrations/discord/bot/utils';
 import { JwtPayloadData } from '../../shared/utils/token/types/token.types';
 
-export async function initBotDiscord() {
-  await loginBot();
+export function initBotDiscord() {
+  initBotDiscordWs();
 }
 
 // ORQUESTADOR
@@ -20,18 +19,17 @@ export async function playSoundDiscord(
     const userChannel = await getUserChanel(payload.idUsuario);
 
     // 2. CONECTAR AL CANAL
-    const conexion = await conectarCanalDiscord(userChannel.id);
+    const conexion = await conectarCanalWs(userChannel);
 
     // 3. REPRODUCIR SONIDO
     const result = await usePlayerDiscord(conexion, metadataSonido, filePath);
 
     // 4. ENVIAR LOG
-    const msgLog = `<@!${payload.idUsuario}> reprodujo ***${metadataSonido.nombre}*** en <#${userChannel.id}>`;
-    sendMessageDiscord(msgLog);
+    const msgLog = `<@!${payload.idUsuario}> ha reproducido '***${metadataSonido.nombre}***' en <#${userChannel.id}>`;
+    channelLog!.send(msgLog);
 
     return result;
   } catch (error) {
-    log.error(`playSoundDiscord -> ${error}`);
-    return false;
+    throw error;
   }
 }
