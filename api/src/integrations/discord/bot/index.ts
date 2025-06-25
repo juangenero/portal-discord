@@ -36,7 +36,7 @@ export async function initBotDiscordWs() {
     log.info(`Bot iniciado: ${readyClient.user?.tag}`);
     await getGuildWs();
     await getLogChannelWs();
-    loadCommands();
+    loadCommandsWs();
   });
 
   client.login(TOKEN_BOT);
@@ -75,7 +75,8 @@ async function getLogChannelWs(): Promise<void> {
   }
 }
 
-function loadCommands() {
+// Comandos (/)
+function loadCommandsWs() {
   const foldersPath = path.join(__dirname, 'comandos', 'commands');
   const commandFolders = fs.readdirSync(foldersPath);
 
@@ -95,6 +96,7 @@ function loadCommands() {
     }
   }
 
+  // Habilitar detección de comandos
   client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
@@ -108,7 +110,7 @@ function loadCommands() {
     try {
       await command.execute(interaction);
     } catch (error: any) {
-      log.error(error);
+      log.error(`Error -> ${error}`);
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content: 'Error al ejecutar el comando',
