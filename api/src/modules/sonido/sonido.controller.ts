@@ -26,7 +26,7 @@ export async function reproducirSonidoCtrl(req: Request, res: Response, next: Ne
   try {
     const payload: JwtPayloadData = req.payload;
     const idSonido = parseInt(req.params.id);
-    const result = await reproducirSonido(idSonido, payload.idUsuario);
+    const result = await reproducirSonido(idSonido, payload.idUsuario, false);
 
     res.json(result);
   } catch (error) {
