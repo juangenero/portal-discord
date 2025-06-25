@@ -52,7 +52,7 @@ async function getSonidos() {
   const now = Date.now();
   if (sonidosCache.length === 0 || now - cacheTimestamp > CACHE_TTL) {
     sonidosCache = await obtenerSonidos();
-    log.debug(`/play -> Caché de autocompletado actualizados con ${sonidosCache.length} sonidos`);
+    log.debug(`/play -> Caché del autocompletado actualizado con ${sonidosCache.length} sonidos`);
     cacheTimestamp = now;
   }
   return sonidosCache;

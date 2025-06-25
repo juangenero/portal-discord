@@ -47,8 +47,8 @@ const rest = new REST().setToken(TOKEN_BOT!);
       { body: commands }
     );
 
-    console.log(`${data.length} comando(s) actualizado(s)`);
-  } catch (error) {
-    console.error(error);
+    console.info(`${data.length} comando(s) actualizado(s)`);
+  } catch (error: any) {
+    console.error(`Error en el script para desplegar comandos: ${error}`);
   }
 })();

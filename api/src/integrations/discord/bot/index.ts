@@ -81,78 +81,88 @@ async function getLogChannelWs(): Promise<void> {
 
 // Controlador de Comandos
 function commandHandlerWs() {
-  const foldersPath = path.join(__dirname, 'comandos', 'commands');
-  const commandFolders = fs.readdirSync(foldersPath);
-
   // Registrar comandos
-  for (const folder of commandFolders) {
-    const commandsPath = path.join(foldersPath, folder);
-    const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.ts'));
-    for (const file of commandFiles) {
-      const filePath = path.join(commandsPath, file);
-      const command = require(filePath);
-      // Establezca un nuevo elemento en la Colección con la clave como nombre del comando y el valor como el módulo exportado
-      if ('data' in command && 'execute' in command) {
-        client.commands.set(command.data.name, command);
-      } else {
-        log.warn(`El comando ${filePath} necesita las propiedades "data" y "execute"`);
+  try {
+    const foldersPath = path.join(__dirname, 'comandos', 'commands');
+    const commandFolders = fs.readdirSync(foldersPath);
+
+    for (const folder of commandFolders) {
+      const commandsPath = path.join(foldersPath, folder);
+      const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.ts'));
+      for (const file of commandFiles) {
+        const filePath = path.join(commandsPath, file);
+        const command = require(filePath);
+        // Establezca un nuevo elemento en la Colección con la clave como nombre del comando y el valor como el módulo exportado
+        if ('data' in command && 'execute' in command) {
+          client.commands.set(command.data.name, command);
+        } else {
+          log.warn(`El comando ${filePath} necesita las propiedades "data" y "execute"`);
+        }
       }
     }
+  } catch (error: any) {
+    log.error(`commandHandlerWs -> Error al registrar comandos: ${error}`);
   }
 
-  // Evento para la escucha de comandos
-  client.on(Events.InteractionCreate, async (interaction) => {
-    // 1. Checkeo inicial
-    if (!interaction.isChatInputCommand()) return;
-    const command = interaction.client.commands.get(interaction.commandName);
+  // Registrar evento ChatInputCommand
+  try {
+    client.on(Events.InteractionCreate, async (interaction) => {
+      // 1. Checkeo inicial
+      if (!interaction.isChatInputCommand()) return;
+      const command = interaction.client.commands.get(interaction.commandName);
 
-    if (!command) {
-      console.error(`No se encontró ningún comando que coincida con ${interaction.commandName}`);
-      return;
-    }
-
-    // 2. Registro de cooldown
-    const { cooldowns } = interaction.client;
-
-    if (!cooldowns.has(command.data.name)) {
-      cooldowns.set(command.data.name, new Collection());
-    }
-
-    const now = Date.now();
-    const timestamps = cooldowns.get(command.data.name);
-    const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
-
-    if (timestamps && timestamps.has(interaction.user.id)) {
-      const expirationTime = timestamps.get(interaction.user.id)! + cooldownAmount;
-
-      if (now < expirationTime) {
-        const expiredTimestamp = Math.round(expirationTime / 1_000);
-        return interaction.reply({
-          content: `Has usado \`${command.data.name}\` mas rápido que Dominic Toretto. Puedes volver a intentarlo <t:${expiredTimestamp}:R>.`,
-          flags: MessageFlags.Ephemeral,
-        });
+      if (!command) {
+        log.error(
+          `isChatInputCommand -> No se encontró ningún comando que coincida con ${interaction.commandName}`
+        );
+        return;
       }
-    }
 
-    timestamps!.set(interaction.user.id, now);
-    setTimeout(() => timestamps!.delete(interaction.user.id), cooldownAmount);
+      // 2. Registro de cooldown
+      const { cooldowns } = interaction.client;
 
-    // 3. Ejecutar comandos
-    try {
-      await command.execute(interaction);
-    } catch (error: any) {
-      log.error(error);
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({
-          content: 'Error al ejecutar el comando',
-          flags: MessageFlags.Ephemeral,
-        });
-      } else {
-        await interaction.reply({
-          content: 'Error al ejecutar el comando',
-          flags: MessageFlags.Ephemeral,
-        });
+      if (!cooldowns.has(command.data.name)) {
+        cooldowns.set(command.data.name, new Collection());
       }
-    }
-  });
+
+      const now = Date.now();
+      const timestamps = cooldowns.get(command.data.name);
+      const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
+
+      if (timestamps && timestamps.has(interaction.user.id)) {
+        const expirationTime = timestamps.get(interaction.user.id)! + cooldownAmount;
+
+        if (now < expirationTime) {
+          const expiredTimestamp = Math.round(expirationTime / 1_000);
+          return interaction.reply({
+            content: `Has usado \`${command.data.name}\` mas rápido que Dominic Toretto. Puedes volver a intentarlo <t:${expiredTimestamp}:R>.`,
+            flags: MessageFlags.Ephemeral,
+          });
+        }
+      }
+
+      timestamps!.set(interaction.user.id, now);
+      setTimeout(() => timestamps!.delete(interaction.user.id), cooldownAmount);
+
+      // 3. Ejecutar comandos
+      try {
+        await command.execute(interaction);
+      } catch (error: any) {
+        log.error(error);
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp({
+            content: 'Error al ejecutar el comando',
+            flags: MessageFlags.Ephemeral,
+          });
+        } else {
+          await interaction.reply({
+            content: 'Error al ejecutar el comando',
+            flags: MessageFlags.Ephemeral,
+          });
+        }
+      }
+    });
+  } catch (error: any) {
+    log.error(`commandHandlerWs -> Error al registrar evento ChatInputCommand: ${error}`);
+  }
 }

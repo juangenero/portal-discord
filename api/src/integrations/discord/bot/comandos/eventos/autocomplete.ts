@@ -1,4 +1,5 @@
 import { Events } from 'discord.js';
+import log from '../../../../../shared/utils/log/logger.js';
 import { client } from '../../index.js';
 
 export function autocompleteHandlerWs() {
@@ -8,7 +9,9 @@ export function autocompleteHandlerWs() {
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) {
-      console.error(`No se encontró ningún comando que coincida con ${interaction.commandName}`);
+      log.error(
+        `isAutocomplete -> No se encontró ningún comando que coincida con ${interaction.commandName}`
+      );
       return;
     }
 
