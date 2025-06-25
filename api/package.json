@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsc --noEmit && tsx watch --env-file=.env src/index.ts",
-    "build": "npx prisma generate && tsc"
+    "build": "npx prisma generate && tsc",
+    "deploy-commands": "tsc && node dist/integrations/discord/bot/comandos/deploy-commands.js"
   },
   "keywords": [
     "discord",

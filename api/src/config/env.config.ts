@@ -1,5 +1,5 @@
-import { AppError } from '../shared/errors/error-factory';
-import ConfigData from './config.types';
+import { AppError } from '../shared/errors/error-factory.js';
+import ConfigData from './config.types.js';
 
 /**
  * Mapeo de variables de entorno a constantes de configuración para autocompletado

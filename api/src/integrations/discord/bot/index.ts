@@ -1,7 +1,17 @@
-import { Client, Events, GatewayIntentBits, Guild, TextChannel } from 'discord.js';
-import CONFIG from '../../../config/env.config';
-import { AppError } from '../../../shared/errors/error-factory';
-import log from '../../../shared/utils/log/logger';
+import {
+  Client,
+  Collection,
+  Events,
+  GatewayIntentBits,
+  Guild,
+  MessageFlags,
+  TextChannel,
+} from 'discord.js';
+import fs from 'node:fs';
+import path from 'path';
+import CONFIG from '../../../config/env.config.js';
+import { AppError } from '../../../shared/errors/error-factory.js';
+import log from '../../../shared/utils/log/logger.js';
 
 const { DISCORD_GUILD_ID, DISCORD_CHANNEL_LOG_ID, TOKEN_BOT } = CONFIG;
 
@@ -14,8 +24,23 @@ export const client = new Client({
   ],
 });
 
+// Colección de comandos
+client.commands = new Collection();
+
 export let guild: Guild | null = null; // Servidor Discord
 export let channelLog: TextChannel | null = null; // Canal de log
+
+// Función principal para iniciar y preparar el bot
+export async function initBotDiscordWs() {
+  client.once(Events.ClientReady, async (readyClient) => {
+    log.info(`Bot iniciado: ${readyClient.user?.tag}`);
+    await getGuildWs();
+    await getLogChannelWs();
+    loadCommands();
+  });
+
+  client.login(TOKEN_BOT);
+}
 
 // get server
 async function getGuildWs(): Promise<void> {
@@ -50,13 +75,51 @@ async function getLogChannelWs(): Promise<void> {
   }
 }
 
-// Función principal para iniciar y preparar el bot
-export async function initBotDiscordWs() {
-  client.once(Events.ClientReady, async (readyClient) => {
-    log.info(`Bot iniciado: ${readyClient.user?.tag}`);
-    await getGuildWs();
-    await getLogChannelWs();
-  });
+function loadCommands() {
+  const foldersPath = path.join(__dirname, 'comandos', 'commands');
+  const commandFolders = fs.readdirSync(foldersPath);
 
-  client.login(TOKEN_BOT);
+  // Rellenar colección de comandos
+  for (const folder of commandFolders) {
+    const commandsPath = path.join(foldersPath, folder);
+    const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.ts'));
+    for (const file of commandFiles) {
+      const filePath = path.join(commandsPath, file);
+      const command = require(filePath);
+      // Establezca un nuevo elemento en la Colección con la clave como nombre del comando y el valor como el módulo exportado
+      if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+      } else {
+        log.warn(`El comando ${filePath} necesita las propiedades "data" y "execute"`);
+      }
+    }
+  }
+
+  client.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isChatInputCommand()) return;
+
+    const command = interaction.client.commands.get(interaction.commandName);
+
+    if (!command) {
+      log.error(`No se encontró ningún comando que coincida con ${interaction.commandName}`);
+      return;
+    }
+
+    try {
+      await command.execute(interaction);
+    } catch (error: any) {
+      log.error(error);
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp({
+          content: 'Error al ejecutar el comando',
+          flags: MessageFlags.Ephemeral,
+        });
+      } else {
+        await interaction.reply({
+          content: 'Error al ejecutar el comando',
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+    }
+  });
 }

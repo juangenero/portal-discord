@@ -1,7 +1,7 @@
 import { PrismaLibSQL } from '@prisma/adapter-libsql';
-import { Prisma, PrismaClient } from '../../prisma/generated/client';
-import log from '../shared/utils/log/logger';
-import CONFIG from './env.config';
+import { Prisma, PrismaClient } from '../../prisma/generated/client/client.js';
+import log from '../shared/utils/log/logger.js';
+import CONFIG from './env.config.js';
 
 const { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, DEBUG_PRISMA } = CONFIG;
 
