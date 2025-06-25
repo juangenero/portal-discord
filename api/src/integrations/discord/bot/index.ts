@@ -12,8 +12,11 @@ import path from 'path';
 import CONFIG from '../../../config/env.config.js';
 import { AppError } from '../../../shared/errors/error-factory.js';
 import log from '../../../shared/utils/log/logger.js';
+import './comandos/eventos/autocomplete.js';
+import { autocompleteHandlerWs } from './comandos/eventos/autocomplete.js';
 
 const { DISCORD_GUILD_ID, DISCORD_CHANNEL_LOG_ID, TOKEN_BOT } = CONFIG;
+const defaultCooldownDuration = 3; // Cooldown por defecto de los comandos (/)
 
 // Cliente de discord
 export const client = new Client({
@@ -24,8 +27,8 @@ export const client = new Client({
   ],
 });
 
-// Colección de comandos
-client.commands = new Collection();
+client.commands = new Collection(); // Colección de comandos
+client.cooldowns = new Collection(); // Colección de cooldowns
 
 export let guild: Guild | null = null; // Servidor Discord
 export let channelLog: TextChannel | null = null; // Canal de log
@@ -36,7 +39,8 @@ export async function initBotDiscordWs() {
     log.info(`Bot iniciado: ${readyClient.user?.tag}`);
     await getGuildWs();
     await getLogChannelWs();
-    loadCommandsWs();
+    commandHandlerWs();
+    autocompleteHandlerWs();
   });
 
   client.login(TOKEN_BOT);
@@ -75,12 +79,12 @@ async function getLogChannelWs(): Promise<void> {
   }
 }
 
-// Comandos (/)
-function loadCommandsWs() {
+// Controlador de Comandos
+function commandHandlerWs() {
   const foldersPath = path.join(__dirname, 'comandos', 'commands');
   const commandFolders = fs.readdirSync(foldersPath);
 
-  // Rellenar colección de comandos
+  // Registrar comandos
   for (const folder of commandFolders) {
     const commandsPath = path.join(foldersPath, folder);
     const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.ts'));
@@ -96,21 +100,48 @@ function loadCommandsWs() {
     }
   }
 
-  // Habilitar detección de comandos
+  // Evento para la escucha de comandos
   client.on(Events.InteractionCreate, async (interaction) => {
+    // 1. Checkeo inicial
     if (!interaction.isChatInputCommand()) return;
-
     const command = interaction.client.commands.get(interaction.commandName);
 
     if (!command) {
-      log.error(`No se encontró ningún comando que coincida con ${interaction.commandName}`);
+      console.error(`No se encontró ningún comando que coincida con ${interaction.commandName}`);
       return;
     }
 
+    // 2. Registro de cooldown
+    const { cooldowns } = interaction.client;
+
+    if (!cooldowns.has(command.data.name)) {
+      cooldowns.set(command.data.name, new Collection());
+    }
+
+    const now = Date.now();
+    const timestamps = cooldowns.get(command.data.name);
+    const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1000;
+
+    if (timestamps && timestamps.has(interaction.user.id)) {
+      const expirationTime = timestamps.get(interaction.user.id)! + cooldownAmount;
+
+      if (now < expirationTime) {
+        const expiredTimestamp = Math.round(expirationTime / 1_000);
+        return interaction.reply({
+          content: `Has usado \`${command.data.name}\` mas rápido que Dominic Toretto. Puedes volver a intentarlo <t:${expiredTimestamp}:R>.`,
+          flags: MessageFlags.Ephemeral,
+        });
+      }
+    }
+
+    timestamps!.set(interaction.user.id, now);
+    setTimeout(() => timestamps!.delete(interaction.user.id), cooldownAmount);
+
+    // 3. Ejecutar comandos
     try {
       await command.execute(interaction);
     } catch (error: any) {
-      log.error(`Error -> ${error}`);
+      log.error(error);
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content: 'Error al ejecutar el comando',

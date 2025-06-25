@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { AppError } from '../../shared/errors/error-factory';
-import { JwtPayloadData } from '../../shared/utils/token/types/token.types';
 import { playSoundDiscord } from '../discord/discord.service';
 import {
   createSonido,
@@ -37,11 +36,11 @@ export async function crearSonido(nombre: any, audioName: any, audioBase64: any,
 }
 
 // Reproducir sonido
-export async function reproducirSonido(id: number, payload: JwtPayloadData) {
+export async function reproducirSonido(sonidoId: number, userId: string) {
   try {
-    const metadataSonido = await getMetadataSonidoByIdBD(id);
+    const metadataSonido = await getMetadataSonidoByIdBD(sonidoId);
     const filePath = await checkAudioFileSystem(metadataSonido);
-    const result = await playSoundDiscord(payload, metadataSonido, filePath);
+    const result = await playSoundDiscord(userId, metadataSonido, filePath);
 
     return result;
   } catch (error: any) {
