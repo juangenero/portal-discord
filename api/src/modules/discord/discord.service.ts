@@ -8,7 +8,12 @@ export function initBotDiscord() {
 }
 
 // ORQUESTADOR
-export async function playSoundDiscord(userId: string, metadataSonido: any, filePath: string) {
+export async function playSoundDiscord(
+  userId: string,
+  metadataSonido: any,
+  filePath: string,
+  fromCommand: boolean
+) {
   try {
     // 1. OBTENER CANAL
     const userChannel = await getUserChanel(userId);
@@ -20,10 +25,16 @@ export async function playSoundDiscord(userId: string, metadataSonido: any, file
     const result = await usePlayerDiscord(conexion, metadataSonido, filePath);
 
     // 4. ENVIAR LOG
-    const msgLog = `<@!${userId}> ha reproducido '***${metadataSonido.nombre}***' en <#${userChannel.id}>`;
-    channelLog!.send(msgLog);
+    if (!fromCommand) {
+      const msgLog = `<@!${userId}> ha reproducido '***${metadataSonido.nombre}***' en <#${userChannel.id}>`;
+      channelLog!.send(msgLog);
+    }
 
-    return result;
+    return {
+      usuario: userId,
+      sonido: metadataSonido.nombre,
+      canal: userChannel.id,
+    };
   } catch (error) {
     throw error;
   }

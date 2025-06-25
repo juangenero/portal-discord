@@ -28,7 +28,7 @@ export async function reproducirSonidoCtrl(req: Request, res: Response, next: Ne
     const idSonido = parseInt(req.params.id);
     const result = await reproducirSonido(idSonido, payload.idUsuario);
 
-    res.json({ result: result });
+    res.json(result);
   } catch (error) {
     next(error);
   }

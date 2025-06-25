@@ -25,8 +25,9 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction: ChatInputCommandInteraction) {
   const sonidoId = Number(interaction.options.getString('sonido', true));
   const userId = interaction.user.id;
-  const result = await reproducirSonido(sonidoId, userId);
-  await interaction.reply(`El usuario ${userId} seleccionado el sonido con id: ${sonidoId}`);
+  const result = await reproducirSonido(sonidoId, userId, true);
+
+  await interaction.reply(`***${result.sonido}*** reproducido en <#${result.canal}>`);
 }
 
 // Función de autocompletado

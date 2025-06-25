@@ -36,11 +36,11 @@ export async function crearSonido(nombre: any, audioName: any, audioBase64: any,
 }
 
 // Reproducir sonido
-export async function reproducirSonido(sonidoId: number, userId: string) {
+export async function reproducirSonido(sonidoId: number, userId: string, fromCommand: boolean) {
   try {
     const metadataSonido = await getMetadataSonidoByIdBD(sonidoId);
     const filePath = await checkAudioFileSystem(metadataSonido);
-    const result = await playSoundDiscord(userId, metadataSonido, filePath);
+    const result = await playSoundDiscord(userId, metadataSonido, filePath, fromCommand);
 
     return result;
   } catch (error: any) {
