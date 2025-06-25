@@ -83,15 +83,29 @@ async function getLogChannelWs(): Promise<void> {
 function commandHandlerWs() {
   // Registrar comandos
   try {
+    const projectRoot = process.cwd();
+    log.debug(`projectRoot -> ${projectRoot}`);
+
     const foldersPath = path.join(__dirname, 'comandos', 'commands');
+    log.debug(`foldersPath -> ${foldersPath}`);
+
     const commandFolders = fs.readdirSync(foldersPath);
+    log.debug(`commandFolders -> ${commandFolders}`);
 
     for (const folder of commandFolders) {
       const commandsPath = path.join(foldersPath, folder);
-      const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.ts'));
+      log.debug(`commandsPath -> ${commandsPath}`);
+
+      const commandFiles = fs.readdirSync(commandsPath);
+      log.debug(`commandFiles -> ${commandFiles}`);
+
       for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
+        log.debug(`filePath -> ${filePath}`);
+
         const command = require(filePath);
+        log.debug(`command -> ${JSON.stringify(command)}`);
+
         // Establezca un nuevo elemento en la Colección con la clave como nombre del comando y el valor como el módulo exportado
         if ('data' in command && 'execute' in command) {
           client.commands.set(command.data.name, command);
