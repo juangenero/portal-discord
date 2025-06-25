@@ -38,7 +38,7 @@ export async function autocomplete(interaction: AutocompleteInteraction) {
 
   const sonidosFiltrados = sonidos
     .filter((opciones) => opciones.nombre.toLowerCase().startsWith(paramFocused.toLowerCase()))
-    .slice(0, 30);
+    .slice(0, 25);
 
   const opciones = sonidosFiltrados.map((choice) => ({
     name: choice.nombre,
