@@ -16,7 +16,7 @@ import './comandos/eventos/autocomplete.js';
 import { autocompleteHandlerWs } from './comandos/eventos/autocomplete.js';
 
 const { DISCORD_GUILD_ID, DISCORD_CHANNEL_LOG_ID, TOKEN_BOT } = CONFIG;
-const defaultCooldownDuration = 3; // Cooldown por defecto de los comandos (/)
+const defaultCooldownDuration = 5; // Cooldown por defecto de los comandos (/)
 
 // Cliente de discord
 export const client = new Client({
@@ -36,7 +36,7 @@ export let channelLog: TextChannel | null = null; // Canal de log
 // Función principal para iniciar y preparar el bot
 export async function initBotDiscordWs() {
   client.once(Events.ClientReady, async (readyClient) => {
-    log.info(`Bot iniciado: ${readyClient.user?.tag}`);
+    log.info(`Bot: ${readyClient.user?.tag}`);
     await getGuildWs();
     await getLogChannelWs();
     commandHandlerWs();
@@ -53,7 +53,7 @@ async function getGuildWs(): Promise<void> {
     if (!res) throw new AppError(`El bot no está en el servidor ${DISCORD_GUILD_ID}`);
 
     guild = res;
-    log.debug(`Servidor Discord: ${guild}`);
+    log.info(`Server: ${guild}`);
   } catch (error) {
     if (error instanceof AppError) throw error;
     throw new AppError(`Error al obtener el servidor ${DISCORD_GUILD_ID}`);
@@ -73,7 +73,7 @@ async function getLogChannelWs(): Promise<void> {
     if (!res.isTextBased()) throw new AppError(`El canal ${DISCORD_CHANNEL_LOG_ID} no es de texto`);
 
     channelLog = res as TextChannel;
-    log.debug(`Canal de log: ${channelLog.name}`);
+    log.info(`Log: ${channelLog.name}`);
   } catch (error) {
     throw error;
   }
@@ -83,30 +83,20 @@ async function getLogChannelWs(): Promise<void> {
 function commandHandlerWs() {
   // Registrar comandos
   try {
-    const projectRoot = process.cwd();
-    log.debug(`projectRoot -> ${projectRoot}`);
-
     const foldersPath = path.join(__dirname, 'comandos', 'commands');
-    log.debug(`foldersPath -> ${foldersPath}`);
-
     const commandFolders = fs.readdirSync(foldersPath);
-    log.debug(`commandFolders -> ${commandFolders}`);
 
     for (const folder of commandFolders) {
       const commandsPath = path.join(foldersPath, folder);
-      log.debug(`commandsPath -> ${commandsPath}`);
+      const commandFile = fs
+        .readdirSync(commandsPath)
+        .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
+      log.debug(`commandFile -> ${commandFile}`);
 
-      const commandFiles = fs.readdirSync(commandsPath);
-      log.debug(`commandFiles -> ${commandFiles}`);
-
-      for (const file of commandFiles) {
+      for (const file of commandFile) {
         const filePath = path.join(commandsPath, file);
-        log.debug(`filePath -> ${filePath}`);
-
         const command = require(filePath);
-        log.debug(`command -> ${JSON.stringify(command)}`);
 
-        // Establezca un nuevo elemento en la Colección con la clave como nombre del comando y el valor como el módulo exportado
         if ('data' in command && 'execute' in command) {
           client.commands.set(command.data.name, command);
         } else {
@@ -149,7 +139,7 @@ function commandHandlerWs() {
         if (now < expirationTime) {
           const expiredTimestamp = Math.round(expirationTime / 1_000);
           return interaction.reply({
-            content: `Has usado \`${command.data.name}\` mas rápido que Dominic Toretto. Puedes volver a intentarlo <t:${expiredTimestamp}:R>.`,
+            content: `Has usado \`${command.data.name}\` mas rápido que Dominic Toretto cuesta abajo. Puedes volver a intentarlo <t:${expiredTimestamp}:R>.`,
             flags: MessageFlags.Ephemeral,
           });
         }

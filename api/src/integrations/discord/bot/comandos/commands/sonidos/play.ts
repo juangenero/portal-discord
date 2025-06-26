@@ -8,7 +8,7 @@ import log from '../../../../../../shared/utils/log/logger';
 
 let sonidosCache: { id: number; nombre: string }[] = [];
 let cacheTimestamp = 0;
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+const CACHE_TTL = 60 * 60 * 1000; // 60 minutos
 
 export const data = new SlashCommandBuilder()
   .setName('play')
