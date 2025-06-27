@@ -73,6 +73,27 @@ export async function usePlayerDiscord(
   });
 }
 
+export function stopPlayerWs(): boolean {
+  // Asegúrate de que el reproductor exista
+  if (!audioPlayer) {
+    log.debug(
+      'Intentó detener la reproducción, pero el reproductor de audio no está inicializado.'
+    );
+    return false;
+  }
+
+  // Comprueba si el reproductor ya está inactivo
+  if (audioPlayer.state.status === AudioPlayerStatus.Idle) {
+    log.debug('La reproducción ya estaba detenida (Idle).');
+    return false;
+  }
+
+  // Si está reproduciendo, deténlo
+  audioPlayer.stop();
+  log.debug('Reproducción de audio detenida exitosamente.');
+  return true;
+}
+
 // Iniciar reproductor
 function initAudioPlayer(): void {
   if (!audioPlayer) {

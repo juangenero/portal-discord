@@ -1,6 +1,6 @@
 import { channelLog, initBotDiscordWs } from '../../integrations/discord/bot';
 import { conectarCanalWs } from '../../integrations/discord/bot/connection';
-import { usePlayerDiscord } from '../../integrations/discord/bot/player';
+import { stopPlayerWs, usePlayerDiscord } from '../../integrations/discord/bot/player';
 import { getUserChanel } from '../../integrations/discord/bot/utils';
 
 export function initBotDiscord() {
@@ -22,12 +22,12 @@ export async function playSoundDiscord(
     const conexion = await conectarCanalWs(userChannel);
 
     // 3. REPRODUCIR SONIDO
-    const result = await usePlayerDiscord(conexion, metadataSonido, filePath);
+    await usePlayerDiscord(conexion, metadataSonido, filePath);
 
     // 4. ENVIAR LOG
     if (!fromCommand) {
       const msgLog = `<@!${userId}> ha reproducido '***${metadataSonido.nombre}***' en <#${userChannel.id}>`;
-      channelLog!.send(msgLog);
+      channelLog!.send({ content: msgLog, allowedMentions: { users: [] } });
     }
 
     return {
@@ -38,4 +38,8 @@ export async function playSoundDiscord(
   } catch (error) {
     throw error;
   }
+}
+
+export function pararSonido(): boolean {
+  return stopPlayerWs();
 }

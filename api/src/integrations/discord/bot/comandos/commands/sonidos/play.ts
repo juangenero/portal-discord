@@ -3,12 +3,8 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
-import { obtenerSonidos, reproducirSonido } from '../../../../../../modules/sonido/sonido.service';
-import log from '../../../../../../shared/utils/log/logger';
-
-let sonidosCache: { id: number; nombre: string }[] = [];
-let cacheTimestamp = 0;
-const CACHE_TTL = 60 * 60 * 1000; // 60 minutos
+import { reproducirSonido } from '../../../../../../modules/sonido/sonido.service';
+import { getCacheSonidos } from '../../shared/sonidos';
 
 export const data = new SlashCommandBuilder()
   .setName('play')
@@ -34,10 +30,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 export async function autocomplete(interaction: AutocompleteInteraction) {
   const paramFocused = interaction.options.getFocused();
 
-  const sonidos = await getSonidos();
+  const sonidos = await getCacheSonidos();
 
   const sonidosFiltrados = sonidos
-    .filter((opciones) => opciones.nombre.toLowerCase().startsWith(paramFocused.toLowerCase()))
+    .filter((opciones) => opciones.nombre.toLowerCase().includes(paramFocused.toLowerCase()))
     .slice(0, 25);
 
   const opciones = sonidosFiltrados.map((choice) => ({
@@ -46,16 +42,6 @@ export async function autocomplete(interaction: AutocompleteInteraction) {
   }));
 
   await interaction.respond(opciones);
-}
-
-async function getSonidos() {
-  const now = Date.now();
-  if (sonidosCache.length === 0 || now - cacheTimestamp > CACHE_TTL) {
-    sonidosCache = await obtenerSonidos();
-    log.debug(`/play -> Caché del autocompletado actualizado con ${sonidosCache.length} sonidos`);
-    cacheTimestamp = now;
-  }
-  return sonidosCache;
 }
 
 export default { data, execute, autocomplete };
