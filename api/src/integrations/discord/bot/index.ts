@@ -91,7 +91,7 @@ function commandHandlerWs() {
       const commandFile = fs
         .readdirSync(commandsPath)
         .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
-      log.debug(`commandFile -> ${commandFile}`);
+      // log.debug(`commandFile -> ${commandFile}`);
 
       for (const file of commandFile) {
         const filePath = path.join(commandsPath, file);
