@@ -50,7 +50,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     } else if (soundboard.customId === 'next_page') {
       currentPage++;
     } else if (soundboard.customId === 'pause_sound') {
-      const sonidoParado = pararSonido(soundboard.user.id);
+      const sonidoParado = pararSonido();
       if (sonidoParado) sendLog(`<@!${soundboard.user.id}> detuvo la reproducción`);
 
       await soundboard.update({

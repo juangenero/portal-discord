@@ -44,8 +44,6 @@ export function sendLog(msgLog: string) {
   channelLog!.send({ content: msgLog, allowedMentions: { users: [] } });
 }
 
-export function pararSonido(userId: string): boolean {
-  const result = stopPlayerWs();
-
-  return result;
+export function pararSonido(): boolean {
+  return stopPlayerWs();
 }
