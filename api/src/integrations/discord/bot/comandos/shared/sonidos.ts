@@ -3,7 +3,7 @@
 import { obtenerSonidos } from '../../../../../modules/sonido/sonido.service';
 import log from '../../../../../shared/utils/log/logger';
 
-let sonidosCache: { id: number; nombre: string }[] = [];
+let sonidosCache: { id: number; nombre: string; emoji: string | null }[] = [];
 let cacheTimestamp = 0;
 const CACHE_TTL = 60 * 60 * 1000; // 60 minutos
 

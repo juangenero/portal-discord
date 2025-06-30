@@ -27,32 +27,31 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const initialButtons = createSoundboard(sonidos, currentPage);
   const response = await interaction.reply({
+    content: `Mostrando ${sonidos.length} sonidos`,
     components: initialButtons,
   });
 
   const collector = response.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: 3_000_000,
+    time: 50 * 1000, // 50 minutos dura el panel
   });
 
   collector.on('collect', async (soundboard) => {
-    log.debug(`/soundboard -> Botón pulsado: ${soundboard.customId}`);
-
     if (soundboard.customId === 'prev_page') {
       currentPage--;
     } else if (soundboard.customId === 'next_page') {
       currentPage++;
     } else if (soundboard.customId === 'pause_sound') {
-      log.debug('Botón "Stop" pulsado');
       pararSonido();
 
       await soundboard.update({
+        content: `Mostrando ${sonidos.length} sonidos`,
         components: createSoundboard(sonidos, currentPage),
       });
       return;
     } else if (soundboard.customId.startsWith('sound_')) {
       const sonidoId = Number(soundboard.customId.replace('sound_', ''));
-      log.info(`Reproduciendo sonido con ID: ${sonidoId}`);
+      log.debug(`Reproduciendo sonido con ID: ${sonidoId}`);
       await reproducirSonido(sonidoId, interaction.user.id, false);
     }
 
@@ -63,9 +62,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   });
 
   collector.on('end', async (collected) => {
-    log.info(`/soundboard -> Colector de botones finalizado con ${collected.size} interacciones`);
+    log.debug(`/soundboard -> Colector de botones finalizado con ${collected.size} interacciones`);
     await interaction.editReply({
-      content: 'Panel cerrado, usa **`/soundboard`** para abrirlo de nuevo',
+      content: 'El panel ha expirado, usa **`/soundboard`** para abrir uno nuevo.',
       components: [],
     });
   });
@@ -75,6 +74,7 @@ function createSoundboard(
   sonidos: {
     id: number;
     nombre: string;
+    emoji: string | null;
   }[],
   page: number
 ): Array<ActionRowBuilder<ButtonBuilder>> {
@@ -89,7 +89,10 @@ function createSoundboard(
   // 1. Crear las filas de botones de sonido
   for (let i = 0; i < sonidosPagina.length; i++) {
     currentSoundButtons.push(
-      createButton(`sound_${sonidosPagina[i].id.toString()}`, sonidosPagina[i].nombre)
+      createButton(
+        `sound_${sonidosPagina[i].id.toString()}`,
+        `${unicodeToEmoji(sonidosPagina[i].emoji!)} ${sonidosPagina[i].nombre}`
+      )
     );
     if (currentSoundButtons.length === BUTTONS_PER_ROW) {
       rows.push(createRow(currentSoundButtons));
@@ -115,14 +118,14 @@ function createSoundboard(
     controlButtons.push(
       createButton(
         'page_info',
-        `Página ${page + 1} de ${totalPages}`,
+        `Pág ${page + 1} de ${totalPages}`,
         ButtonStyle.Secondary
       ).setDisabled(true)
     );
   } else {
     // Si solo hay una página, mostrar "Página 1 de 1" deshabilitado para consistencia
     controlButtons.push(
-      createButton('page_info', `Página 1 de 1`, ButtonStyle.Secondary).setDisabled(true)
+      createButton('page_info', `Pág 1 de 1`, ButtonStyle.Secondary).setDisabled(true)
     );
   }
 
@@ -160,6 +163,20 @@ function createButton(
 
 function createRow(arrayButtons: Array<ButtonBuilder>): ActionRowBuilder<ButtonBuilder> {
   return new ActionRowBuilder<ButtonBuilder>().addComponents(arrayButtons);
+}
+
+function unicodeToEmoji(unifiedCode: string) {
+  // Divide el código unificado en partes si el emoji es un compuesto (ej. familia, bandera)
+  const parts = unifiedCode.split('-');
+
+  // Convierte cada parte hexadecimal a su punto de código Unicode y luego a un carácter
+  const emoji = parts
+    .map((part) => {
+      return String.fromCodePoint(parseInt(part, 16));
+    })
+    .join(''); // Une las partes si es un emoji compuesto
+
+  return emoji;
 }
 
 export default { data, execute };
