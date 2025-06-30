@@ -33,51 +33,57 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   const sonidos = await getCacheSonidos();
   let currentPage = 0;
 
-  const initialButtons = createSoundboard(sonidos, currentPage);
-  log.debug('Enviando soundboard.. ');
-  const response = await interaction.reply({
-    content: `Mostrando ${sonidos.length} sonidos`,
-    components: initialButtons,
-  });
+  try {
+    const initialButtons = createSoundboard(sonidos, currentPage);
+    log.debug('Enviando soundboard.. ');
+    const response = await interaction.reply({
+      content: `Mostrando ${sonidos.length} sonidos`,
+      components: initialButtons,
+    });
 
-  const collector = response.createMessageComponentCollector({
-    componentType: ComponentType.Button,
-    time: 885 * 1000, // 14 minutos y 45 segundos, a los 15 minutos discord cierra la conexión y no se podrá editar la respuesta
-  });
+    const collector = response.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      time: 885 * 1000, // 14 minutos y 45 segundos, a los 15 minutos discord cierra la conexión y no se podrá editar la respuesta
+    });
 
-  collector.on('collect', async (soundboard) => {
-    if (soundboard.customId === 'prev_page') {
-      currentPage--;
-    } else if (soundboard.customId === 'next_page') {
-      currentPage++;
-    } else if (soundboard.customId === 'pause_sound') {
-      const sonidoParado = pararSonido();
-      if (sonidoParado) sendLog(`<@!${soundboard.user.id}> detuvo la reproducción`);
+    collector.on('collect', async (soundboard) => {
+      if (soundboard.customId === 'prev_page') {
+        currentPage--;
+      } else if (soundboard.customId === 'next_page') {
+        currentPage++;
+      } else if (soundboard.customId === 'pause_sound') {
+        const sonidoParado = pararSonido();
+        if (sonidoParado) sendLog(`<@!${soundboard.user.id}> detuvo la reproducción`);
 
+        await soundboard.update({
+          content: `Mostrando ${sonidos.length} sonidos`,
+          components: createSoundboard(sonidos, currentPage),
+        });
+      } else if (soundboard.customId.startsWith('sound_')) {
+        const sonidoId = Number(soundboard.customId.replace('sound_', ''));
+        log.debug(`Usuario ${soundboard.user.id} reproduciendo sonido ${sonidoId}`);
+        await reproducirSonido(sonidoId, soundboard.user.id, false);
+      }
+
+      const updatedButtons = createSoundboard(sonidos, currentPage);
       await soundboard.update({
-        content: `Mostrando ${sonidos.length} sonidos`,
-        components: createSoundboard(sonidos, currentPage),
+        components: updatedButtons,
       });
-    } else if (soundboard.customId.startsWith('sound_')) {
-      const sonidoId = Number(soundboard.customId.replace('sound_', ''));
-      log.debug(`Usuario ${soundboard.user.id} reproduciendo sonido ${sonidoId}`);
-      await reproducirSonido(sonidoId, soundboard.user.id, false);
-    }
-
-    const updatedButtons = createSoundboard(sonidos, currentPage);
-    await soundboard.update({
-      components: updatedButtons,
     });
-  });
 
-  collector.on('end', async (collected) => {
-    log.debug(`/soundboard -> Colector de botones finalizado con ${collected.size} interacciones`);
-    await interaction.editReply({
-      content:
-        'Panel caducado, usa **`/soundboard`** para abrir uno nuevo, si no funciona el BOT, debes activarlo',
-      components: [link],
+    collector.on('end', async (collected) => {
+      log.debug(
+        `/soundboard -> Colector de botones finalizado con ${collected.size} interacciones`
+      );
+      await interaction.editReply({
+        content:
+          'Panel caducado, usa **`/soundboard`** para abrir uno nuevo, si no funciona el BOT, debes activarlo',
+        components: [link],
+      });
     });
-  });
+  } catch (error) {
+    log.error(`Error en execute del soundboard: ${error}`);
+  }
 }
 
 function createSoundboard(
