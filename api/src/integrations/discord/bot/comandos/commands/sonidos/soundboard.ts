@@ -33,7 +33,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const collector = response.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: 50 * 60 * 1000,
+    time: 15 * 60 * 1000,
   });
 
   collector.on('collect', async (soundboard) => {
