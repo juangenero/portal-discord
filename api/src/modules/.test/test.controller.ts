@@ -45,3 +45,8 @@ export async function infoDeviceCtrl(req: Request, res: Response): Promise<void>
 export async function getHeader(req: Request, res: Response, next: NextFunction) {
   res.status(200).json(req.headers);
 }
+
+// Info headers request
+export async function wakeUpCtrl(req: Request, res: Response, next: NextFunction) {
+  res.status(200).send('<h1>Servidor está activo!</h1>');
+}

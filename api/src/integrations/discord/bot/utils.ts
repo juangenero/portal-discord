@@ -1,6 +1,6 @@
 import { Guild, GuildMember, VoiceBasedChannel, VoiceChannel } from 'discord.js';
 import { AppError } from '../../../shared/errors/error-factory';
-import { guild } from './index';
+import { channelLog, guild } from './index';
 
 // get canal de voz
 export async function getVoiceChannel(channelId: string): Promise<VoiceChannel> {
@@ -35,6 +35,8 @@ export async function getUserChanel(userId: string): Promise<VoiceBasedChannel> 
 
     return channel;
   } catch (error) {
+    const msgLog = `<@!${userId}> debes estar conectado a un canal para reproducir sonidos`;
+    channelLog!.send({ content: msgLog, allowedMentions: { users: [] } });
     throw new AppError('Ocurrió un error al obtener canal de voz del usuario');
   }
 }

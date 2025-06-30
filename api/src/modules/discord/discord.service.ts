@@ -27,7 +27,7 @@ export async function playSoundDiscord(
     // 4. ENVIAR LOG
     if (!fromCommand) {
       const msgLog = `<@!${userId}> ha reproducido '***${metadataSonido.nombre}***' en <#${userChannel.id}>`;
-      channelLog!.send({ content: msgLog, allowedMentions: { users: [] } });
+      sendLog(msgLog);
     }
 
     return {
@@ -40,6 +40,12 @@ export async function playSoundDiscord(
   }
 }
 
-export function pararSonido(): boolean {
-  return stopPlayerWs();
+export function sendLog(msgLog: string) {
+  channelLog!.send({ content: msgLog, allowedMentions: { users: [] } });
+}
+
+export function pararSonido(userId: string): boolean {
+  const result = stopPlayerWs();
+
+  return result;
 }

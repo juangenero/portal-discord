@@ -6,7 +6,7 @@ import {
   ComponentType,
   SlashCommandBuilder,
 } from 'discord.js';
-import { pararSonido } from '../../../../../../modules/discord/discord.service';
+import { pararSonido, sendLog } from '../../../../../../modules/discord/discord.service';
 import { reproducirSonido } from '../../../../../../modules/sonido/sonido.service';
 import log from '../../../../../../shared/utils/log/logger';
 import { getCacheSonidos } from '../../shared/sonidos';
@@ -22,6 +22,14 @@ const SOUND_ROWS_MAX = 4; // Máximo de filas dedicadas a botones de sonido
 const BUTTONS_PER_SOUND_ROW = BUTTONS_PER_ROW * SOUND_ROWS_MAX; // 20 botones de sonido en las primeras 4 filas
 
 export async function execute(interaction: ChatInputCommandInteraction) {
+  // Botón para despertar el servidor
+  const link = new ActionRowBuilder<ButtonBuilder>().addComponents([
+    new ButtonBuilder()
+      .setLabel('Activar BOT')
+      .setURL('https://alcala-city.koyeb.app/api/v1/test/wakeup')
+      .setStyle(ButtonStyle.Link),
+  ]);
+
   const sonidos = await getCacheSonidos();
   let currentPage = 0;
 
@@ -33,7 +41,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
   const collector = response.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: 15 * 60 * 1000,
+    time: 885 * 1000, // 14 minutos y 45 segundos, a los 15 minutos discord cierra la conexión y no se podrá editar la respuesta
   });
 
   collector.on('collect', async (soundboard) => {
@@ -42,17 +50,17 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     } else if (soundboard.customId === 'next_page') {
       currentPage++;
     } else if (soundboard.customId === 'pause_sound') {
-      pararSonido();
+      const sonidoParado = pararSonido(soundboard.user.id);
+      if (sonidoParado) sendLog(`<@!${soundboard.user.id}> detuvo la reproducción`);
 
       await soundboard.update({
         content: `Mostrando ${sonidos.length} sonidos`,
         components: createSoundboard(sonidos, currentPage),
       });
-      return;
     } else if (soundboard.customId.startsWith('sound_')) {
       const sonidoId = Number(soundboard.customId.replace('sound_', ''));
       log.debug(`Reproduciendo sonido con ID: ${sonidoId}`);
-      await reproducirSonido(sonidoId, interaction.user.id, false);
+      await reproducirSonido(sonidoId, soundboard.user.id, false);
     }
 
     const updatedButtons = createSoundboard(sonidos, currentPage);
@@ -64,8 +72,9 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   collector.on('end', async (collected) => {
     log.debug(`/soundboard -> Colector de botones finalizado con ${collected.size} interacciones`);
     await interaction.editReply({
-      content: 'El panel ha expirado, usa **`/soundboard`** para abrir uno nuevo.',
-      components: [],
+      content:
+        'Panel caducado, usa **`/soundboard`** para abrir uno nuevo, si no funciona el BOT, debes activarlo',
+      components: [link],
     });
   });
 }

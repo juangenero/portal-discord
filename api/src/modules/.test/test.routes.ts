@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { AppError } from '../../shared/errors/error-factory';
-import { getHeader, infoDeviceCtrl, testGetCookieCtrl, testSetCookieCtrl } from './test.controller';
+import {
+  getHeader,
+  infoDeviceCtrl,
+  testGetCookieCtrl,
+  testSetCookieCtrl,
+  wakeUpCtrl,
+} from './test.controller';
 import { getLogs } from './test.service';
 
 const testRouterPrivate: Router = Router();
@@ -47,5 +53,7 @@ testRouterPrivate.get('/ruta-protegida', (req: Request, res: Response) => {
 testRouterPublic.get('/logs', getLogs);
 
 testRouterPublic.get('/header', getHeader);
+
+testRouterPublic.get('/wakeup', wakeUpCtrl);
 
 export { testRouterPrivate, testRouterPublic };

@@ -5,7 +5,7 @@ import log from '../../../../../shared/utils/log/logger';
 
 let sonidosCache: { id: number; nombre: string; emoji: string | null }[] = [];
 let cacheTimestamp = 0;
-const CACHE_TTL = 60 * 60 * 1000; // 60 minutos
+const CACHE_TTL = 15 * 60 * 1000; // 60 minutos
 
 export async function getCacheSonidos() {
   const now = Date.now();
