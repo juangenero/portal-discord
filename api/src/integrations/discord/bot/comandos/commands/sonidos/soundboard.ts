@@ -34,6 +34,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   let currentPage = 0;
 
   const initialButtons = createSoundboard(sonidos, currentPage);
+  log.debug('Enviando soundboard.. ');
   const response = await interaction.reply({
     content: `Mostrando ${sonidos.length} sonidos`,
     components: initialButtons,
@@ -59,7 +60,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
       });
     } else if (soundboard.customId.startsWith('sound_')) {
       const sonidoId = Number(soundboard.customId.replace('sound_', ''));
-      log.debug(`Reproduciendo sonido con ID: ${sonidoId}`);
+      log.debug(`Usuario ${soundboard.user.id} reproduciendo sonido ${sonidoId}`);
       await reproducirSonido(sonidoId, soundboard.user.id, false);
     }
 

@@ -91,7 +91,6 @@ function commandHandlerWs() {
       const commandFile = fs
         .readdirSync(commandsPath)
         .filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
-      // log.debug(`commandFile -> ${commandFile}`);
 
       for (const file of commandFile) {
         const filePath = path.join(commandsPath, file);
@@ -138,6 +137,7 @@ function commandHandlerWs() {
 
         if (now < expirationTime) {
           const expiredTimestamp = Math.round(expirationTime / 1_000);
+          log.debug('Enviando aviso de cooldown .. ');
           return interaction.reply({
             content: `Has usado \`${command.data.name}\` mas rápido que Dominic Toretto cuesta abajo. Puedes volver a intentarlo <t:${expiredTimestamp}:R>.`,
             flags: MessageFlags.Ephemeral,
@@ -159,6 +159,7 @@ function commandHandlerWs() {
             flags: MessageFlags.Ephemeral,
           });
         } else {
+          log.debug('Enviando aviso de error al ejecutar comando.. ');
           await interaction.reply({
             content: 'Error al ejecutar el comando',
             flags: MessageFlags.Ephemeral,
