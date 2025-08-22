@@ -45,6 +45,7 @@ export async function getFileByIdBD(id: number) {
       select: {
         id: true,
         file: true,
+        filename: true,
       },
     });
 

@@ -119,3 +119,6 @@ client/*.tgz
 .fusebox/
 .dynamodb/
 .vscode-test/
+
+# Custom
+api/uploads

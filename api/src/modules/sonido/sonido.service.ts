@@ -48,6 +48,21 @@ export async function reproducirSonido(sonidoId: number, userId: string, fromCom
   }
 }
 
+// Descargar sonido
+export async function descargarSonido(sonidoId: number) {
+  try {
+    const sonido = await getFileByIdBD(sonidoId);
+    const result = {
+      file: sonido.file,
+      format: sonido.filename.split('.').pop(),
+    };
+
+    return result;
+  } catch (error: any) {
+    throw new AppError(error);
+  }
+}
+
 // Check si el archivo existe en el sistema de archivos
 async function checkAudioFileSystem(metadataSonido: any) {
   // Definir ruta local
