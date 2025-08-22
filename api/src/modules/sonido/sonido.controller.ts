@@ -1,5 +1,5 @@
 import { JwtPayloadData } from '../../shared/utils/token/types/token.types';
-import { crearSonido, obtenerSonidos, reproducirSonido } from './sonido.service';
+import { crearSonido, descargarSonido, obtenerSonidos, reproducirSonido } from './sonido.service';
 
 import { NextFunction, Request, Response } from 'express';
 
@@ -29,6 +29,29 @@ export async function reproducirSonidoCtrl(req: Request, res: Response, next: Ne
     const result = await reproducirSonido(idSonido, payload.idUsuario, false);
 
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function descargarSonidoCtrl(req: Request, res: Response, next: NextFunction) {
+  try {
+    const idSonido = parseInt(req.params.id);
+    const { file, format } = await descargarSonido(idSonido);
+
+    let contentType = '';
+    switch (format) {
+      case 'mp3':
+        contentType = 'mpeg';
+        break;
+      default:
+        contentType = format || 'mp3';
+        break;
+    }
+
+    res.setHeader('Content-Type', `audio/${contentType}`);
+
+    res.end(file);
   } catch (error) {
     next(error);
   }

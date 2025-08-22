@@ -17,6 +17,9 @@ export type SonidoContextType = {
 
   // Reproducir sonidos
   handlePlayClick: (idSonido: any) => void;
+
+  // Descargar sonido
+  handleDownloadSonido: (idSonido: any, nameSonido?: string) => void;
 };
 
 // 2. Crea el contexto con un tipo inicial de null o el tipo definido

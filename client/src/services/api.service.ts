@@ -49,3 +49,9 @@ export async function getSonidosApi() {
 export async function playSonidoApi(id: any) {
   return await api.get(`/sonido/play/${id}`);
 }
+
+export async function downloadSonidoApi(id: any) {
+  return await api.get(`/sonido/download/${id}`, {
+    responseType: 'arraybuffer',
+  });
+}

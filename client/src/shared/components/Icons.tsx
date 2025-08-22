@@ -12,8 +12,6 @@ export const Logo: React.FC<IconSvgProps> = ({ size = 36, ...props }) => (
   </svg>
 );
 
-//
-
 export const UserIcon: React.FC<IconSvgProps> = ({ size = 24, ...props }: IconSvgProps) => (
   <svg height={size} width={size} viewBox="0 0 24 24" fill="currentColor" {...props}>
     <path
@@ -80,5 +78,24 @@ export const TrashIcon: React.FC<IconSvgProps> = ({ size = 24, ...props }) => (
       fillRule="evenodd"
       clipRule="evenodd"
     />
+  </svg>
+);
+
+export const PopupMenu: React.FC<IconSvgProps> = ({ size = 24, ...props }) => (
+  <svg height={size} width={size} viewBox="0 0 16 16" fill="currentColor" {...props}>
+    <path d="M7 4c0-.139 0-.209.008-.267a.85.85 0 0 1 .724-.724c.059-.008.128-.008.267-.008s.21 0 .267.008a.85.85 0 0 1 .724.724c.008.058.008.128.008.267s0 .209-.008.267a.85.85 0 0 1-.724.724c-.058.008-.128.008-.267.008s-.209 0-.267-.008a.85.85 0 0 1-.724-.724C7 4.209 7 4.139 7 4m0 4c0-.139 0-.209.008-.267a.85.85 0 0 1 .724-.724c.059-.008.128-.008.267-.008s.21 0 .267.008a.85.85 0 0 1 .724.724c.008.058.008.128.008.267s0 .209-.008.267a.85.85 0 0 1-.724.724c-.058.008-.128.008-.267.008s-.209 0-.267-.008a.85.85 0 0 1-.724-.724C7 8.209 7 8.139 7 8m0 4c0-.139 0-.209.008-.267a.85.85 0 0 1 .724-.724c.059-.008.128-.008.267-.008s.21 0 .267.008a.85.85 0 0 1 .724.724c.008.058.008.128.008.267s0 .209-.008.268a.85.85 0 0 1-.724.724C8.208 13 8.138 13 8 13s-.209 0-.267-.008a.85.85 0 0 1-.724-.724C7 12.21 7 12.14 7 12" />
+  </svg>
+);
+
+export const Download: React.FC<IconSvgProps> = ({ size = 24, ...props }) => (
+  <svg height={size} width={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+  </svg>
+);
+
+export const Reproducir: React.FC<IconSvgProps> = ({ size = 24, ...props }) => (
+  <svg height={size} width={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+    <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    <path d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z" />
   </svg>
 );
