@@ -29,7 +29,7 @@ function Sonidos() {
         {sonidosFiltered.length < 1 && <p>No se encontraron audios</p>}
 
         {sonidosFiltered.length > 0 && (
-          <div className="grid grid-cols-6 gap-5">
+          <div className="flex flex-wrap justify-center gap-6">
             {sonidosFiltered.map((sonido: any) => (
               <div key={sonido.id}>
                 <CardSonido sonido={sonido} />

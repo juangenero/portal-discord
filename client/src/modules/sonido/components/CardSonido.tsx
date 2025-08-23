@@ -31,11 +31,11 @@ const CardSonido = ({ sonido }: { sonido: any }) => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-72">
       {/* Card */}
       <div
         onClick={handleClick}
-        className={`relative duration-200 hover:scale-105 min-w-40
+        className={`relative duration-200 hover:scale-105
         ${isDisabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
       >
         <Card>
