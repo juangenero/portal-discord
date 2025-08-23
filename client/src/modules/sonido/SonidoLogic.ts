@@ -33,6 +33,7 @@ export function useSonidoLogic() {
       fetchSonidos();
     } catch (error) {
       console.error('Error al añadir el sonido: ', error);
+      throw error;
     }
   };
 
