@@ -76,7 +76,7 @@ export function useSonidoLogic() {
       if (nombreArchivo) {
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${nombreArchivo}.${format}`;
+        a.download = `${nombreArchivo}.${format === 'mpeg' ? 'mp3' : format}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
