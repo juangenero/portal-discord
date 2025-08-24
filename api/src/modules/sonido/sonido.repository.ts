@@ -5,8 +5,7 @@ import { AppError } from '../../shared/errors/error-factory';
 export async function getSonidos() {
   try {
     const result = await prisma.sonido.findMany({
-      select: { id: true, nombre: true, emoji: true },
-      // take: 30,
+      select: { id: true, nombre: true, emoji: true, createdAt: true },
     });
     return result;
   } catch (error) {
