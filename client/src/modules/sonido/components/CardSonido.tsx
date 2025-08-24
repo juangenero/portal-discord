@@ -1,4 +1,4 @@
-import { Download, PopupMenu, Reproducir } from '@/shared/components/Icons.js';
+import { Download, Info, PopupMenu, Reproducir } from '@/shared/components/Icons.js';
 import {
   Card,
   CardBody,
@@ -9,14 +9,18 @@ import {
   DropdownTrigger,
   Image,
 } from '@heroui/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useSonido } from '../SonidoContext.js';
+import InfoSonido from './view/InfoSonido.js';
 
 const CardSonido = ({ sonido }: { sonido: any }) => {
   const { handlePlayClick, handleDownloadSonido } = useSonido();
   const urlEmojis: string = `https://cdn.jsdelivr.net/npm/emoji-datasource-twitter/img/twitter/64/${sonido.emoji}.png`;
 
   const [isDisabled, setIsDisabled] = useState(false);
+  const [openModalInfo, setOpenModalInfo] = useState(false);
+
+  const dropdownRef = useRef(null);
 
   const handleClick = () => {
     if (isDisabled) return;
@@ -74,8 +78,24 @@ const CardSonido = ({ sonido }: { sonido: any }) => {
           >
             Descargar
           </DropdownItem>
+          <DropdownItem
+            key="info"
+            startContent={<Info />}
+            onPress={() => {
+              setOpenModalInfo(true);
+            }}
+          >
+            Ver detalles
+          </DropdownItem>
         </DropdownMenu>
       </Dropdown>
+
+      {/* Modal info sonido */}
+      <InfoSonido
+        openModalInfo={openModalInfo}
+        setOpenModalInfo={setOpenModalInfo}
+        sonido={sonido}
+      />
     </div>
   );
 };
