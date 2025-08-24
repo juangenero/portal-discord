@@ -33,7 +33,7 @@ const CardSonido = ({ sonido }: { sonido: any }) => {
   };
 
   return (
-    <div className="relative w-72">
+    <div className="relative w-64">
       {/* Card */}
       <div
         onClick={handleClick}

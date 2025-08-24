@@ -6,6 +6,9 @@ export async function getSonidos() {
   try {
     const result = await prisma.sonido.findMany({
       select: { id: true, nombre: true, emoji: true, createdAt: true },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
     return result;
   } catch (error) {
