@@ -9,7 +9,7 @@ import {
   DropdownTrigger,
   Image,
 } from '@heroui/react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useSonido } from '../SonidoContext.js';
 import InfoSonido from './view/InfoSonido.js';
 
@@ -19,8 +19,6 @@ const CardSonido = ({ sonido }: { sonido: any }) => {
 
   const [isDisabled, setIsDisabled] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
-
-  const dropdownRef = useRef(null);
 
   const handleClick = () => {
     if (isDisabled) return;
